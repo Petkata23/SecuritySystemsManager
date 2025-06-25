@@ -1,7 +1,18 @@
+using EntityFrameworkCore.UseRowNumberForPaging;
+using Microsoft.EntityFrameworkCore;
+using SecuritySystemsManager.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Configure DbContext with connection string
+builder.Services.AddDbContext<SecuritySystemsManagerDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+        sqlOptions => sqlOptions.UseRowNumberForPaging());
+});
 
 var app = builder.Build();
 

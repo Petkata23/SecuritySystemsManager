@@ -9,6 +9,11 @@ namespace SecuritySystemsManager.Data.Entities
 {
     public class InstalledDevice : BaseEntity
     {
+        public InstalledDevice()
+        {
+            MaintenanceDevices = new List<MaintenanceDevice>();
+        }
+
         public int SecuritySystemOrderId { get; set; }
         public virtual SecuritySystemOrder SecuritySystemOrder { get; set; }
 
@@ -20,5 +25,7 @@ namespace SecuritySystemsManager.Data.Entities
 
         public int InstalledById { get; set; }
         public virtual User InstalledBy { get; set; }
+
+        public virtual ICollection<MaintenanceDevice> MaintenanceDevices { get; set; }
     }
 }

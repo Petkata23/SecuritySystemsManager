@@ -13,6 +13,7 @@ namespace SecuritySystemsManager.Data.Entities
         {
             InstalledDevices = new List<InstalledDevice>();
             Technicians = new List<OrderTechnician>();
+            MaintenanceLogs = new List<MaintenanceLog>();
         }
 
         public string Title { get; set; }
@@ -29,5 +30,6 @@ namespace SecuritySystemsManager.Data.Entities
 
         public virtual ICollection<InstalledDevice> InstalledDevices { get; set; }
         public virtual ICollection<OrderTechnician> Technicians { get; set; }
+        public virtual ICollection<MaintenanceLog> MaintenanceLogs { get; set; }
     }
 }

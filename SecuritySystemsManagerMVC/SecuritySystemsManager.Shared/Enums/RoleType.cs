@@ -8,9 +8,9 @@ namespace SecuritySystemsManager.Shared.Enums
 {
     public enum RoleType
     {
-        Admin,
-        Manager,
-        Technician,
-        Client
+        Admin = 1,
+        Manager = 2,
+        Technician = 3,
+        Client = 4
     }
 }
