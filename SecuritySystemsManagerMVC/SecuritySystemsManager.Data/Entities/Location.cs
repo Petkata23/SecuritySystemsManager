@@ -19,9 +19,6 @@ namespace SecuritySystemsManager.Data.Entities
         public string Longitude { get; set; }
         public string? Description { get; set; }
 
-        public int ClientId { get; set; }
-        public virtual User Client { get; set; }
-
         public virtual ICollection<SecuritySystemOrder> Orders { get; set; }
     }
 }

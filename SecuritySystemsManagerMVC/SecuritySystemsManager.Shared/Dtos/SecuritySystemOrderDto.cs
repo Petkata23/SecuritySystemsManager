@@ -18,6 +18,7 @@ namespace SecuritySystemsManager.Shared.Dtos
 
         public string Title { get; set; }
         public string Description { get; set; }
+        public string PhoneNumber { get; set; }
 
         public int ClientId { get; set; }
         public UserDto Client { get; set; }

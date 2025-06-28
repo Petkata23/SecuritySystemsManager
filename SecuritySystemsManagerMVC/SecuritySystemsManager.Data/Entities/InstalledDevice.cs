@@ -22,6 +22,7 @@ namespace SecuritySystemsManager.Data.Entities
         public string Model { get; set; }
         public int Quantity { get; set; }
         public DateTime DateInstalled { get; set; }
+        public string? DeviceImage { get; set; }
 
         public int InstalledById { get; set; }
         public virtual User InstalledBy { get; set; }

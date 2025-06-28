@@ -19,9 +19,6 @@ namespace SecuritySystemsManager.Shared.Dtos
         public string Longitude { get; set; }
         public string? Description { get; set; }
 
-        public int ClientId { get; set; }
-        public UserDto Client { get; set; }
-
         public List<SecuritySystemOrderDto> Orders { get; set; }
     }
 } 

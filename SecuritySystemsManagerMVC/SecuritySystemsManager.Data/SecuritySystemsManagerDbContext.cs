@@ -67,14 +67,6 @@ namespace SecuritySystemsManager.Data
                 .HasForeignKey(o => o.ClientId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // 👤 User <-> Locations (1:N)
-            // Клиентът не трябва да може да бъде изтрит, ако има локации
-            modelBuilder.Entity<Location>()
-                .HasOne(l => l.Client)
-                .WithMany()
-                .HasForeignKey(l => l.ClientId)
-                .OnDelete(DeleteBehavior.Restrict);
-
             // 🌍 Location <-> Orders (1:N)
             // При изтриване на локация, свързаните поръчки се изтриват
             modelBuilder.Entity<Location>()
