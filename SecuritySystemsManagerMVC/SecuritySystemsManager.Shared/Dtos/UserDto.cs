@@ -16,14 +16,16 @@ namespace SecuritySystemsManager.Shared.Dtos
         }
 
         public string Username { get; set; }
+        public string Password { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string FullName => $"{FirstName} {LastName}";
-        public string? ProfileImage { get; set; }
+        public string Email { get; set; }
 
         public int RoleId { get; set; }
         public RoleDto Role { get; set; }
-        public RoleType RoleType => Role?.RoleType ?? 0;
+
+        public string? ProfileImage { get; set; }
+
 
         // For Clients
         public List<SecuritySystemOrderDto> OrdersAsClient { get; set; }

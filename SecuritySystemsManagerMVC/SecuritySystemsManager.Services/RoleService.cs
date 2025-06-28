@@ -11,5 +11,11 @@ namespace SecuritySystemsManager.Services
         public RoleService(IRoleRepository repository) : base(repository)
         {
         }
+
+        public Task<RoleDto> GetByNameIfExistsAsync(string name)
+        {
+            return _repository.GetByNameIfExistsAsync(name);
+        }
+
     }
 } 

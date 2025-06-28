@@ -21,6 +21,10 @@ namespace SecuritySystemsManagerMVC.ViewModels
         [DisplayName("Last Name")]
         public string LastName { get; set; }
 
+        [Required(ErrorMessage = "Email is required")]
+        [EmailAddress(ErrorMessage = "Invalid Email Address")]
+        public string Email { get; set; }
+
         [DisplayName("Profile Image")]
         public string? ProfileImage { get; set; }
 

@@ -16,6 +16,9 @@ namespace SecuritySystemsManagerMVC.ViewModels
         [DisplayName("Full Name")]
         public string FullName => $"{FirstName} {LastName}";
 
+        [DisplayName("Email")]
+        public string Email { get; set; }
+
         [DisplayName("Profile Image")]
         public string? ProfileImage { get; set; }
 
