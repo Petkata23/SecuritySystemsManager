@@ -2,9 +2,11 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SecuritySystemsManager.Shared.Dtos;
+using SecuritySystemsManager.Shared.Enums;
 using SecuritySystemsManager.Shared.Repos.Contracts;
 using SecuritySystemsManager.Shared.Services.Contracts;
 using SecuritySystemsManagerMVC.ViewModels;
+using System.Security.Claims;
 
 namespace SecuritySystemsManagerMVC.Controllers
 {
@@ -30,6 +32,38 @@ namespace SecuritySystemsManagerMVC.Controllers
                 .Select(l => new SelectListItem(l.Name, l.Id.ToString()));
             
             return editVM;
+        }
+
+        [HttpGet]
+        public override async Task<IActionResult> Create()
+        {
+            var editVM = await PrePopulateVMAsync(new SecuritySystemOrderEditVm());
+            
+            if (User.IsInRole(RoleType.Client.ToString()))
+            {
+                string userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (int.TryParse(userIdStr, out int userId))
+                {
+                    editVM.ClientId = userId;
+                }
+            }
+            
+            return View(editVM);
+        }
+
+        [HttpPost]
+        public override async Task<IActionResult> Create(SecuritySystemOrderEditVm editVM)
+        {
+            if (User.IsInRole(RoleType.Client.ToString()))
+            {
+                string userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (int.TryParse(userIdStr, out int userId))
+                {
+                    editVM.ClientId = userId;
+                }
+            }
+            
+            return await base.Create(editVM);
         }
     }
 } 

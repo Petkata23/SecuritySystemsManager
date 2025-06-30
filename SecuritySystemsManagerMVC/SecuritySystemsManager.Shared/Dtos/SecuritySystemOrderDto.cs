@@ -23,7 +23,7 @@ namespace SecuritySystemsManager.Shared.Dtos
         public int ClientId { get; set; }
         public UserDto Client { get; set; }
 
-        public int LocationId { get; set; }
+        public int? LocationId { get; set; }
         public LocationDto Location { get; set; }
 
         public OrderStatus Status { get; set; }

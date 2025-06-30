@@ -191,6 +191,7 @@ namespace SecuritySystemsManager.Data
                 FirstName = "Admin",
                 LastName = "User",
                 Password = PasswordHasher.HashPassword("string"),
+                Email = "admin@securitysystems.com",
                 RoleId = (int)RoleType.Admin,
                 CreatedAt = _seedDate,
                 UpdatedAt = _seedDate

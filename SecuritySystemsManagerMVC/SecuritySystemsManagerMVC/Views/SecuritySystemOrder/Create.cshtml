@@ -1,0 +1,183 @@
+@model SecuritySystemsManagerMVC.ViewModels.SecuritySystemOrderEditVm
+@using SecuritySystemsManager.Shared.Enums
+@using System.Security.Claims
+
+@{
+    ViewData["Title"] = "Create Security System Order";
+    bool isClient = User.IsInRole(RoleType.Client.ToString());
+}
+
+<link rel="stylesheet" href="~/css/orders.css" />
+
+<div class="container animate-fade-in">
+    <div class="order-hero">
+        <div class="container order-hero-content">
+            <h1><i class="bi bi-shield-plus"></i> Create Security System Order</h1>
+            <p>Fill out the form below to request a new security system installation for your property.</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card order-card">
+                <div class="card-body">
+                    <form asp-action="Create" class="order-form">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        
+                        <div class="mb-4">
+                            <label asp-for="Title" class="form-label"></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-tag"></i></span>
+                                <input asp-for="Title" class="form-control" placeholder="Enter a title for your order" />
+                            </div>
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label asp-for="Description" class="form-label"></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-card-text"></i></span>
+                                <textarea asp-for="Description" class="form-control" placeholder="Describe your security needs and requirements"></textarea>
+                            </div>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                            <div class="form-text">Provide detailed information about your property and security requirements.</div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label asp-for="PhoneNumber" class="form-label"></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                                <input asp-for="PhoneNumber" class="form-control" placeholder="Enter your contact phone number" />
+                            </div>
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+                        
+                        @if (!isClient)
+                        {
+                            <div class="mb-4">
+                                <label asp-for="ClientId" class="form-label"></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                    <select asp-for="ClientId" asp-items="Model.AllClients" class="form-select">
+                                        <option value="">-- Select Client --</option>
+                                    </select>
+                                </div>
+                                <span asp-validation-for="ClientId" class="text-danger"></span>
+                            </div>
+                        }
+                        else
+                        {
+                            <input type="hidden" asp-for="ClientId" />
+                        }
+                        
+                        <div class="mb-4">
+                            <label asp-for="LocationId" class="form-label"></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+                                @if (User.IsInRole(RoleType.Admin.ToString()) || User.IsInRole(RoleType.Manager.ToString()))
+                                {
+                                    <select asp-for="LocationId" asp-items="Model.AllLocations" class="form-select">
+                                        <option value="">-- Select Location --</option>
+                                    </select>
+                                }
+                                else
+                                {
+                                    <select asp-for="LocationId" asp-items="Model.AllLocations" class="form-select" disabled>
+                                        <option value="">-- Select Location --</option>
+                                    </select>
+                                    <input type="hidden" asp-for="LocationId" />
+                                }
+                            </div>
+                            @if (!User.IsInRole(RoleType.Admin.ToString()) && !User.IsInRole(RoleType.Manager.ToString()))
+                            {
+                                <div class="form-text text-info">
+                                    <i class="bi bi-info-circle"></i> Only administrators and managers can set the location.
+                                </div>
+                            }
+                            <span asp-validation-for="LocationId" class="text-danger"></span>
+                            <div class="form-text">Select the location where you want the security system installed.</div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label asp-for="RequestedDate" class="form-label"></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-calendar"></i></span>
+                                <input asp-for="RequestedDate" class="form-control" type="date" />
+                            </div>
+                            <span asp-validation-for="RequestedDate" class="text-danger"></span>
+                            <div class="form-text">Select your preferred installation date.</div>
+                        </div>
+
+                        <input type="hidden" asp-for="Status" value="@SecuritySystemsManager.Shared.Enums.OrderStatus.Pending" />
+                        
+                        <div class="d-flex justify-content-between mt-4">
+                            <a asp-action="List" class="btn btn-order btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Back to List
+                            </a>
+                            <button type="submit" class="btn btn-order btn-order-primary">
+                                <i class="bi bi-shield-check"></i> Submit Order
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="order-features">
+                <h4 class="mb-4">Why Choose Our Security Systems?</h4>
+                
+                <div class="feature-card mb-4">
+                    <div class="feature-icon">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+                    <h5 class="feature-title">Advanced Protection</h5>
+                    <p class="feature-text">Our systems use cutting-edge technology to provide the highest level of security for your property.</p>
+                </div>
+                
+                <div class="feature-card mb-4">
+                    <div class="feature-icon">
+                        <i class="bi bi-phone"></i>
+                    </div>
+                    <h5 class="feature-title">Mobile Control</h5>
+                    <p class="feature-text">Monitor and control your security system from anywhere using our mobile application.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="bi bi-tools"></i>
+                    </div>
+                    <h5 class="feature-title">Professional Installation</h5>
+                    <p class="feature-text">Our certified technicians ensure proper installation and setup of your security system.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        $(document).ready(function() {
+            // Set default date to tomorrow
+            var tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            
+            var dd = String(tomorrow.getDate()).padStart(2, '0');
+            var mm = String(tomorrow.getMonth() + 1).padStart(2, '0');
+            var yyyy = tomorrow.getFullYear();
+            
+            var tomorrowStr = yyyy + '-' + mm + '-' + dd;
+            $('#RequestedDate').val(tomorrowStr);
+            
+            // Form validation enhancement
+            $('form').submit(function(e) {
+                if ($(this).valid()) {
+                    // Show loading indicator or disable button
+                    $('button[type="submit"]').prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...');
+                }
+            });
+        });
+    </script>
+} 

@@ -27,9 +27,8 @@ namespace SecuritySystemsManagerMVC.ViewModels
         public int ClientId { get; set; }
         public IEnumerable<SelectListItem> AllClients { get; set; }
 
-        [Required]
         [DisplayName("Location")]
-        public int LocationId { get; set; }
+        public int? LocationId { get; set; }
         public IEnumerable<SelectListItem> AllLocations { get; set; }
 
         [Required]

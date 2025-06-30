@@ -4,6 +4,7 @@ using SecuritySystemsManager.Shared.Dtos;
 using SecuritySystemsManager.Shared.Repos.Contracts;
 using SecuritySystemsManager.Shared.Services.Contracts;
 using SecuritySystemsManagerMVC.ViewModels;
+using System.Threading.Tasks;
 
 namespace SecuritySystemsManagerMVC.Controllers
 {
@@ -13,5 +14,14 @@ namespace SecuritySystemsManagerMVC.Controllers
             : base(service, mapper)
         {
         }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllLocations()
+        {
+            var locations = await _service.GetAllAsync();
+            return Json(locations);
+        }
+
     }
 } 

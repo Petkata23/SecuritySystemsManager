@@ -23,7 +23,7 @@ namespace SecuritySystemsManager.Data.Entities
         public int ClientId { get; set; }
         public virtual User Client { get; set; }
 
-        public int LocationId { get; set; }
+        public int? LocationId { get; set; }
         public virtual Location Location { get; set; }
 
         public OrderStatus Status { get; set; }
