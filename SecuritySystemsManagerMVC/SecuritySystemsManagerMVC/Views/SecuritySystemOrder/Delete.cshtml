@@ -1,103 +1,224 @@
 @model SecuritySystemsManagerMVC.ViewModels.SecuritySystemOrderDetailsVm
+@using SecuritySystemsManager.Shared.Enums
 
 @{
     ViewData["Title"] = "Delete Order";
 }
 
-<link rel="stylesheet" href="~/css/orders.css" />
-
-<div class="container animate-fade-in">
-    <div class="mb-4">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a asp-action="List">Orders</a></li>
-                <li class="breadcrumb-item"><a asp-action="Details" asp-route-id="@Model.Id">@Model.Title</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Delete</li>
-            </ol>
-        </nav>
+<div class="container-fluid animate-fade-in px-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card bg-gradient-danger text-white">
+                <div class="card-body py-4">
+                    <h1 class="h3 mb-2"><i class="bi bi-exclamation-triangle me-2"></i>Delete Order</h1>
+                    <p class="mb-0">Are you sure you want to delete this order? This action cannot be undone.</p>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="card order-card">
-        <div class="card-header bg-danger text-white">
-            <h3 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Delete Confirmation</h3>
-        </div>
-        <div class="card-body">
-            <div class="alert alert-danger mb-4">
-                <h4 class="alert-heading"><i class="bi bi-exclamation-circle"></i> Warning!</h4>
-                <p>Are you sure you want to delete this security system order? This action cannot be undone.</p>
-                <hr>
-                <p class="mb-0">All related data including installed devices, maintenance logs, and invoices will also be deleted.</p>
-            </div>
-            
-            <div class="row mb-4">
-                <div class="col-md-6">
-                    <div class="detail-label">Title</div>
-                    <div class="detail-value">@Model.Title</div>
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-transparent">
+                    <h5 class="mb-0">Order Details</h5>
                 </div>
-                <div class="col-md-6">
-                    <div class="detail-label">Status</div>
-                    <div class="detail-value">
-                        <span class="status-badge status-@Model.Status.ToString().ToLower()">@Model.Status</span>
+                <div class="card-body">
+                    <div class="alert alert-danger mb-4">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-exclamation-circle fs-4 me-3"></i>
+                            <div>
+                                <h6 class="mb-1">Warning: Permanent Deletion</h6>
+                                <p class="mb-0">This will permanently delete the order and all associated data including installed devices, maintenance logs, and invoice information.</p>
+                            </div>
+                        </div>
                     </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6 class="text-muted mb-3">General Information</h6>
+                            <dl class="row">
+                                <dt class="col-sm-4">Title</dt>
+                                <dd class="col-sm-8">@Model.Title</dd>
+                                
+                                <dt class="col-sm-4">Description</dt>
+                                <dd class="col-sm-8">@Model.Description</dd>
+                                
+                                <dt class="col-sm-4">Phone</dt>
+                                <dd class="col-sm-8">@Model.PhoneNumber</dd>
+                                
+                                <dt class="col-sm-4">Status</dt>
+                                <dd class="col-sm-8">
+                                    <span class="badge bg-@GetStatusBadgeClass(Model.Status)">
+                                        @GetStatusDisplayName(Model.Status)
+                                    </span>
+                                </dd>
+                                
+                                <dt class="col-sm-4">Requested Date</dt>
+                                <dd class="col-sm-8">@Model.RequestedDate.ToString()</dd>
+                            </dl>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <h6 class="text-muted mb-3">Client Information</h6>
+                            @if (Model.Client != null)
+                            {
+                                <dl class="row">
+                                    <dt class="col-sm-4">Name</dt>
+                                    <dd class="col-sm-8">@Model.Client.FirstName @Model.Client.LastName</dd>
+                                    
+                                    <dt class="col-sm-4">Email</dt>
+                                    <dd class="col-sm-8">@Model.Client.Email</dd>
+                                    
+                                    <dt class="col-sm-4">Username</dt>
+                                    <dd class="col-sm-8">@Model.Client.Username</dd>
+                                </dl>
+                            }
+                            else
+                            {
+                                <p class="text-muted">No client information available</p>
+                            }
+                        </div>
+                    </div>
+                    
+                    <form asp-action="Delete" method="post">
+                        <input type="hidden" asp-for="Id" />
+                        
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" id="confirmDelete" required>
+                            <label class="form-check-label" for="confirmDelete">
+                                I confirm that I want to permanently delete this order
+                            </label>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Back to Details
+                            </a>
+                            <button type="submit" class="btn btn-danger" id="deleteBtn" disabled>
+                                <i class="bi bi-trash me-2"></i>Delete Order
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
-            
-            <div class="row mb-4">
-                <div class="col-md-6">
-                    <div class="detail-label">Client</div>
-                    <div class="detail-value">
-                        @if (Model.Client != null)
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-transparent">
+                    <h5 class="mb-0">Related Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <h6 class="mb-3">Installed Devices</h6>
+                        @if (Model.InstalledDevices != null && Model.InstalledDevices.Any())
                         {
-                            @($"{Model.Client.FirstName} {Model.Client.LastName}")
+                            <div class="alert alert-warning">
+                                <i class="bi bi-exclamation-triangle me-2"></i>
+                                <span>@Model.InstalledDevices.Count devices will be removed</span>
+                            </div>
+                            <ul class="list-group list-group-flush small">
+                                @foreach (var device in Model.InstalledDevices.Take(3))
+                                {
+                                    <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                        <span>@device.Brand (@device.DeviceType)</span>
+                                        <span class="text-muted">@device.Model</span>
+                                    </li>
+                                }
+                                @if (Model.InstalledDevices.Count > 3)
+                                {
+                                    <li class="list-group-item d-flex justify-content-center px-0">
+                                        <span class="text-muted">And @(Model.InstalledDevices.Count - 3) more...</span>
+                                    </li>
+                                }
+                            </ul>
                         }
                         else
                         {
-                            <span class="text-muted">No client information</span>
+                            <p class="text-muted">No installed devices</p>
                         }
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="detail-label">Location</div>
-                    <div class="detail-value">
-                        @if (Model.Location != null)
+                    
+                    <div class="mb-4">
+                        <h6 class="mb-3">Maintenance Logs</h6>
+                        @if (Model.MaintenanceLogs != null && Model.MaintenanceLogs.Any())
                         {
-                            @Model.Location.Name
+                            <div class="alert alert-warning">
+                                <i class="bi bi-exclamation-triangle me-2"></i>
+                                <span>@Model.MaintenanceLogs.Count maintenance logs will be removed</span>
+                            </div>
                         }
                         else
                         {
-                            <span class="text-muted">No location information</span>
+                            <p class="text-muted">No maintenance logs</p>
+                        }
+                    </div>
+                    
+                    <div>
+                        <h6 class="mb-3">Invoice Information</h6>
+                        @if (Model.Invoice != null)
+                        {
+                            <div class="alert alert-warning">
+                                <i class="bi bi-exclamation-triangle me-2"></i>
+                                <span>Invoice #@Model.Invoice.Id will be removed</span>
+                            </div>
+                            <dl class="row">
+                                <dt class="col-sm-5">Amount</dt>
+                                <dd class="col-sm-7">$@Model.Invoice.TotalAmount.ToString()</dd>
+                                
+                                <dt class="col-sm-5">Status</dt>
+                                <dd class="col-sm-7">@(Model.Invoice.IsPaid ? "Paid" : "Unpaid")</dd>
+                            </dl>
+                        }
+                        else
+                        {
+                            <p class="text-muted">No invoice information</p>
                         }
                     </div>
                 </div>
             </div>
-            
-            <div class="row mb-4">
-                <div class="col-md-6">
-                    <div class="detail-label">Requested Date</div>
-                    <div class="detail-value">@Model.RequestedDate.ToString("MMMM dd, yyyy")</div>
-                </div>
-                <div class="col-md-6">
-                    <div class="detail-label">Created On</div>
-                    <div class="detail-value">@Model.CreatedAt.ToString("MMMM dd, yyyy HH:mm")</div>
-                </div>
-            </div>
-            
-            <div class="mb-4">
-                <div class="detail-label">Description</div>
-                <div class="detail-value">@Model.Description</div>
-            </div>
-            
-            <form asp-action="Delete" method="post">
-                <input type="hidden" asp-for="Id" />
-                <div class="d-flex justify-content-between">
-                    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-order btn-secondary">
-                        <i class="bi bi-arrow-left"></i> Back to Details
-                    </a>
-                    <button type="submit" class="btn btn-order btn-danger" onclick="return confirm('Are you absolutely sure you want to delete this order?');">
-                        <i class="bi bi-trash"></i> Delete Order
-                    </button>
-                </div>
-            </form>
         </div>
     </div>
-</div> 
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Enable delete button only when checkbox is checked
+            $('#confirmDelete').on('change', function() {
+                $('#deleteBtn').prop('disabled', !this.checked);
+            });
+            
+            // Add confirmation dialog
+            $('form').on('submit', function(e) {
+                if (!confirm('Are you absolutely sure you want to delete this order? This action cannot be undone.')) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+}
+
+@functions {
+    string GetStatusBadgeClass(OrderStatus status)
+    {
+        return status switch
+        {
+            OrderStatus.Pending => "warning",
+            OrderStatus.InProgress => "primary",
+            OrderStatus.Completed => "success",
+            OrderStatus.Cancelled => "danger",
+            _ => "secondary"
+        };
+    }
+    
+    string GetStatusDisplayName(OrderStatus status)
+    {
+        return status switch
+        {
+            OrderStatus.InProgress => "In Progress",
+            _ => status.ToString()
+        };
+    }
+} 

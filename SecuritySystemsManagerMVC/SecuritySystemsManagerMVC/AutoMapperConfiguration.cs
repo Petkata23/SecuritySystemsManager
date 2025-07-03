@@ -40,10 +40,6 @@ namespace SecuritySystemsManagerMVC
             CreateMap<MaintenanceLogDto, MaintenanceLogDetailsVm>().ReverseMap();
             CreateMap<MaintenanceLogDto, MaintenanceLogEditVm>().ReverseMap();
 
-            CreateMap<OrderTechnician, OrderTechnicianDto>().ReverseMap();
-            CreateMap<OrderTechnicianDto, OrderTechnicianDetailsVm>().ReverseMap();
-            CreateMap<OrderTechnicianDto, OrderTechnicianEditVm>().ReverseMap();
-
             CreateMap<Invoice, InvoiceDto>().ReverseMap();
             CreateMap<InvoiceDto, InvoiceDetailsVm>().ReverseMap();
             CreateMap<InvoiceDto, InvoiceEditVm>().ReverseMap();

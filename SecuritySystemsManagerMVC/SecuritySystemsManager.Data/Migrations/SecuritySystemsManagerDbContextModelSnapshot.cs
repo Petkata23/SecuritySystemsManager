@@ -25,6 +25,21 @@ namespace SecuritySystemsManager.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("SecuritySystemOrderUser", b =>
+                {
+                    b.Property<int>("AssignedOrdersId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TechniciansId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AssignedOrdersId", "TechniciansId");
+
+                    b.HasIndex("TechniciansId");
+
+                    b.ToTable("OrderTechnicians", (string)null);
+                });
+
             modelBuilder.Entity("SecuritySystemsManager.Data.Entities.InstalledDevice", b =>
                 {
                     b.Property<int>("Id")
@@ -255,33 +270,6 @@ namespace SecuritySystemsManager.Data.Migrations
                     b.ToTable("Notifications");
                 });
 
-            modelBuilder.Entity("SecuritySystemsManager.Data.Entities.OrderTechnician", b =>
-                {
-                    b.Property<int>("SecuritySystemOrderId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TechnicianId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("AssignedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("SecuritySystemOrderId", "TechnicianId");
-
-                    b.HasIndex("TechnicianId");
-
-                    b.ToTable("OrderTechnicians");
-                });
-
             modelBuilder.Entity("SecuritySystemsManager.Data.Entities.Role", b =>
                 {
                     b.Property<int>("Id")
@@ -446,11 +434,26 @@ namespace SecuritySystemsManager.Data.Migrations
                             Email = "admin@securitysystems.com",
                             FirstName = "Admin",
                             LastName = "User",
-                            Password = "oV4ioxyE2U/OFiWexEWmp6UqnHKC6lhzgohsowZBbz3FJBHIFd59ZdZUauGOLszA",
+                            Password = "sATqpr3STux7kUyM0eTiJe5supfjKYxqYSPI5Vf9YOMnGueHJC1J5lL4O9j8Rl9A",
                             RoleId = 1,
                             UpdatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Username = "admin"
                         });
+                });
+
+            modelBuilder.Entity("SecuritySystemOrderUser", b =>
+                {
+                    b.HasOne("SecuritySystemsManager.Data.Entities.SecuritySystemOrder", null)
+                        .WithMany()
+                        .HasForeignKey("AssignedOrdersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SecuritySystemsManager.Data.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("TechniciansId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("SecuritySystemsManager.Data.Entities.InstalledDevice", b =>
@@ -532,25 +535,6 @@ namespace SecuritySystemsManager.Data.Migrations
                     b.Navigation("Recipient");
                 });
 
-            modelBuilder.Entity("SecuritySystemsManager.Data.Entities.OrderTechnician", b =>
-                {
-                    b.HasOne("SecuritySystemsManager.Data.Entities.SecuritySystemOrder", "SecuritySystemOrder")
-                        .WithMany("Technicians")
-                        .HasForeignKey("SecuritySystemOrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SecuritySystemsManager.Data.Entities.User", "Technician")
-                        .WithMany("AssignedOrders")
-                        .HasForeignKey("TechnicianId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("SecuritySystemOrder");
-
-                    b.Navigation("Technician");
-                });
-
             modelBuilder.Entity("SecuritySystemsManager.Data.Entities.SecuritySystemOrder", b =>
                 {
                     b.HasOne("SecuritySystemsManager.Data.Entities.User", "Client")
@@ -605,14 +589,10 @@ namespace SecuritySystemsManager.Data.Migrations
                     b.Navigation("InstalledDevices");
 
                     b.Navigation("MaintenanceLogs");
-
-                    b.Navigation("Technicians");
                 });
 
             modelBuilder.Entity("SecuritySystemsManager.Data.Entities.User", b =>
                 {
-                    b.Navigation("AssignedOrders");
-
                     b.Navigation("OrdersAsClient");
                 });
 #pragma warning restore 612, 618

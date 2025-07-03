@@ -19,7 +19,6 @@ namespace SecuritySystemsManager.Data
         public DbSet<Role> Roles { get; set; }
         public DbSet<Location> Locations { get; set; }
         public DbSet<SecuritySystemOrder> Orders { get; set; }
-        public DbSet<OrderTechnician> OrderTechnicians { get; set; }
         public DbSet<InstalledDevice> InstalledDevices { get; set; }
         public DbSet<MaintenanceLog> MaintenanceLogs { get; set; }
         public DbSet<MaintenanceDevice> MaintenanceDevices { get; set; }
@@ -107,24 +106,6 @@ namespace SecuritySystemsManager.Data
                 .HasForeignKey(m => m.TechnicianId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // 🔁 Many-to-Many: Order <-> Technician чрез OrderTechnician
-            modelBuilder.Entity<OrderTechnician>()
-                .HasKey(ot => new { ot.SecuritySystemOrderId, ot.TechnicianId });
-
-            // При изтриване на поръчка, връзките с техниците се изтриват
-            modelBuilder.Entity<OrderTechnician>()
-                .HasOne(ot => ot.SecuritySystemOrder)
-                .WithMany(o => o.Technicians)
-                .HasForeignKey(ot => ot.SecuritySystemOrderId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            // Техникът не трябва да може да бъде изтрит, ако е назначен към поръчки
-            modelBuilder.Entity<OrderTechnician>()
-                .HasOne(ot => ot.Technician)
-                .WithMany(u => u.AssignedOrders)
-                .HasForeignKey(ot => ot.TechnicianId)
-                .OnDelete(DeleteBehavior.Restrict);
-
             // 🔧 Many-to-Many: MaintenanceLog <-> InstalledDevice чрез MaintenanceDevice
             // При изтриване на запис за поддръжка, връзките с устройствата се изтриват
             modelBuilder.Entity<MaintenanceDevice>()
@@ -139,6 +120,13 @@ namespace SecuritySystemsManager.Data
                 .WithMany(id => id.MaintenanceDevices)
                 .HasForeignKey(md => md.InstalledDeviceId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // 👥 Many-to-Many: Order <-> User (Technicians)
+            // Конфигуриране на many-to-many връзката между поръчки и техници
+            modelBuilder.Entity<SecuritySystemOrder>()
+                .HasMany(o => o.Technicians)
+                .WithMany(u => u.AssignedOrders)
+                .UsingEntity(j => j.ToTable("OrderTechnicians"));
 
             // 📄 Invoice <-> Order (1:1)
             // При изтриване на поръчка, фактурата се изтрива

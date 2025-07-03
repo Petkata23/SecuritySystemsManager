@@ -15,11 +15,13 @@ namespace SecuritySystemsManagerMVC.Controllers
 
         public IActionResult Index()
         {
+            ViewBag.Title = "Home";
             return View();
         }
 
         public IActionResult Privacy()
         {
+            ViewBag.Title = "Privacy Policy";
             return View();
         }
 

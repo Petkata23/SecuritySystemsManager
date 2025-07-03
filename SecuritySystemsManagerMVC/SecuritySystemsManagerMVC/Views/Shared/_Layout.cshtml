@@ -3,160 +3,167 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Security Systems Manager</title>
+    <meta name="description" content="Security Systems Hristovi provides professional security solutions for homes and businesses across Bulgaria." />
+    <title>@ViewData["Title"] - Security Systems Hristovi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/SecuritySystemsManagerMVC.styles.css" asp-append-version="true" />
+    <link rel="icon" type="image/svg+xml" href="~/img/favicon.svg">
     @await RenderSectionAsync("Styles", required: false)
-    <style>
-        :root {
-            --primary-color: #0d6efd;
-            --dark-bg: #212529;
-            --darker-bg: #1a1d20;
-            --light-text: #f8f9fa;
-            --border-color: #343a40;
-        }
-        
-        body {
-            background-color: var(--darker-bg);
-            color: var(--light-text);
-        }
-        
-        .navbar {
-            background-color: var(--dark-bg) !important;
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        .navbar-brand {
-            color: var(--primary-color) !important;
-            font-weight: 600;
-        }
-        
-        .nav-link {
-            color: var(--light-text) !important;
-            transition: all 0.3s ease;
-        }
-        
-        .nav-link:hover {
-            color: var(--primary-color) !important;
-        }
-        
-        .footer {
-            background-color: var(--dark-bg);
-            border-top: 1px solid var(--border-color);
-            color: var(--light-text);
-        }
-        
-        .card {
-            background-color: var(--dark-bg);
-            border: 1px solid var(--border-color);
-        }
-        
-        .btn-primary {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-        
-        .btn-outline-primary {
-            color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-        
-        .btn-outline-primary:hover {
-            background-color: var(--primary-color);
-            color: white;
-        }
-    </style>
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
+<body class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "home-page" : "")">
+    <!-- Top Bar -->
+    <div class="top-bar d-none d-md-block">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <ul class="list-inline top-bar-info mb-0">
+                        <li class="list-inline-item"><i class="bi bi-envelope"></i> info@securityhristovi.com</li>
+                        <li class="list-inline-item"><i class="bi bi-phone"></i> +359 888 123 456</li>
+                        <li class="list-inline-item"><i class="bi bi-clock"></i> Mon-Fri: 9:00 - 18:00</li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <ul class="list-inline top-bar-social mb-0 text-end">
+                        <li class="list-inline-item"><a href="#"><i class="bi bi-facebook"></i></a></li>
+                        <li class="list-inline-item"><a href="#"><i class="bi bi-instagram"></i></a></li>
+                        <li class="list-inline-item"><a href="#"><i class="bi bi-linkedin"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Header -->
+    <header class="main-header">
+        <nav class="navbar navbar-expand-lg">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                    <i class="bi bi-shield-lock"></i> Security Systems Manager
+                <a class="navbar-brand" href="/">
+                    <i class="bi bi-shield-lock logo-icon"></i>
+                    <span class="logo-text">Security Systems Hristovi</span>
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
-                                <i class="bi bi-house"></i> Home
-                            </a>
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="SecuritySystemOrder" asp-action="List">
-                                <i class="bi bi-cart"></i> Orders
-                            </a>
+                            <a class="nav-link" asp-controller="SecuritySystemOrder" asp-action="List">Orders</a>
+                        </li>
+                        @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Location" asp-action="List">Locations</a>
+                            </li>
+                        }
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="MaintenanceLog" asp-action="Index">Maintenance</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Location" asp-action="List">
-                                <i class="bi bi-geo-alt"></i> Locations
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="MaintenanceLog" asp-action="Index">
-                                <i class="bi bi-tools"></i> Maintenance
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Invoice" asp-action="Index">
-                                <i class="bi bi-receipt"></i> Invoices
-                            </a>
+                            <a class="nav-link" asp-controller="User" asp-action="List">Users</a>
                         </li>
                     </ul>
-                    <ul class="navbar-nav">
+                    
+                    <!-- Right side navigation items -->
+                    <ul class="navbar-nav right-nav">
                         @if (User.Identity.IsAuthenticated)
                         {
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-person-circle"></i> @User.Identity.Name
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark" aria-labelledby="navbarDropdown">
-                                    <li><a class="dropdown-item" asp-controller="User" asp-action="Details"><i class="bi bi-person"></i> Profile</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Notification" asp-action="Index"><i class="bi bi-bell"></i> Notifications</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" asp-controller="Auth" asp-action="Logout"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
-                                </ul>
+                            <!-- Notifications -->
+                            @await Html.PartialAsync("_NotificationsPartial")
+                            
+                            <li class="nav-item">
+                                <div class="nav-divider-vertical d-none d-lg-block"></div>
                             </li>
+                            
+                            <!-- User Profile -->
+                            @await Html.PartialAsync("_UserProfilePartial")
                         }
                         else
                         {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Auth" asp-action="Login"><i class="bi bi-box-arrow-in-right"></i> Login</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Auth" asp-action="Register"><i class="bi bi-person-plus"></i> Register</a>
-                            </li>
+                            <!-- Login/Register buttons -->
+                            @await Html.PartialAsync("_UserProfilePartial")
                         }
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted py-3">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    &copy; @DateTime.Now.Year - Security Systems Manager - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <!-- Page Title Section (if not home page) -->
+    @if (ViewContext.RouteData.Values["controller"]?.ToString() != "Home" || ViewContext.RouteData.Values["action"]?.ToString() != "Index")
+    {
+        <div class="page-title-section">
+            <div class="container">
+                <h1 class="page-title">@ViewBag.Title</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">@ViewBag.Title</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    }
+
+    <!-- Main Content -->
+    <main class="main-content @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "home-main-content" : "")">
+        <div class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "" : "container")">
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i> @TempData["Success"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
-                <div class="col-md-6 text-end">
-                    <a href="#" class="text-decoration-none me-2"><i class="bi bi-facebook"></i></a>
-                    <a href="#" class="text-decoration-none me-2"><i class="bi bi-twitter-x"></i></a>
-                    <a href="#" class="text-decoration-none"><i class="bi bi-linkedin"></i></a>
+            }
+            
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["Error"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            
+            @RenderBody()
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-bottom text-center">
+            <div class="container">
+                <div class="copyright">
+                    &copy; @DateTime.Now.Year <strong><span>Security Systems Hristovi</span></strong>. All Rights Reserved
                 </div>
             </div>
         </div>
     </footer>
+
+    <!-- Back to top button -->
+    <a href="#" class="back-to-top"><i class="bi bi-arrow-up"></i></a>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

@@ -3,119 +3,99 @@
 @using System.Security.Claims
 
 @{
-    ViewData["Title"] = "Create Security System Order";
+    ViewData["Title"] = "Create Order";
     bool isClient = User.IsInRole(RoleType.Client.ToString());
 }
 
-<link rel="stylesheet" href="~/css/orders.css" />
-
-<div class="container animate-fade-in">
-    <div class="order-hero">
-        <div class="container order-hero-content">
-            <h1><i class="bi bi-shield-plus"></i> Create Security System Order</h1>
-            <p>Fill out the form below to request a new security system installation for your property.</p>
+<div class="container-fluid animate-fade-in px-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card bg-gradient-primary text-white">
+                <div class="card-body py-4">
+                    <h1 class="h3 mb-2"><i class="bi bi-shield-plus me-2"></i>Create Security System Order</h1>
+                    <p class="mb-0">Fill out the form below to request a new security system installation for your property.</p>
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="row">
         <div class="col-lg-8">
-            <div class="card order-card">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-transparent">
+                    <h5 class="mb-0"><i class="bi bi-plus-circle me-2"></i>Order Details</h5>
+                </div>
                 <div class="card-body">
-                    <form asp-action="Create" class="order-form">
-                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <form asp-action="Create" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
                         
-                        <div class="mb-4">
-                            <label asp-for="Title" class="form-label"></label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-tag"></i></span>
-                                <input asp-for="Title" class="form-control" placeholder="Enter a title for your order" />
-                            </div>
-                            <span asp-validation-for="Title" class="text-danger"></span>
-                        </div>
-                        
-                        <div class="mb-4">
-                            <label asp-for="Description" class="form-label"></label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-card-text"></i></span>
-                                <textarea asp-for="Description" class="form-control" placeholder="Describe your security needs and requirements"></textarea>
-                            </div>
-                            <span asp-validation-for="Description" class="text-danger"></span>
-                            <div class="form-text">Provide detailed information about your property and security requirements.</div>
-                        </div>
-                        
-                        <div class="mb-4">
-                            <label asp-for="PhoneNumber" class="form-label"></label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-telephone"></i></span>
-                                <input asp-for="PhoneNumber" class="form-control" placeholder="Enter your contact phone number" />
-                            </div>
-                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-                        </div>
-                        
-                        @if (!isClient)
-                        {
-                            <div class="mb-4">
-                                <label asp-for="ClientId" class="form-label"></label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-person"></i></span>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Title" class="form-control" placeholder="Title" />
+                                    <label asp-for="Title">Title</label>
+                                    <span asp-validation-for="Title" class="text-danger"></span>
+                                </div>
+                                
+                                <div class="form-floating mb-3">
+                                    <input asp-for="PhoneNumber" class="form-control" placeholder="Phone Number" />
+                                    <label asp-for="PhoneNumber">Phone Number</label>
+                                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                                </div>
+                                
+                                <div class="form-floating mb-3">
                                     <select asp-for="ClientId" asp-items="Model.AllClients" class="form-select">
                                         <option value="">-- Select Client --</option>
                                     </select>
+                                    <label asp-for="ClientId">Client</label>
+                                    <span asp-validation-for="ClientId" class="text-danger"></span>
                                 </div>
-                                <span asp-validation-for="ClientId" class="text-danger"></span>
                             </div>
-                        }
-                        else
-                        {
-                            <input type="hidden" asp-for="ClientId" />
-                        }
-                        
-                        <div class="mb-4">
-                            <label asp-for="LocationId" class="form-label"></label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
-                                @if (User.IsInRole(RoleType.Admin.ToString()) || User.IsInRole(RoleType.Manager.ToString()))
-                                {
+                            
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <select asp-for="Status" asp-items="Model.StatusOptions" class="form-select">
+                                        <option value="">-- Select Status --</option>
+                                    </select>
+                                    <label asp-for="Status">Status</label>
+                                    <span asp-validation-for="Status" class="text-danger"></span>
+                                </div>
+                                
+                                <div class="form-floating mb-3">
+                                    <input asp-for="RequestedDate" class="form-control" type="date" />
+                                    <label asp-for="RequestedDate">Requested Date</label>
+                                    <span asp-validation-for="RequestedDate" class="text-danger"></span>
+                                </div>
+                                
+                                <div class="form-floating mb-3">
                                     <select asp-for="LocationId" asp-items="Model.AllLocations" class="form-select">
                                         <option value="">-- Select Location --</option>
                                     </select>
-                                }
-                                else
-                                {
-                                    <select asp-for="LocationId" asp-items="Model.AllLocations" class="form-select" disabled>
-                                        <option value="">-- Select Location --</option>
-                                    </select>
-                                    <input type="hidden" asp-for="LocationId" />
-                                }
-                            </div>
-                            @if (!User.IsInRole(RoleType.Admin.ToString()) && !User.IsInRole(RoleType.Manager.ToString()))
-                            {
-                                <div class="form-text text-info">
-                                    <i class="bi bi-info-circle"></i> Only administrators and managers can set the location.
+                                    <label asp-for="LocationId">Location</label>
+                                    <span asp-validation-for="LocationId" class="text-danger"></span>
+                                    <div class="mt-2">
+                                        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#createLocationModal">
+                                            <i class="bi bi-plus-circle me-1"></i>Add New Location
+                                        </button>
+                                    </div>
                                 </div>
-                            }
-                            <span asp-validation-for="LocationId" class="text-danger"></span>
-                            <div class="form-text">Select the location where you want the security system installed.</div>
-                        </div>
-                        
-                        <div class="mb-4">
-                            <label asp-for="RequestedDate" class="form-label"></label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-calendar"></i></span>
-                                <input asp-for="RequestedDate" class="form-control" type="date" />
                             </div>
-                            <span asp-validation-for="RequestedDate" class="text-danger"></span>
-                            <div class="form-text">Select your preferred installation date.</div>
                         </div>
-
-                        <input type="hidden" asp-for="Status" value="@SecuritySystemsManager.Shared.Enums.OrderStatus.Pending" />
                         
-                        <div class="d-flex justify-content-between mt-4">
-                            <a asp-action="List" class="btn btn-order btn-secondary">
-                                <i class="bi bi-arrow-left"></i> Back to List
+                        <div class="mb-3">
+                            <div class="form-floating">
+                                <textarea asp-for="Description" class="form-control" style="height: 150px" placeholder="Description"></textarea>
+                                <label asp-for="Description">Description</label>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="List" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Back to List
                             </a>
-                            <button type="submit" class="btn btn-order btn-order-primary">
-                                <i class="bi bi-shield-check"></i> Submit Order
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save me-2"></i>Create Order
                             </button>
                         </div>
                     </form>
@@ -124,32 +104,99 @@
         </div>
         
         <div class="col-lg-4">
-            <div class="order-features">
-                <h4 class="mb-4">Why Choose Our Security Systems?</h4>
-                
-                <div class="feature-card mb-4">
-                    <div class="feature-icon">
-                        <i class="bi bi-shield-check"></i>
-                    </div>
-                    <h5 class="feature-title">Advanced Protection</h5>
-                    <p class="feature-text">Our systems use cutting-edge technology to provide the highest level of security for your property.</p>
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-transparent">
+                    <h5 class="mb-0">Why Choose Our Security Systems?</h5>
                 </div>
-                
-                <div class="feature-card mb-4">
-                    <div class="feature-icon">
-                        <i class="bi bi-phone"></i>
+                <div class="card-body">
+                    <div class="d-flex align-items-center p-3 border-start border-primary border-3 rounded mb-3 bg-body-tertiary">
+                        <div class="me-3 text-primary">
+                            <i class="bi bi-shield-check fs-3"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-1">Advanced Protection</h6>
+                            <p class="mb-0 text-muted small">Our systems use cutting-edge technology to provide the highest level of security.</p>
+                        </div>
                     </div>
-                    <h5 class="feature-title">Mobile Control</h5>
-                    <p class="feature-text">Monitor and control your security system from anywhere using our mobile application.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="bi bi-tools"></i>
+                    
+                    <div class="d-flex align-items-center p-3 border-start border-info border-3 rounded mb-3 bg-body-tertiary">
+                        <div class="me-3 text-info">
+                            <i class="bi bi-phone fs-3"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-1">Mobile Control</h6>
+                            <p class="mb-0 text-muted small">Monitor and control your security system from anywhere using our mobile app.</p>
+                        </div>
                     </div>
-                    <h5 class="feature-title">Professional Installation</h5>
-                    <p class="feature-text">Our certified technicians ensure proper installation and setup of your security system.</p>
+                    
+                    <div class="d-flex align-items-center p-3 border-start border-success border-3 rounded bg-body-tertiary">
+                        <div class="me-3 text-success">
+                            <i class="bi bi-tools fs-3"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-1">Professional Installation</h6>
+                            <p class="mb-0 text-muted small">Our certified technicians ensure proper installation and setup.</p>
+                        </div>
+                    </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Create Location Modal -->
+<div class="modal fade" id="createLocationModal" tabindex="-1" aria-labelledby="createLocationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createLocationModalLabel">Add New Location</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="locationForm">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="locationName" placeholder="Location Name" required>
+                                <label for="locationName">Location Name</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="locationAddress" placeholder="Address" required>
+                                <label for="locationAddress">Address</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="locationLatitude" placeholder="Latitude" required>
+                                <label for="locationLatitude">Latitude</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="locationLongitude" placeholder="Longitude" required>
+                                <label for="locationLongitude">Longitude</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-floating">
+                            <textarea class="form-control" id="locationDescription" placeholder="Description" style="height: 100px"></textarea>
+                            <label for="locationDescription">Description</label>
+                        </div>
+                    </div>
+                    
+                    <div id="map" style="height: 300px; width: 100%; border-radius: 8px; margin-bottom: 20px;"></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveLocationBtn">Save Location</button>
             </div>
         </div>
     </div>
@@ -160,23 +207,192 @@
     
     <script>
         $(document).ready(function() {
-            // Set default date to tomorrow
-            var tomorrow = new Date();
-            tomorrow.setDate(tomorrow.getDate() + 1);
+            // Initialize map
+            let map;
+            let marker;
             
-            var dd = String(tomorrow.getDate()).padStart(2, '0');
-            var mm = String(tomorrow.getMonth() + 1).padStart(2, '0');
-            var yyyy = tomorrow.getFullYear();
-            
-            var tomorrowStr = yyyy + '-' + mm + '-' + dd;
-            $('#RequestedDate').val(tomorrowStr);
-            
-            // Form validation enhancement
-            $('form').submit(function(e) {
-                if ($(this).valid()) {
-                    // Show loading indicator or disable button
-                    $('button[type="submit"]').prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...');
+            function initMap() {
+                // Default center (can be a default location in Bulgaria)
+                const center = { lat: 42.6977, lng: 23.3219 }; // Sofia coordinates
+                
+                map = new google.maps.Map(document.getElementById("map"), {
+                    zoom: 12,
+                    center: center,
+                    styles: [
+                        { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
+                        { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
+                        { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
+                        {
+                            featureType: "administrative.locality",
+                            elementType: "labels.text.fill",
+                            stylers: [{ color: "#d59563" }],
+                        },
+                        {
+                            featureType: "poi",
+                            elementType: "labels.text.fill",
+                            stylers: [{ color: "#d59563" }],
+                        },
+                        {
+                            featureType: "poi.park",
+                            elementType: "geometry",
+                            stylers: [{ color: "#263c3f" }],
+                        },
+                        {
+                            featureType: "poi.park",
+                            elementType: "labels.text.fill",
+                            stylers: [{ color: "#6b9a76" }],
+                        },
+                        {
+                            featureType: "road",
+                            elementType: "geometry",
+                            stylers: [{ color: "#38414e" }],
+                        },
+                        {
+                            featureType: "road",
+                            elementType: "geometry.stroke",
+                            stylers: [{ color: "#212a37" }],
+                        },
+                        {
+                            featureType: "road",
+                            elementType: "labels.text.fill",
+                            stylers: [{ color: "#9ca5b3" }],
+                        },
+                        {
+                            featureType: "road.highway",
+                            elementType: "geometry",
+                            stylers: [{ color: "#746855" }],
+                        },
+                        {
+                            featureType: "road.highway",
+                            elementType: "geometry.stroke",
+                            stylers: [{ color: "#1f2835" }],
+                        },
+                        {
+                            featureType: "road.highway",
+                            elementType: "labels.text.fill",
+                            stylers: [{ color: "#f3d19c" }],
+                        },
+                        {
+                            featureType: "transit",
+                            elementType: "geometry",
+                            stylers: [{ color: "#2f3948" }],
+                        },
+                        {
+                            featureType: "transit.station",
+                            elementType: "labels.text.fill",
+                            stylers: [{ color: "#d59563" }],
+                        },
+                        {
+                            featureType: "water",
+                            elementType: "geometry",
+                            stylers: [{ color: "#17263c" }],
+                        },
+                        {
+                            featureType: "water",
+                            elementType: "labels.text.fill",
+                            stylers: [{ color: "#515c6d" }],
+                        },
+                        {
+                            featureType: "water",
+                            elementType: "labels.text.stroke",
+                            stylers: [{ color: "#17263c" }],
+                        },
+                    ]
+                });
+                
+                // Add click event to map
+                map.addListener("click", (event) => {
+                    placeMarker(event.latLng);
+                });
+                
+                // Try to get user's location
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            const pos = {
+                                lat: position.coords.latitude,
+                                lng: position.coords.longitude,
+                            };
+                            map.setCenter(pos);
+                            placeMarker(pos);
+                        },
+                        () => {
+                            // Handle location error
+                        }
+                    );
                 }
+            }
+            
+            function placeMarker(location) {
+                if (marker) {
+                    marker.setPosition(location);
+                } else {
+                    marker = new google.maps.Marker({
+                        position: location,
+                        map: map,
+                        draggable: true
+                    });
+                    
+                    // Add drag event to marker
+                    marker.addListener('dragend', function() {
+                        updateCoordinates(marker.getPosition());
+                    });
+                }
+                
+                updateCoordinates(location);
+            }
+            
+            function updateCoordinates(location) {
+                $("#locationLatitude").val(location.lat().toFixed(6));
+                $("#locationLongitude").val(location.lng().toFixed(6));
+            }
+            
+            // Load Google Maps API when modal is shown
+            $('#createLocationModal').on('shown.bs.modal', function () {
+                if (!map) {
+                    $.getScript("https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap");
+                    window.initMap = initMap;
+                }
+            });
+            
+            // Save location
+            $("#saveLocationBtn").on("click", function() {
+                if (!$("#locationName").val() || !$("#locationAddress").val() || !$("#locationLatitude").val() || !$("#locationLongitude").val()) {
+                    alert("Please fill in all required fields");
+                    return;
+                }
+                
+                // Create location via AJAX
+                $.ajax({
+                    url: '@Url.Action("CreateLocationAjax", "Location")',
+                    type: 'POST',
+                    data: {
+                        Name: $("#locationName").val(),
+                        Address: $("#locationAddress").val(),
+                        Latitude: $("#locationLatitude").val(),
+                        Longitude: $("#locationLongitude").val(),
+                        Description: $("#locationDescription").val()
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            // Add new option to select
+                            var newOption = new Option(response.locationName, response.locationId, true, true);
+                            $("#LocationId").append(newOption).trigger('change');
+                            
+                            // Close modal and reset form
+                            $('#createLocationModal').modal('hide');
+                            $("#locationForm")[0].reset();
+                            
+                            // Show success message
+                            alert("Location created successfully!");
+                        } else {
+                            alert("Error: " + response.message);
+                        }
+                    },
+                    error: function() {
+                        alert("An error occurred while creating the location");
+                    }
+                });
             });
         });
     </script>

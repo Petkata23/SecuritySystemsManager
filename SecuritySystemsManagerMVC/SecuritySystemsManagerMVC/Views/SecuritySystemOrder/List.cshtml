@@ -1,175 +1,212 @@
 @model IEnumerable<SecuritySystemsManagerMVC.ViewModels.SecuritySystemOrderDetailsVm>
 
 @{
-    ViewData["Title"] = "Security System Orders";
+    ViewData["Title"] = "Orders";
 }
 
-<link rel="stylesheet" href="~/css/orders.css" />
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">All Orders</h1>
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="bi bi-plus-lg me-2"></i>New Order
+    </a>
+</div>
 
-<div class="container animate-fade-in">
-    <div class="order-hero">
-        <div class="container order-hero-content">
-            <h1><i class="bi bi-shield-lock"></i> Security System Orders</h1>
-            <p>Manage your security system orders, track installations, and monitor maintenance activities all in one place.</p>
-            <a asp-action="Create" class="btn btn-order btn-order-primary">
-                <i class="bi bi-plus-circle"></i> Create New Order
-            </a>
-        </div>
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle me-2"></i>@TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
+}
 
-    <div class="order-list-filters">
-        <div class="row">
-            <div class="col-md-4 mb-2 mb-md-0">
-                <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-search"></i></span>
-                    <input type="text" id="orderSearchInput" class="form-control" placeholder="Search orders...">
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Filter Orders</h5>
+        <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse">
+            <i class="bi bi-funnel me-2"></i>Toggle Filters
+        </button>
+    </div>
+    <div class="collapse" id="filterCollapse">
+        <div class="card-body">
+            <form id="filterForm" method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Status</label>
+                    <select id="statusFilter" class="form-select">
+                        <option value="">All Statuses</option>
+                        <option value="Pending">Pending</option>
+                        <option value="InProgress">In Progress</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Cancelled">Cancelled</option>
+                    </select>
                 </div>
-            </div>
-            <div class="col-md-3 mb-2 mb-md-0">
-                <select id="statusFilter" class="form-select">
-                    <option value="">All Statuses</option>
-                    <option value="Pending">Pending</option>
-                    <option value="InProgress">In Progress</option>
-                    <option value="Completed">Completed</option>
-                    <option value="Cancelled">Cancelled</option>
-                </select>
-            </div>
-            <div class="col-md-3 mb-2 mb-md-0">
-                <select id="dateFilter" class="form-select">
-                    <option value="">All Dates</option>
-                    <option value="today">Today</option>
-                    <option value="week">This Week</option>
-                    <option value="month">This Month</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <button id="resetFilters" class="btn btn-secondary w-100">Reset</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="row order-list">
-        @if (Model != null && Model.Any())
-        {
-            foreach (var order in Model)
-            {
-                <div class="col-md-6 col-lg-4 order-item" 
-                     data-status="@order.Status" 
-                     data-date="@order.RequestedDate.ToString("yyyy-MM-dd")">
-                    <div class="card order-card">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0">@order.Title</h5>
-                            <span class="status-badge status-@order.Status.ToString().ToLower()">@order.Status</span>
-                        </div>
-                        <div class="card-body">
-                            <p class="card-text">@(order.Description?.Length > 100 ? order.Description.Substring(0, 100) + "..." : order.Description)</p>
-                            
-                            <div class="d-flex align-items-center mb-3">
-                                <i class="bi bi-geo-alt me-2 text-primary"></i>
-                                <span>@(order.Location?.Name ?? "No location")</span>
-                            </div>
-                            
-                            <div class="d-flex align-items-center mb-3">
-                                <i class="bi bi-telephone me-2 text-primary"></i>
-                                <span>@order.PhoneNumber</span>
-                            </div>
-                            
-                            <div class="d-flex align-items-center">
-                                <i class="bi bi-calendar-event me-2 text-primary"></i>
-                                <span>@order.RequestedDate.ToString("MMM dd, yyyy")</span>
-                            </div>
-                        </div>
-                        <div class="card-footer d-flex justify-content-between">
-                            <a asp-action="Details" asp-route-id="@order.Id" class="btn btn-sm btn-order-outline">
-                                <i class="bi bi-eye"></i> Details
-                            </a>
-                            <a asp-action="Edit" asp-route-id="@order.Id" class="btn btn-sm btn-order-primary">
-                                <i class="bi bi-pencil"></i> Edit
-                            </a>
-                        </div>
+                <div class="col-md-4">
+                    <label class="form-label">Date Range</label>
+                    <div class="input-group">
+                        <input type="date" id="startDate" class="form-control" placeholder="Start Date">
+                        <span class="input-group-text">to</span>
+                        <input type="date" id="endDate" class="form-control" placeholder="End Date">
                     </div>
                 </div>
-            }
-        }
-        else
-        {
-            <div class="col-12 text-center py-5">
-                <div class="mb-4">
-                    <i class="bi bi-inbox text-secondary" style="font-size: 4rem;"></i>
+                <div class="col-md-4">
+                    <label class="form-label">Search</label>
+                    <div class="input-group">
+                        <input type="text" id="searchInput" class="form-control" placeholder="Search orders...">
+                        <button class="btn btn-primary" type="button" id="searchBtn">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
                 </div>
-                <h3>No Orders Found</h3>
-                <p class="text-muted">You don't have any security system orders yet.</p>
-                <a asp-action="Create" class="btn btn-order btn-order-primary mt-3">
-                    <i class="bi bi-plus-circle"></i> Create Your First Order
-                </a>
-            </div>
-        }
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Manage Orders</h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0" id="ordersTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Client</th>
+                        <th>Requested Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var order in Model)
+                    {
+                        <tr data-status="@order.Status" data-date="@order.RequestedDate.ToString("yyyy-MM-dd")">
+                            <td>#@order.Id</td>
+                            <td>@order.Title</td>
+                            <td>@(order.Client?.FirstName + " " + order.Client?.LastName)</td>
+                            <td>@order.RequestedDate.ToShortDateString()</td>
+                            <td>
+                                <span class="badge bg-@GetStatusBadgeClass(order.Status)">
+                                    @GetStatusDisplayName(order.Status)
+                                </span>
+                            </td>
+                            <td>
+                                <div class="btn-group">
+                                    <a asp-action="Details" asp-route-id="@order.Id" class="btn btn-sm btn-info">
+                                        <i class="bi bi-info-circle"></i>
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@order.Id" class="btn btn-sm btn-primary">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@order.Id" class="btn btn-sm btn-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer">
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center mb-0">
+                @{
+                    int totalPages = ViewBag.TotalPages ?? 1;
+                    int currentPage = ViewBag.CurrentPage ?? 1;
+                    
+                    <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                        <a class="page-link" asp-action="List" asp-route-pageNumber="@(currentPage - 1)" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    
+                    @for (int i = 1; i <= totalPages; i++)
+                    {
+                        <li class="page-item @(i == currentPage ? "active" : "")">
+                            <a class="page-link" asp-action="List" asp-route-pageNumber="@i">@i</a>
+                        </li>
+                    }
+                    
+                    <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                        <a class="page-link" asp-action="List" asp-route-pageNumber="@(currentPage + 1)" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                }
+            </ul>
+        </nav>
     </div>
 </div>
 
 @section Scripts {
     <script>
-        $(document).ready(function () {
-            // Search functionality
-            $("#orderSearchInput").on("keyup", function () {
-                var value = $(this).val().toLowerCase();
-                $(".order-item").filter(function () {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-                });
-            });
-            
-            // Status filter
-            $("#statusFilter").on("change", function() {
-                var value = $(this).val();
-                if (value === "") {
-                    $(".order-item").show();
-                } else {
-                    $(".order-item").hide();
-                    $(".order-item[data-status='" + value + "']").show();
+        $(document).ready(function() {
+            // Filter functionality
+            $("#statusFilter, #startDate, #endDate").on("change", filterOrders);
+            $("#searchBtn").on("click", filterOrders);
+            $("#searchInput").on("keyup", function(e) {
+                if (e.key === "Enter") {
+                    filterOrders();
                 }
             });
             
-            // Date filter
-            $("#dateFilter").on("change", function() {
-                var value = $(this).val();
-                var today = new Date();
-                today.setHours(0, 0, 0, 0);
+            function filterOrders() {
+                const status = $("#statusFilter").val().toLowerCase();
+                const startDate = $("#startDate").val();
+                const endDate = $("#endDate").val();
+                const searchText = $("#searchInput").val().toLowerCase();
                 
-                if (value === "") {
-                    $(".order-item").show();
-                } else {
-                    $(".order-item").each(function() {
-                        var orderDate = new Date($(this).data("date"));
-                        orderDate.setHours(0, 0, 0, 0);
-                        
-                        var showItem = false;
-                        
-                        if (value === "today") {
-                            showItem = orderDate.getTime() === today.getTime();
-                        } else if (value === "week") {
-                            var weekStart = new Date(today);
-                            weekStart.setDate(today.getDate() - today.getDay());
-                            var weekEnd = new Date(weekStart);
-                            weekEnd.setDate(weekStart.getDate() + 6);
-                            
-                            showItem = orderDate >= weekStart && orderDate <= weekEnd;
-                        } else if (value === "month") {
-                            showItem = orderDate.getMonth() === today.getMonth() && 
-                                      orderDate.getFullYear() === today.getFullYear();
-                        }
-                        
-                        $(this).toggle(showItem);
-                    });
-                }
-            });
-            
-            // Reset filters
-            $("#resetFilters").on("click", function() {
-                $("#orderSearchInput").val("");
-                $("#statusFilter").val("");
-                $("#dateFilter").val("");
-                $(".order-item").show();
-            });
+                $("#ordersTable tbody tr").each(function() {
+                    const rowStatus = $(this).data("status").toString().toLowerCase();
+                    const rowDate = $(this).data("date");
+                    const rowText = $(this).text().toLowerCase();
+                    
+                    let statusMatch = status === "" || rowStatus.includes(status);
+                    let dateMatch = true;
+                    
+                    if (startDate && rowDate < startDate) {
+                        dateMatch = false;
+                    }
+                    
+                    if (endDate && rowDate > endDate) {
+                        dateMatch = false;
+                    }
+                    
+                    let textMatch = searchText === "" || rowText.includes(searchText);
+                    
+                    if (statusMatch && dateMatch && textMatch) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            }
         });
     </script>
+}
+
+@functions {
+    string GetStatusBadgeClass(SecuritySystemsManager.Shared.Enums.OrderStatus status)
+    {
+        return status switch
+        {
+            SecuritySystemsManager.Shared.Enums.OrderStatus.Pending => "warning",
+            SecuritySystemsManager.Shared.Enums.OrderStatus.InProgress => "primary",
+            SecuritySystemsManager.Shared.Enums.OrderStatus.Completed => "success",
+            SecuritySystemsManager.Shared.Enums.OrderStatus.Cancelled => "danger",
+            _ => "secondary"
+        };
+    }
+    
+    string GetStatusDisplayName(SecuritySystemsManager.Shared.Enums.OrderStatus status)
+    {
+        return status switch
+        {
+            SecuritySystemsManager.Shared.Enums.OrderStatus.InProgress => "In Progress",
+            _ => status.ToString()
+        };
+    }
 } 

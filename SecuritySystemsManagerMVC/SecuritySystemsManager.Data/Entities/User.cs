@@ -11,7 +11,7 @@ namespace SecuritySystemsManager.Data.Entities
         public User()
         {
             OrdersAsClient = new List<SecuritySystemOrder>();
-            AssignedOrders = new List<OrderTechnician>();
+            AssignedOrders = new List<SecuritySystemOrder>();
         }
 
         public string Username { get; set; }
@@ -28,6 +28,6 @@ namespace SecuritySystemsManager.Data.Entities
         public virtual ICollection<SecuritySystemOrder> OrdersAsClient { get; set; }
 
         // For Technicians
-        public virtual ICollection<OrderTechnician> AssignedOrders { get; set; }
+        public virtual ICollection<SecuritySystemOrder> AssignedOrders { get; set; }
     }
 }

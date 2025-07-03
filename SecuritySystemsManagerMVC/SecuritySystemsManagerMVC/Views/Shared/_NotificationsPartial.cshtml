@@ -1,0 +1,79 @@
+@using SecuritySystemsManager.Shared.Dtos
+@inject SecuritySystemsManager.Shared.Services.Contracts.INotificationService NotificationService
+@{
+    var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+    int userIdInt = 0;
+    List<NotificationDto> notifications = new List<NotificationDto>();
+    
+    if (!string.IsNullOrEmpty(userId) && int.TryParse(userId, out userIdInt))
+    {
+        notifications = (await NotificationService.GetNotificationsForUserAsync(userIdInt)).ToList();
+    }
+    
+    var unreadCount = notifications.Count(n => !n.IsRead);
+}
+
+<li class="nav-item dropdown notification-dropdown">
+    <a class="nav-link dropdown-toggle position-relative" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="bi bi-bell-fill"></i>
+        @if (unreadCount > 0)
+        {
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                @(unreadCount > 9 ? "9+" : unreadCount.ToString())
+                <span class="visually-hidden">unread notifications</span>
+            </span>
+        }
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end notification-dropdown-menu" aria-labelledby="notificationDropdown">
+        <li>
+            <div class="dropdown-header d-flex justify-content-between align-items-center">
+                <span>Notifications</span>
+                @if (notifications.Any())
+                {
+                    <a href="#" class="text-decoration-none small mark-all-read">Mark all as read</a>
+                }
+            </div>
+        </li>
+        <li><hr class="dropdown-divider"></li>
+        
+        @if (notifications.Any())
+        {
+            <div class="notification-list">
+                @foreach (var notification in notifications.Take(5))
+                {
+                    <li>
+                        <a class="dropdown-item notification-item @(notification.IsRead ? "" : "unread")" href="#">
+                            <div class="d-flex">
+                                <div class="notification-icon me-3">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </div>
+                                                                    <div class="notification-content">
+                                    <p class="mb-1">@notification.Message</p>
+                                    <small class="text-muted">@notification.DateSent.ToString("MMM dd, HH:mm")</small>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                }
+            </div>
+            
+            @if (notifications.Count > 5)
+            {
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                                    <a class="dropdown-item text-center view-all" asp-controller="Notification" asp-action="Index">
+                    View all notifications
+                </a>
+                </li>
+            }
+        }
+        else
+        {
+            <li>
+                <div class="dropdown-item text-center">
+                    <p class="mb-0">No notifications</p>
+                </div>
+            </li>
+        }
+    </ul>
+</li> 

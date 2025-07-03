@@ -1,10 +1,78 @@
-<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
   <defs>
-    <pattern id="security-pattern" patternUnits="userSpaceOnUse" width="100" height="100">
-      <path d="M50,10 L90,30 L90,70 L50,90 L10,70 L10,30 Z" fill="none" stroke="#ffffff" stroke-width="1"/>
-      <circle cx="50" cy="50" r="10" fill="none" stroke="#ffffff" stroke-width="1"/>
-      <path d="M30,40 L70,40 L70,60 L30,60 Z" fill="none" stroke="#ffffff" stroke-width="1"/>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4f6df5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f45866;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="10" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <pattern id="grid" patternUnits="userSpaceOnUse" width="30" height="30">
+      <rect width="30" height="30" fill="#161d31"/>
+      <path d="M 30 0 L 0 0 0 30" fill="none" stroke="#283046" stroke-width="1"/>
     </pattern>
   </defs>
-  <rect width="100" height="100" fill="url(#security-pattern)"/>
+  
+  <!-- Dark Background -->
+  <rect width="800" height="600" fill="#161d31"/>
+  
+  <!-- Grid Pattern -->
+  <rect width="800" height="600" fill="url(#grid)" opacity="0.5"/>
+  
+  <!-- Glowing Shield -->
+  <g filter="url(#glow)">
+    <path d="M400,100 L550,170 L550,340 C550,420 480,480 400,520 C320,480 250,420 250,340 L250,170 Z" 
+          fill="url(#grad1)" opacity="0.8"/>
+  </g>
+  
+  <!-- Digital Circuit Lines -->
+  <g stroke="#4f6df5" stroke-width="2" fill="none" opacity="0.3">
+    <path d="M100,100 L250,170" />
+    <path d="M700,100 L550,170" />
+    <path d="M100,500 L250,340" />
+    <path d="M700,500 L550,340" />
+    
+    <path d="M100,100 C50,200 50,400 100,500" />
+    <path d="M700,100 C750,200 750,400 700,500" />
+    
+    <circle cx="100" cy="100" r="10" />
+    <circle cx="700" cy="100" r="10" />
+    <circle cx="100" cy="500" r="10" />
+    <circle cx="700" cy="500" r="10" />
+    
+    <circle cx="250" cy="170" r="5" />
+    <circle cx="550" cy="170" r="5" />
+    <circle cx="250" cy="340" r="5" />
+    <circle cx="550" cy="340" r="5" />
+  </g>
+  
+  <!-- Lock -->
+  <g transform="translate(350, 280)">
+    <!-- Lock Body -->
+    <rect x="0" y="0" width="100" height="120" rx="10" ry="10" fill="#283046" stroke="#4f6df5" stroke-width="2"/>
+    
+    <!-- Lock Shackle -->
+    <path d="M35,0 L35,-50 C35,-75 65,-75 65,-50 L65,0" stroke="#4f6df5" stroke-width="6" fill="none" stroke-linecap="round"/>
+    
+    <!-- Keyhole -->
+    <circle cx="50" cy="60" r="15" fill="#161d31"/>
+    <rect x="45" y="60" width="10" height="25" fill="#161d31"/>
+  </g>
+  
+  <!-- Particles -->
+  <g fill="#4f6df5" opacity="0.5">
+    <circle cx="150" cy="150" r="3" />
+    <circle cx="650" cy="150" r="3" />
+    <circle cx="150" cy="450" r="3" />
+    <circle cx="650" cy="450" r="3" />
+    <circle cx="200" cy="200" r="2" />
+    <circle cx="600" cy="200" r="2" />
+    <circle cx="200" cy="400" r="2" />
+    <circle cx="600" cy="400" r="2" />
+    <circle cx="300" cy="250" r="4" />
+    <circle cx="500" cy="250" r="4" />
+    <circle cx="300" cy="350" r="4" />
+    <circle cx="500" cy="350" r="4" />
+  </g>
 </svg> 

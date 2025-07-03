@@ -12,7 +12,7 @@ namespace SecuritySystemsManager.Shared.Dtos
         public SecuritySystemOrderDto()
         {
             InstalledDevices = new List<InstalledDeviceDto>();
-            Technicians = new List<OrderTechnicianDto>();
+            Technicians = new List<UserDto>();
             MaintenanceLogs = new List<MaintenanceLogDto>();
         }
 
@@ -30,7 +30,7 @@ namespace SecuritySystemsManager.Shared.Dtos
         public DateTime RequestedDate { get; set; }
 
         public List<InstalledDeviceDto> InstalledDevices { get; set; }
-        public List<OrderTechnicianDto> Technicians { get; set; }
+        public List<UserDto> Technicians { get; set; }
         public List<MaintenanceLogDto> MaintenanceLogs { get; set; }
         
         public InvoiceDto Invoice { get; set; }

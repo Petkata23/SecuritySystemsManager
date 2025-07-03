@@ -1,4 +1,6 @@
 ﻿@model IEnumerable<SecuritySystemsManagerMVC.ViewModels.LocationDetailsVm>
+@using SecuritySystemsManager.Shared.Enums
+
 @{
     ViewData["Title"] = "Locations";
 }
@@ -8,72 +10,152 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.fullscreen@1.6.0/Control.FullScreen.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.79.0/dist/L.Control.Locate.min.css" />
     <link rel="stylesheet" href="~/css/locations.css" />
 }
 
-<div class="container-fluid mt-4">
+<div class="container-fluid animate-fade-in px-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">Locations</h1>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-lg me-2"></i>Add New Location
+        </a>
+    </div>
+
+    <!-- Map Card -->
     <div class="row mb-4">
-        <div class="col">
-            <h2 class="display-6">@ViewData["Title"]</h2>
-            <p class="lead">List of all locations in the system</p>
-        </div>
-        <div class="col-md-auto d-flex align-items-center">
-            <a asp-action="Create" class="btn btn-primary">
-                <i class="bi bi-plus-circle"></i> Add New Location
-            </a>
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-transparent">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Location Map</h5>
+                        <div class="map-controls-toggle">
+                            <button class="btn btn-sm btn-outline-primary" id="toggleMapSize">
+                                <i class="bi bi-arrows-angle-expand"></i> Expand
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div id="locationsMap" class="map-container locations-list-map"></div>
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="row">
-        <div class="col-md-12">
-            <div id="locationsMap" class="locations-list-map"></div>
-        </div>
-    </div>
-
-    <div class="row mt-4">
-        @if (Model != null && Model.Any())
-        {
-            @foreach (var location in Model)
-            {
-                <div class="col-md-4 mb-4">
-                    <div class="card location-card">
-                        <div class="card-header">
-                            <h5 class="mb-0">@location.Name</h5>
-                        </div>
-                        <div class="card-body">
-                            <p class="location-address">
-                                <i class="bi bi-geo-alt"></i> @location.Address
-                            </p>
-                            @if (!string.IsNullOrEmpty(location.Description))
-                            {
-                                <p class="location-description">
-                                    <i class="bi bi-info-circle"></i> @location.Description
-                                </p>
-                            }
-                            <div class="btn-group">
-                                <a asp-action="Details" asp-route-id="@location.Id" class="btn btn-sm btn-primary">
-                                    <i class="bi bi-eye"></i> Details
-                                </a>
-                                <a asp-action="Edit" asp-route-id="@location.Id" class="btn btn-sm btn-warning">
-                                    <i class="bi bi-pencil"></i> Edit
-                                </a>
-                                <a asp-action="Delete" asp-route-id="@location.Id" class="btn btn-sm btn-danger">
-                                    <i class="bi bi-trash"></i> Delete
-                                </a>
-                            </div>
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-transparent">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">All Locations</h5>
+                        <div class="input-group" style="width: 300px;">
+                            <input type="text" id="locationSearch" class="form-control" placeholder="Search locations...">
+                            <button class="btn btn-outline-secondary" type="button">
+                                <i class="bi bi-search"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
-            }
-        }
-        else
-        {
-            <div class="col-12">
-                <div class="alert alert-info">
-                    <i class="bi bi-info-circle"></i> No locations available. <a asp-action="Create">Create a new location</a>.
+                <div class="card-body p-0">
+                    @if (Model.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0" id="locationsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Address</th>
+                                        <th>Orders</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var location in Model)
+                                    {
+                                        <tr data-location-id="@location.Id" class="location-row">
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="location-icon me-3">
+                                                        <i class="bi bi-geo-alt-fill text-primary"></i>
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-0">@location.Name</h6>
+                                                        <small class="text-muted">ID: @location.Id</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>@location.Address</td>
+                                            <td>
+                                                @if (location.Orders != null && location.Orders.Any())
+                                                {
+                                                    <div class="d-flex align-items-center">
+                                                        <span class="badge bg-primary rounded-pill me-2">@location.Orders.Count</span>
+                                                        <div class="order-status-indicators">
+                                                            @{
+                                                                var pendingCount = location.Orders.Count(o => o.Status == OrderStatus.Pending);
+                                                                var inProgressCount = location.Orders.Count(o => o.Status == OrderStatus.InProgress);
+                                                                var completedCount = location.Orders.Count(o => o.Status == OrderStatus.Completed);
+                                                            }
+                                                            
+                                                            @if (pendingCount > 0)
+                                                            {
+                                                                <span class="badge bg-warning me-1" title="@pendingCount Pending">@pendingCount</span>
+                                                            }
+                                                            
+                                                            @if (inProgressCount > 0)
+                                                            {
+                                                                <span class="badge bg-primary me-1" title="@inProgressCount In Progress">@inProgressCount</span>
+                                                            }
+                                                            
+                                                            @if (completedCount > 0)
+                                                            {
+                                                                <span class="badge bg-success" title="@completedCount Completed">@completedCount</span>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-secondary">No Orders</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a asp-action="Details" asp-route-id="@location.Id" class="btn btn-sm btn-info">
+                                                        <i class="bi bi-info-circle"></i>
+                                                    </a>
+                                                    <a asp-action="Edit" asp-route-id="@location.Id" class="btn btn-sm btn-primary">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </a>
+                                                    <a asp-action="Delete" asp-route-id="@location.Id" class="btn btn-sm btn-danger">
+                                                        <i class="bi bi-trash"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <div class="mb-3">
+                                <i class="bi bi-geo-alt text-muted" style="font-size: 3rem;"></i>
+                            </div>
+                            <h5>No Locations Found</h5>
+                            <p class="text-muted">Start by adding your first location</p>
+                            <a asp-action="Create" class="btn btn-primary">
+                                <i class="bi bi-plus-lg me-2"></i>Add Location
+                            </a>
+                        </div>
+                    }
                 </div>
             </div>
-        }
+        </div>
     </div>
 </div>
 
@@ -81,6 +163,110 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+    <script src="https://unpkg.com/leaflet.fullscreen@1.6.0/Control.FullScreen.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.79.0/dist/L.Control.Locate.min.js"></script>
     <script src="~/js/locations.js"></script>
     <script src="~/js/locations-list.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Search functionality
+            $("#locationSearch").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $("#locationsTable tbody tr").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+            
+            // Tooltip initialization
+            $('[data-bs-toggle="tooltip"]').tooltip();
+            
+            // Toggle map size
+            $("#toggleMapSize").on("click", function() {
+                var mapContainer = $("#locationsMap");
+                var icon = $(this).find("i");
+                var buttonText = $(this).text().trim();
+                
+                if (mapContainer.hasClass("map-container-lg")) {
+                    mapContainer.removeClass("map-container-lg");
+                    icon.removeClass("bi-arrows-angle-contract").addClass("bi-arrows-angle-expand");
+                    $(this).html('<i class="bi bi-arrows-angle-expand"></i> Expand');
+                } else {
+                    mapContainer.addClass("map-container-lg");
+                    icon.removeClass("bi-arrows-angle-expand").addClass("bi-arrows-angle-contract");
+                    $(this).html('<i class="bi bi-arrows-angle-contract"></i> Collapse');
+                }
+                
+                // Trigger map resize event
+                setTimeout(function() {
+                    window.dispatchEvent(new Event('resize'));
+                }, 200);
+            });
+            
+            // Highlight location on map when hovering over table row
+            $(".location-row").on("mouseenter", function() {
+                var locationId = $(this).data("location-id");
+                if (window.highlightMarker) {
+                    window.highlightMarker(locationId);
+                }
+            }).on("mouseleave", function() {
+                if (window.unhighlightMarkers) {
+                    window.unhighlightMarkers();
+                }
+            });
+        });
+    </script>
+    
+    <style>
+        .location-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background-color: rgba(79, 109, 245, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
+        .order-status-indicators {
+            display: flex;
+            align-items: center;
+        }
+        
+        /* Map specific styles */
+        .map-container {
+            height: 500px;
+            width: 100%;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            transition: height 0.3s ease;
+        }
+        
+        .map-container-lg {
+            height: 700px;
+        }
+        
+        .leaflet-control-locate a {
+            width: 36px !important;
+            height: 36px !important;
+            line-height: 36px !important;
+            border-radius: 4px !important;
+            background-color: white !important;
+            color: #0d6efd !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        
+        .leaflet-control-locate a:hover {
+            background-color: #f5f5f5 !important;
+            color: #0a58ca !important;
+        }
+        
+        .leaflet-control-locate.active a {
+            color: #198754 !important;
+        }
+    </style>
 } 

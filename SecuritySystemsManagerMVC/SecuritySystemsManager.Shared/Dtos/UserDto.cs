@@ -12,7 +12,7 @@ namespace SecuritySystemsManager.Shared.Dtos
         public UserDto()
         {
             OrdersAsClient = new List<SecuritySystemOrderDto>();
-            AssignedOrders = new List<OrderTechnicianDto>();
+            AssignedOrders = new List<SecuritySystemOrderDto>();
         }
 
         public string Username { get; set; }
@@ -31,7 +31,7 @@ namespace SecuritySystemsManager.Shared.Dtos
         public List<SecuritySystemOrderDto> OrdersAsClient { get; set; }
 
         // For Technicians
-        public List<OrderTechnicianDto> AssignedOrders { get; set; }
+        public List<SecuritySystemOrderDto> AssignedOrders { get; set; }
 
     }
 } 

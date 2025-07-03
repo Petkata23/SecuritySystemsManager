@@ -10,90 +10,82 @@
     <link rel="stylesheet" href="~/css/locations.css" />
 }
 
-<div class="container-fluid mt-4">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
-            <li class="breadcrumb-item"><a asp-action="List">Locations</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Edit</li>
-        </ol>
-    </nav>
-
-    <div class="row mb-4">
-        <div class="col">
-            <h2 class="display-6">Edit Location</h2>
-            <p class="lead">Update location information</p>
-        </div>
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="bi bi-pencil-square me-2"></i>Edit Location</h5>
     </div>
-
-    <div class="row">
-        <div class="col-md-6">
-            <div class="location-form-container">
-                <form asp-action="Edit" method="post">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <input type="hidden" asp-for="Id" />
-                    
-                    <div class="location-form-group">
-                        <label asp-for="Name" class="form-label">Location Name</label>
-                        <input asp-for="Name" class="form-control" placeholder="Enter location name" />
+    <div class="card-body">
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="Id" />
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input asp-for="Name" class="form-control" placeholder="Name" />
+                        <label asp-for="Name">Name</label>
                         <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
-                    
-                    <div class="location-form-group">
-                        <label asp-for="Address" class="form-label">Address</label>
-                        <input asp-for="Address" class="form-control" id="addressInput" placeholder="Enter address" />
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input asp-for="Address" class="form-control" id="addressInput" placeholder="Address" />
+                        <label asp-for="Address">Address</label>
                         <span asp-validation-for="Address" class="text-danger"></span>
                     </div>
-                    
-                    <div class="location-form-group">
-                        <label asp-for="Description" class="form-label">Description</label>
-                        <textarea asp-for="Description" class="form-control" rows="3" placeholder="Enter location description"></textarea>
-                        <span asp-validation-for="Description" class="text-danger"></span>
-                    </div>
-                    
-                    <div class="location-form-group">
-                        <label class="form-label">Coordinates</label>
-                        <p class="text-muted small">Select a location on the map or enter coordinates manually</p>
-                        
-                        <div class="coordinates-group">
-                            <div class="form-group">
-                                <label asp-for="Latitude" class="form-label">Latitude</label>
-                                <input asp-for="Latitude" class="form-control" id="latitudeInput" placeholder="Latitude" />
-                                <span asp-validation-for="Latitude" class="text-danger"></span>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label asp-for="Longitude" class="form-label">Longitude</label>
-                                <input asp-for="Longitude" class="form-control" id="longitudeInput" placeholder="Longitude" />
-                                <span asp-validation-for="Longitude" class="text-danger"></span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="location-action-buttons">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-save"></i> Save Changes
-                        </button>
-                        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">
-                            <i class="bi bi-x-circle"></i> Cancel
-                        </a>
-                    </div>
-                </form>
+                </div>
             </div>
-        </div>
-        <div class="col-md-6">
-            <div id="editLocationMap" class="location-edit-map"></div>
-            <div class="alert alert-info">
-                <i class="bi bi-info-circle"></i> Click on the map to update the location coordinates or search for an address using the search box in the top-right corner.
+            
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input asp-for="Latitude" class="form-control" id="latitudeInput" placeholder="Latitude" />
+                        <label asp-for="Latitude">Latitude</label>
+                        <span asp-validation-for="Latitude" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input asp-for="Longitude" class="form-control" id="longitudeInput" placeholder="Longitude" />
+                        <label asp-for="Longitude">Longitude</label>
+                        <span asp-validation-for="Longitude" class="text-danger"></span>
+                    </div>
+                </div>
             </div>
-        </div>
+            
+            <div class="mb-3">
+                <div class="form-floating">
+                    <textarea asp-for="Description" class="form-control" placeholder="Description" style="height: 100px"></textarea>
+                    <label asp-for="Description">Description</label>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <div id="editLocationMap" style="height: 400px; width: 100%; border-radius: 8px;"></div>
+            </div>
+            
+            <div class="d-flex justify-content-between">
+                <a asp-action="List" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>Back to List
+                </a>
+                <div>
+                    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-info">
+                        <i class="bi bi-info-circle me-2"></i>Details
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save me-2"></i>Save
+                    </button>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
 
 @section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
     <script src="~/js/locations.js"></script>
     <script src="~/js/locations-edit.js"></script>
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 } 

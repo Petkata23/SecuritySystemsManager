@@ -15,17 +15,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const defaultLat = 42.6977;
     const defaultLng = 23.3219;
 
-    // Initialize map with colorful theme
+    // Initialize map with detailed view
     var map = L.map('createLocationMap', {
         zoomControl: false,
         attributionControl: false
-    }).setView([defaultLat, defaultLng], 7);
+    }).setView([defaultLat, defaultLng], 13);
 
-    // Add colorful map theme
-    L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Tiles style by <a href="https://www.hotosm.org/" target="_blank">HOT</a>',
-        maxZoom: 19
-    }).addTo(map);
+    // Map layers are now handled by the layer control
     
     // Add attribution in bottom right
     L.control.attribution({
@@ -53,7 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
         popupAnchor: [0, -36]
     });
 
-    // Add custom CSS for the marker
+    // Add custom CSS for the marker and map controls
     const style = document.createElement('style');
     style.textContent = `
         .custom-security-marker {
@@ -61,8 +57,8 @@ document.addEventListener("DOMContentLoaded", function () {
             border: none;
         }
         .marker-pin {
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             background: #0d6efd;
             position: relative;
@@ -70,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
             align-items: center;
             justify-content: center;
             box-shadow: 0 3px 8px rgba(0,0,0,0.3);
-            border: 2px solid white;
+            border: 3px solid white;
             animation: bounce 0.5s ease infinite alternate;
         }
         @keyframes bounce {
@@ -83,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         .marker-pin i {
             color: white;
-            font-size: 16px;
+            font-size: 18px;
             animation: pulse 1.5s ease infinite;
         }
         @keyframes pulse {
@@ -118,16 +114,87 @@ document.addEventListener("DOMContentLoaded", function () {
         .leaflet-control-geocoder-alternatives li:hover {
             background: #f5f5f5 !important;
         }
+        .leaflet-control-layers {
+            border-radius: 4px !important;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.2) !important;
+        }
+        .leaflet-control-layers-expanded {
+            padding: 10px 12px !important;
+            background-color: rgba(255, 255, 255, 0.9) !important;
+            border-radius: 4px !important;
+        }
+        .leaflet-control-layers-selector {
+            margin-right: 5px !important;
+        }
+        .leaflet-control-layers-separator {
+            margin: 8px 0 !important;
+        }
+        #createLocationMap {
+            border: 1px solid rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        #createLocationMap:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        .leaflet-control-fullscreen a, 
+        .leaflet-control-locate a {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 30px !important;
+            height: 30px !important;
+            background-color: white !important;
+            color: #333 !important;
+            transition: all 0.2s ease !important;
+        }
+        .leaflet-control-fullscreen a:hover, 
+        .leaflet-control-locate a:hover {
+            background-color: #f4f4f4 !important;
+            color: #0d6efd !important;
+        }
     `;
     document.head.appendChild(style);
 
-    // Add geocoder control
+    // Add layer controls for different map views
+    const baseMaps = {
+        "Standard": L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            maxZoom: 19
+        }),
+        "Detailed": L.tileLayer('https://{s}.tile.openstreetmap.de/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            maxZoom: 19
+        }),
+        "Transport": L.tileLayer('https://{s}.tile.thunderforest.com/transport/{z}/{x}/{y}.png?apikey=6170aad10dfd42a38d4d8c709a536f38', {
+            attribution: '&copy; <a href="http://www.thunderforest.com/">Thunderforest</a>, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            maxZoom: 19
+        }),
+        "Satellite": L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+            maxZoom: 19
+        })
+    };
+    
+    // Add layer control to switch between map styles
+    L.control.layers(baseMaps, null, {
+        position: 'bottomright',
+        collapsed: false
+    }).addTo(map);
+    
+    // Select the detailed map by default
+    baseMaps["Detailed"].addTo(map);
+    
+    // Add geocoder control with enhanced features
     const geocoder = L.Control.geocoder({
         defaultMarkGeocode: false,
         position: 'topright',
         placeholder: 'Search address...',
         errorMessage: 'Address not found',
-        showResultIcons: true
+        showResultIcons: true,
+        suggestMinLength: 3,
+        suggestTimeout: 250,
+        queryMinLength: 3
     }).addTo(map);
 
     // Current marker
@@ -224,4 +291,79 @@ document.addEventListener("DOMContentLoaded", function () {
     setTimeout(() => {
         map.invalidateSize();
     }, 500);
+    
+    // Add fullscreen control
+    const fullscreenButton = L.control({position: 'topright'});
+    fullscreenButton.onAdd = function() {
+        const div = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+        div.innerHTML = '<a class="leaflet-control-fullscreen" href="#" title="View Fullscreen" style="font-size: 22px; line-height: 30px;"><i class="bi bi-arrows-fullscreen"></i></a>';
+        
+        div.onclick = function() {
+            const mapElement = document.getElementById('createLocationMap');
+            if (!document.fullscreenElement) {
+                if (mapElement.requestFullscreen) {
+                    mapElement.requestFullscreen();
+                } else if (mapElement.mozRequestFullScreen) {
+                    mapElement.mozRequestFullScreen();
+                } else if (mapElement.webkitRequestFullscreen) {
+                    mapElement.webkitRequestFullscreen();
+                } else if (mapElement.msRequestFullscreen) {
+                    mapElement.msRequestFullscreen();
+                }
+                setTimeout(() => map.invalidateSize(), 200);
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+                setTimeout(() => map.invalidateSize(), 200);
+            }
+            return false;
+        };
+        
+        return div;
+    };
+    fullscreenButton.addTo(map);
+    
+    // Add locate control to find user's location
+    const locateControl = L.control({position: 'topright'});
+    locateControl.onAdd = function() {
+        const div = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+        div.innerHTML = '<a class="leaflet-control-locate" href="#" title="Find my location" style="font-size: 18px; line-height: 30px;"><i class="bi bi-geo-alt-fill"></i></a>';
+        
+        div.onclick = function() {
+            map.locate({setView: true, maxZoom: 16});
+            return false;
+        };
+        
+        return div;
+    };
+    locateControl.addTo(map);
+    
+    // Handle location found event
+    map.on('locationfound', function(e) {
+        updateMarker(e.latlng.lat, e.latlng.lng);
+        reverseGeocode(e.latlng.lat, e.latlng.lng);
+        
+        // Show accuracy circle
+        const radius = e.accuracy / 2;
+        L.circle(e.latlng, {
+            radius: radius,
+            color: '#4a80f5',
+            fillColor: '#4a80f5',
+            fillOpacity: 0.15,
+            weight: 2,
+            dashArray: '5,5'
+        }).addTo(map);
+    });
+    
+    // Handle location error
+    map.on('locationerror', function(e) {
+        alert("Could not find your location: " + e.message);
+    });
 }); 

@@ -346,4 +346,70 @@
 
 .feature-text {
     color: rgba(255, 255, 255, 0.7);
+}
+
+/* Technician Management */
+.technician-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.technician-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    transition: background-color 0.2s ease;
+}
+
+.technician-item:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.technician-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--order-secondary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+}
+
+.technician-info {
+    flex-grow: 1;
+}
+
+.technician-name {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.technician-role {
+    font-size: 0.8rem;
+    color: var(--order-secondary);
+}
+
+.technician-actions {
+    display: flex;
+    align-items: center;
+}
+
+/* Technician Modal */
+.technician-modal .modal-header {
+    background-color: var(--order-primary);
+    color: white;
+}
+
+.technician-modal .modal-title {
+    display: flex;
+    align-items: center;
+}
+
+.technician-modal .modal-title i {
+    margin-right: 0.5rem;
 } 

@@ -33,7 +33,7 @@ namespace SecuritySystemsManagerMVC.ViewModels
         public List<InstalledDeviceDetailsVm> InstalledDevices { get; set; }
 
         [DisplayName("Technicians")]
-        public List<OrderTechnicianDetailsVm> Technicians { get; set; }
+        public List<UserDetailsVm> Technicians { get; set; }
 
         [DisplayName("Maintenance Logs")]
         public List<MaintenanceLogDetailsVm> MaintenanceLogs { get; set; }
@@ -41,7 +41,7 @@ namespace SecuritySystemsManagerMVC.ViewModels
         public SecuritySystemOrderDetailsVm()
         {
             InstalledDevices = new List<InstalledDeviceDetailsVm>();
-            Technicians = new List<OrderTechnicianDetailsVm>();
+            Technicians = new List<UserDetailsVm>();
             MaintenanceLogs = new List<MaintenanceLogDetailsVm>();
         }
     }

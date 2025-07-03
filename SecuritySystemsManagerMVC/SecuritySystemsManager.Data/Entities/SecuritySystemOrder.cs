@@ -12,7 +12,7 @@ namespace SecuritySystemsManager.Data.Entities
         public SecuritySystemOrder()
         {
             InstalledDevices = new List<InstalledDevice>();
-            Technicians = new List<OrderTechnician>();
+            Technicians = new List<User>();
             MaintenanceLogs = new List<MaintenanceLog>();
         }
 
@@ -30,7 +30,7 @@ namespace SecuritySystemsManager.Data.Entities
         public DateTime RequestedDate { get; set; }
 
         public virtual ICollection<InstalledDevice> InstalledDevices { get; set; }
-        public virtual ICollection<OrderTechnician> Technicians { get; set; }
+        public virtual ICollection<User> Technicians { get; set; }
         public virtual ICollection<MaintenanceLog> MaintenanceLogs { get; set; }
     }
 }

@@ -225,28 +225,24 @@ namespace SecuritySystemsManager.Data.Migrations
                 name: "OrderTechnicians",
                 columns: table => new
                 {
-                    SecuritySystemOrderId = table.Column<int>(type: "int", nullable: false),
-                    TechnicianId = table.Column<int>(type: "int", nullable: false),
-                    AssignedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Id = table.Column<int>(type: "int", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    AssignedOrdersId = table.Column<int>(type: "int", nullable: false),
+                    TechniciansId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderTechnicians", x => new { x.SecuritySystemOrderId, x.TechnicianId });
+                    table.PrimaryKey("PK_OrderTechnicians", x => new { x.AssignedOrdersId, x.TechniciansId });
                     table.ForeignKey(
-                        name: "FK_OrderTechnicians_Orders_SecuritySystemOrderId",
-                        column: x => x.SecuritySystemOrderId,
+                        name: "FK_OrderTechnicians_Orders_AssignedOrdersId",
+                        column: x => x.AssignedOrdersId,
                         principalTable: "Orders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_OrderTechnicians_Users_TechnicianId",
-                        column: x => x.TechnicianId,
+                        name: "FK_OrderTechnicians_Users_TechniciansId",
+                        column: x => x.TechniciansId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -293,7 +289,7 @@ namespace SecuritySystemsManager.Data.Migrations
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "CreatedAt", "Email", "FirstName", "LastName", "Password", "ProfileImage", "RoleId", "UpdatedAt", "Username" },
-                values: new object[] { 1, new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@securitysystems.com", "Admin", "User", "oV4ioxyE2U/OFiWexEWmp6UqnHKC6lhzgohsowZBbz3FJBHIFd59ZdZUauGOLszA", null, 1, new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin" });
+                values: new object[] { 1, new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@securitysystems.com", "Admin", "User", "sATqpr3STux7kUyM0eTiJe5supfjKYxqYSPI5Vf9YOMnGueHJC1J5lL4O9j8Rl9A", null, 1, new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_InstalledDevices_InstalledById",
@@ -347,9 +343,9 @@ namespace SecuritySystemsManager.Data.Migrations
                 column: "LocationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderTechnicians_TechnicianId",
+                name: "IX_OrderTechnicians_TechniciansId",
                 table: "OrderTechnicians",
-                column: "TechnicianId");
+                column: "TechniciansId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_RoleId",

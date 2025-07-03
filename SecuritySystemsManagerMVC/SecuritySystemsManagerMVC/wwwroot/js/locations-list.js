@@ -9,7 +9,8 @@ document.addEventListener("DOMContentLoaded", function () {
     // Initialize map with colorful theme
     var map = L.map('locationsMap', {
         zoomControl: false,
-        attributionControl: false
+        attributionControl: false,
+        fullscreenControl: true
     }).setView([42.6977, 23.3242], 7); // Default center in Bulgaria
 
     // Define available map styles/layers
@@ -33,6 +34,10 @@ document.addEventListener("DOMContentLoaded", function () {
         maxZoom: 18
     });
 
+    var detailed = L.tileLayer('https://{s}.tile.openstreetmap.de/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19
+    });
 
     // Set default layer based on localStorage or use colorful as default
     var savedStyle = localStorage.getItem('preferredMapStyle');
@@ -48,6 +53,9 @@ document.addEventListener("DOMContentLoaded", function () {
         case 'satellite':
             defaultLayer = satellite;
             break;
+        case 'detailed':
+            defaultLayer = detailed;
+            break;
         default:
             defaultLayer = colorful;
             savedStyle = 'colorful';
@@ -60,6 +68,7 @@ document.addEventListener("DOMContentLoaded", function () {
     var baseMaps = {
         "Colorful": colorful,
         "Standard": streets,
+        "Detailed": detailed,
         "Dark": dark,
         "Satellite": satellite
     };
@@ -76,6 +85,7 @@ document.addEventListener("DOMContentLoaded", function () {
         else if (e.name === "Standard") styleKey = 'streets';
         else if (e.name === "Dark") styleKey = 'dark';
         else if (e.name === "Satellite") styleKey = 'satellite';
+        else if (e.name === "Detailed") styleKey = 'detailed';
         
         localStorage.setItem('preferredMapStyle', styleKey);
     });
@@ -95,6 +105,27 @@ document.addEventListener("DOMContentLoaded", function () {
         imperial: false,
         position: 'bottomleft',
         maxWidth: 200
+    }).addTo(map);
+
+    // Add fullscreen control
+    L.control.fullscreen({
+        position: 'topright',
+        title: 'Show fullscreen',
+        titleCancel: 'Exit fullscreen',
+        content: '<i class="bi bi-arrows-fullscreen"></i>'
+    }).addTo(map);
+
+    // Add locate control
+    L.control.locate({
+        position: 'topright',
+        strings: {
+            title: "Show my location"
+        },
+        locateOptions: {
+            enableHighAccuracy: true,
+            maxZoom: 15
+        },
+        icon: 'bi bi-geo-alt-fill'
     }).addTo(map);
 
     // Customize control styles
@@ -148,6 +179,23 @@ document.addEventListener("DOMContentLoaded", function () {
             border-radius: 4px !important;
             box-shadow: 0 2px 6px rgba(0,0,0,0.1) !important;
         }
+
+        .leaflet-control-fullscreen a {
+            width: 36px !important;
+            height: 36px !important;
+            line-height: 36px !important;
+            border-radius: 4px !important;
+            background-color: white !important;
+            color: #0d6efd !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
+        .leaflet-control-fullscreen a:hover {
+            background-color: #f5f5f5 !important;
+            color: #0a58ca !important;
+        }
     `;
     document.head.appendChild(mapStyle);
 
@@ -158,6 +206,15 @@ document.addEventListener("DOMContentLoaded", function () {
         iconSize: [36, 36],
         iconAnchor: [18, 36],
         popupAnchor: [0, -36]
+    });
+
+    // Highlighted security icon
+    var highlightedIcon = L.divIcon({
+        className: 'custom-security-marker',
+        html: '<div class="marker-pin highlighted"><i class="bi bi-shield-lock-fill"></i></div>',
+        iconSize: [42, 42],
+        iconAnchor: [21, 42],
+        popupAnchor: [0, -42]
     });
 
     // Add custom CSS for the marker
@@ -180,6 +237,13 @@ document.addEventListener("DOMContentLoaded", function () {
             border: 2px solid white;
             animation: bounce 0.5s ease infinite alternate;
         }
+        .marker-pin.highlighted {
+            width: 42px;
+            height: 42px;
+            background: #dc3545;
+            animation: bounce-highlight 0.5s ease infinite alternate;
+            z-index: 1000;
+        }
         @keyframes bounce {
             from {
                 transform: translateY(0);
@@ -188,10 +252,22 @@ document.addEventListener("DOMContentLoaded", function () {
                 transform: translateY(-5px);
             }
         }
+        @keyframes bounce-highlight {
+            from {
+                transform: translateY(0) scale(1.1);
+            }
+            to {
+                transform: translateY(-8px) scale(1.1);
+            }
+        }
         .marker-pin i {
             color: white;
             font-size: 16px;
             animation: pulse 1.5s ease infinite;
+        }
+        .marker-pin.highlighted i {
+            font-size: 20px;
+            animation: pulse-highlight 1.5s ease infinite;
         }
         @keyframes pulse {
             0% {
@@ -199,6 +275,17 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             50% {
                 transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        @keyframes pulse-highlight {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.3);
             }
             100% {
                 transform: scale(1);
@@ -336,6 +423,9 @@ document.addEventListener("DOMContentLoaded", function () {
     `;
     document.head.appendChild(style);
 
+    // Store markers by location ID for easy access
+    var markersById = {};
+    
     // Load locations from server
     fetch('/Location/GetAllLocations')
         .then(response => {
@@ -350,6 +440,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (!locations || locations.length === 0) {
                 console.warn("⚠️ No locations available to display.");
+                mapElement.innerHTML = `
+                    <div class="alert alert-info text-center m-3">
+                        <i class="bi bi-info-circle"></i> 
+                        No locations available to display on the map.
+                    </div>
+                `;
                 return;
             }
 
@@ -418,8 +514,12 @@ document.addEventListener("DOMContentLoaded", function () {
                         icon: securityIcon,
                         title: location.name,
                         alt: location.name,
-                        riseOnHover: true
+                        riseOnHover: true,
+                        locationId: location.id
                     });
+
+                    // Store marker by location ID
+                    markersById[location.id] = marker;
 
                     // Function to get status badge class
                     function getStatusBadgeClass(status) {
@@ -462,6 +562,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         </div>
                         <div class="popup-body">
                             <div class="popup-info">
+                                <p><i class="bi bi-geo-alt"></i> <strong>Address:</strong> ${location.address}</p>
                                 <p><i class="bi bi-clipboard-check"></i> <strong>Orders at this location:</strong></p>
                                 ${ordersHtml}
                             </div>
@@ -515,6 +616,48 @@ document.addEventListener("DOMContentLoaded", function () {
             } else {
                 console.warn("⚠️ No valid coordinates to display on the map.");
             }
+            
+            // Define functions for highlighting markers
+            window.highlightMarker = function(locationId) {
+                var marker = markersById[locationId];
+                if (marker) {
+                    marker.setIcon(highlightedIcon);
+                    marker.setZIndexOffset(1000);
+                }
+            };
+            
+            window.unhighlightMarkers = function() {
+                Object.values(markersById).forEach(marker => {
+                    marker.setIcon(securityIcon);
+                    marker.setZIndexOffset(0);
+                });
+            };
+            
+            // Add click handler for table rows
+            document.querySelectorAll('.location-row').forEach(row => {
+                row.addEventListener('click', function() {
+                    const locationId = this.getAttribute('data-location-id');
+                    const marker = markersById[locationId];
+                    
+                    if (marker) {
+                        // Get the cluster parent if any
+                        const parent = markers.getVisibleParent(marker);
+                        
+                        if (parent === marker) {
+                            // If marker is visible (not in a cluster)
+                            map.setView(marker.getLatLng(), 16);
+                            setTimeout(() => {
+                                marker.openPopup();
+                            }, 300);
+                        } else {
+                            // If marker is in a cluster, zoom to show it
+                            markers.zoomToShowLayer(marker, function() {
+                                marker.openPopup();
+                            });
+                        }
+                    }
+                });
+            });
         })
         .catch(error => {
             console.error('Error loading locations:', error);
