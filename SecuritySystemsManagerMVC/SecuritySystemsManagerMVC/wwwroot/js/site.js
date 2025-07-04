@@ -52,6 +52,9 @@ $(document).ready(function() {
         observer.observe(element);
     });
 
+    // Mobile navigation enhancements
+    initMobileNavigation();
+
     // Notifications handling
     // Mark all notifications as read
     $('.mark-all-read').on('click', function(e) {
@@ -102,6 +105,41 @@ $(document).ready(function() {
         }
     }
 });
+
+// Mobile navigation enhancements
+function initMobileNavigation() {
+    // Close navbar when clicking on a nav item on mobile
+    $('.navbar-nav .nav-link').on('click', function() {
+        if (window.innerWidth < 992) {
+            $('.navbar-collapse').collapse('hide');
+        }
+    });
+
+    // Handle dropdowns in mobile navigation
+    $('.dropdown-toggle').on('click', function(e) {
+        if (window.innerWidth < 992) {
+            e.preventDefault();
+            e.stopPropagation();
+            $(this).next('.dropdown-menu').toggleClass('show');
+        }
+    });
+
+    // Close other dropdowns when one is opened
+    $('.dropdown').on('show.bs.dropdown', function() {
+        if (window.innerWidth < 992) {
+            $('.dropdown-menu.show').removeClass('show');
+        }
+    });
+
+    // Close dropdowns when clicking outside
+    $(document).on('click', function(e) {
+        if (window.innerWidth < 992) {
+            if (!$(e.target).closest('.dropdown').length) {
+                $('.dropdown-menu.show').removeClass('show');
+            }
+        }
+    });
+}
 
 // Highlight active navigation item
 function highlightActiveNavItem() {

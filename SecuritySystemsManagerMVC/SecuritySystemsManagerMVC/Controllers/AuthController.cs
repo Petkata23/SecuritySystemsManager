@@ -46,7 +46,8 @@ namespace SecuritySystemsManagerMVC.Controllers
 
             if (!await this.usersService.CanUserLoginAsync(model.Username, model.Password))
             {
-                return BadRequest(Constants.InvalidCredentials);
+                ModelState.AddModelError(string.Empty, Constants.InvalidCredentials);
+                return View(model);
             }
             await LoginUser(model.Username);
             return RedirectToAction(nameof(HomeController.Index), "Home");
@@ -89,7 +90,8 @@ namespace SecuritySystemsManagerMVC.Controllers
 
             if (await this.usersService.GetByUsernameAsync(userCreateModel.Username) != default)
             {
-                return BadRequest(Constants.UserAlreadyExists);
+                ModelState.AddModelError(string.Empty, Constants.UserAlreadyExists);
+                return View(userCreateModel);
             }
 
             var hashedPassword = PasswordHasher.HashPassword(userCreateModel.Password);

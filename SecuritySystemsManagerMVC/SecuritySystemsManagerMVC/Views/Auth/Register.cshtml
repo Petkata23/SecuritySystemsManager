@@ -24,7 +24,16 @@
                     }
 
                     <form asp-action="Register" method="post">
-                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        @if (!ViewData.ModelState.IsValid && ViewData.ModelState.ContainsKey("") && ViewData.ModelState[""].Errors.Any())
+                        {
+                            <div class="alert alert-danger mb-3">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                @foreach (var error in ViewData.ModelState[""].Errors)
+                                {
+                                    @error.ErrorMessage
+                                }
+                            </div>
+                        }
                         
                         <div class="row mb-3">
                             <div class="col-md-6">

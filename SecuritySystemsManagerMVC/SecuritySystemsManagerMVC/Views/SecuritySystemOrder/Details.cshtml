@@ -3,6 +3,9 @@
 
 @{
     ViewData["Title"] = "Order Details";
+    bool isClient = User.IsInRole(RoleType.Client.ToString());
+    bool isAdminOrManager = User.IsInRole(RoleType.Admin.ToString()) || User.IsInRole(RoleType.Manager.ToString());
+    bool isTechnician = User.IsInRole(RoleType.Technician.ToString());
 }
 
 @section Styles {
@@ -130,12 +133,18 @@
                             <i class="bi bi-arrow-left me-2"></i>Back to List
                         </a>
                         <div>
-                            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger me-2">
-                                <i class="bi bi-trash me-2"></i>Delete
-                            </a>
-                            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
-                                <i class="bi bi-pencil me-2"></i>Edit
-                            </a>
+                            @if (isAdminOrManager)
+                            {
+                                <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger me-2">
+                                    <i class="bi bi-trash me-2"></i>Delete
+                                </a>
+                            }
+                            @if (isAdminOrManager)
+                            {
+                                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
+                                    <i class="bi bi-pencil me-2"></i>Edit
+                                </a>
+                            }
                         </div>
                     </div>
                 </div>
@@ -145,9 +154,12 @@
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Installed Devices</h5>
-                    <a asp-controller="InstalledDevice" asp-action="AddToOrder" asp-route-orderId="@Model.Id" class="btn btn-sm btn-primary">
-                        <i class="bi bi-plus-lg me-2"></i>Add Device
-                    </a>
+                    @if (isAdminOrManager)
+                    {
+                        <a asp-controller="InstalledDevice" asp-action="AddToOrder" asp-route-orderId="@Model.Id" class="btn btn-sm btn-primary">
+                            <i class="bi bi-plus-lg me-2"></i>Add Device
+                        </a>
+                    }
                 </div>
                 <div class="card-body p-0">
                     @if (Model.InstalledDevices != null && Model.InstalledDevices.Any())
@@ -176,12 +188,18 @@
                                                     <a asp-controller="InstalledDevice" asp-action="Details" asp-route-id="@device.Id" class="btn btn-sm btn-info">
                                                         <i class="bi bi-info-circle"></i>
                                                     </a>
-                                                    <a asp-controller="InstalledDevice" asp-action="Edit" asp-route-id="@device.Id" class="btn btn-sm btn-primary">
-                                                        <i class="bi bi-pencil"></i>
-                                                    </a>
-                                                    <a asp-controller="InstalledDevice" asp-action="Delete" asp-route-id="@device.Id" class="btn btn-sm btn-danger">
-                                                        <i class="bi bi-trash"></i>
-                                                    </a>
+                                                    @if (isAdminOrManager)
+                                                    {
+                                                        <a asp-controller="InstalledDevice" asp-action="Edit" asp-route-id="@device.Id" class="btn btn-sm btn-primary">
+                                                            <i class="bi bi-pencil"></i>
+                                                        </a>
+                                                    }
+                                                    @if (isAdminOrManager)
+                                                    {
+                                                        <a asp-controller="InstalledDevice" asp-action="Delete" asp-route-id="@device.Id" class="btn btn-sm btn-danger">
+                                                            <i class="bi bi-trash"></i>
+                                                        </a>
+                                                    }
                                                 </div>
                                             </td>
                                         </tr>
@@ -206,9 +224,12 @@
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Maintenance Logs</h5>
-                    <button class="btn btn-sm btn-primary">
-                        <i class="bi bi-plus-lg me-2"></i>Add Log
-                    </button>
+                    @if (isAdminOrManager)
+                    {
+                        <button class="btn btn-sm btn-primary">
+                            <i class="bi bi-plus-lg me-2"></i>Add Log
+                        </button>
+                    }
                 </div>
                 <div class="card-body p-0">
                     @if (Model.MaintenanceLogs != null && Model.MaintenanceLogs.Any())
@@ -235,12 +256,18 @@
                                                     <a href="#" class="btn btn-sm btn-info">
                                                         <i class="bi bi-info-circle"></i>
                                                     </a>
-                                                    <a href="#" class="btn btn-sm btn-primary">
-                                                        <i class="bi bi-pencil"></i>
-                                                    </a>
-                                                    <a href="#" class="btn btn-sm btn-danger">
-                                                        <i class="bi bi-trash"></i>
-                                                    </a>
+                                                    @if (isAdminOrManager)
+                                                    {
+                                                        <a href="#" class="btn btn-sm btn-primary">
+                                                            <i class="bi bi-pencil"></i>
+                                                        </a>
+                                                    }
+                                                    @if (isAdminOrManager)
+                                                    {
+                                                        <a href="#" class="btn btn-sm btn-danger">
+                                                            <i class="bi bi-trash"></i>
+                                                        </a>
+                                                    }
                                                 </div>
                                             </td>
                                         </tr>
@@ -305,9 +332,12 @@
                                 <i class="bi bi-receipt text-muted" style="font-size: 2.5rem;"></i>
                             </div>
                             <p class="text-muted mb-3">No invoice has been generated yet</p>
-                            <button class="btn btn-primary">
-                                <i class="bi bi-plus-lg me-2"></i>Generate Invoice
-                            </button>
+                            @if (isAdminOrManager)
+                            {
+                                <button class="btn btn-primary">
+                                    <i class="bi bi-plus-lg me-2"></i>Generate Invoice
+                                </button>
+                            }
                         </div>
                     }
                 </div>

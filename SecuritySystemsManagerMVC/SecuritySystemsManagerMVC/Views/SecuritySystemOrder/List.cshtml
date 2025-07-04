@@ -1,7 +1,10 @@
 @model IEnumerable<SecuritySystemsManagerMVC.ViewModels.SecuritySystemOrderDetailsVm>
+@using SecuritySystemsManager.Shared.Enums
 
 @{
     ViewData["Title"] = "Orders";
+    bool isClient = User.IsInRole(RoleType.Client.ToString());
+    bool isAdminOrManager = User.IsInRole(RoleType.Admin.ToString()) || User.IsInRole(RoleType.Manager.ToString());
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -10,14 +13,6 @@
         <i class="bi bi-plus-lg me-2"></i>New Order
     </a>
 </div>
-
-@if (TempData["Success"] != null)
-{
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <i class="bi bi-check-circle me-2"></i>@TempData["Success"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
 
 <div class="card mb-4">
     <div class="card-header d-flex justify-content-between align-items-center">
@@ -96,12 +91,15 @@
                                     <a asp-action="Details" asp-route-id="@order.Id" class="btn btn-sm btn-info">
                                         <i class="bi bi-info-circle"></i>
                                     </a>
-                                    <a asp-action="Edit" asp-route-id="@order.Id" class="btn btn-sm btn-primary">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <a asp-action="Delete" asp-route-id="@order.Id" class="btn btn-sm btn-danger">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
+                                    @if (isAdminOrManager)
+                                    {
+                                        <a asp-action="Edit" asp-route-id="@order.Id" class="btn btn-sm btn-primary">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@order.Id" class="btn btn-sm btn-danger">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    }
                                 </div>
                             </td>
                         </tr>

@@ -14,8 +14,9 @@
 }
 
 <li class="nav-item dropdown notification-dropdown">
-    <a class="nav-link dropdown-toggle position-relative" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <a class="nav-link dropdown-toggle position-relative d-flex align-items-center" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
         <i class="bi bi-bell-fill"></i>
+        <span class="d-lg-none ms-2 me-auto">Notifications</span>
         @if (unreadCount > 0)
         {
             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
@@ -47,7 +48,7 @@
                                 <div class="notification-icon me-3">
                                     <i class="bi bi-info-circle-fill"></i>
                                 </div>
-                                                                    <div class="notification-content">
+                                <div class="notification-content">
                                     <p class="mb-1">@notification.Message</p>
                                     <small class="text-muted">@notification.DateSent.ToString("MMM dd, HH:mm")</small>
                                 </div>
@@ -61,9 +62,9 @@
             {
                 <li><hr class="dropdown-divider"></li>
                 <li>
-                                    <a class="dropdown-item text-center view-all" asp-controller="Notification" asp-action="Index">
-                    View all notifications
-                </a>
+                    <a class="dropdown-item text-center view-all" asp-controller="Notification" asp-action="Index">
+                        View all notifications
+                    </a>
                 </li>
             }
         }
