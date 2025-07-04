@@ -40,7 +40,7 @@
                         <dd class="col-sm-8">@Model.DateInstalled.ToShortDateString()</dd>
                         
                         <dt class="col-sm-4">Installed By</dt>
-                        <dd class="col-sm-8">@Model.InstalledByFullName</dd>
+                        <dd class="col-sm-8">@Model.InstalledBy.FullName</dd>
                     </dl>
                 </div>
                 <div class="col-md-6">
@@ -48,8 +48,9 @@
                     {
                         <div class="text-center">
                             <h6 class="mb-3">Device Image</h6>
-                            <img src="~/@Model.DeviceImage" alt="@Model.Brand @Model.Model" 
-                                 class="img-fluid rounded shadow-sm" style="max-height: 200px; object-fit: contain;" />
+                            <img src="@Model.DeviceImage" alt="@Model.Brand @Model.Model" 
+                                 class="img-fluid rounded shadow-sm" style="max-height: 200px; object-fit: contain;" 
+                                 onerror="this.onerror=null;this.src='/img/favicon.svg';" />
                         </div>
                     }
                 </div>

@@ -94,12 +94,11 @@ namespace SecuritySystemsManagerMVC.Controllers
                 return View(userCreateModel);
             }
 
-            var hashedPassword = PasswordHasher.HashPassword(userCreateModel.Password);
-            userCreateModel.Password = hashedPassword;
-
             var userDto = this.mapper.Map<UserDto>(userCreateModel);
             userDto.RoleId = (await rolesService.GetByNameIfExistsAsync(RoleType.Client.ToString())).Id;
-            await this.usersService.SaveAsync(userDto);
+            
+            // Използваме сервисния метод за създаване на потребител с профилна снимка
+            await this.usersService.CreateUserWithDetailsAsync(userDto, userCreateModel.Password, userCreateModel.ProfileImageFile);
             await LoginUser(userDto.Username);
 
             return RedirectToAction(nameof(HomeController.Index), "Home");

@@ -13,11 +13,11 @@ namespace SecuritySystemsManager.Services
     [AutoBind]
     public class InstalledDeviceService : BaseCrudService<InstalledDeviceDto, IInstalledDeviceRepository>, IInstalledDeviceService
     {
-        private readonly IHostEnvironment _hostEnvironment;
+        private readonly IFileStorageService _fileStorageService;
 
-        public InstalledDeviceService(IInstalledDeviceRepository repository, IHostEnvironment hostEnvironment) : base(repository)
+        public InstalledDeviceService(IInstalledDeviceRepository repository, IFileStorageService fileStorageService) : base(repository)
         {
-            _hostEnvironment = hostEnvironment;
+            _fileStorageService = fileStorageService;
         }
 
         public async Task<string> UploadDeviceImageAsync(IFormFile imageFile)
@@ -25,25 +25,8 @@ namespace SecuritySystemsManager.Services
             if (imageFile == null || imageFile.Length == 0)
                 return null;
 
-            // Create uploads directory if it doesn't exist
-            string uploadsFolder = Path.Combine(_hostEnvironment.ContentRootPath, "wwwroot", "uploads", "devices");
-            if (!Directory.Exists(uploadsFolder))
-            {
-                Directory.CreateDirectory(uploadsFolder);
-            }
-
-            // Generate unique filename
-            string uniqueFileName = $"{Guid.NewGuid()}_{Path.GetFileName(imageFile.FileName)}";
-            string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-            // Save file
-            using (var fileStream = new FileStream(filePath, FileMode.Create))
-            {
-                await imageFile.CopyToAsync(fileStream);
-            }
-
-            // Return relative path for storage in database
-            return Path.Combine("/uploads", "devices", uniqueFileName).Replace("\\", "/");
+            // Use the file storage service to upload the file
+            return await _fileStorageService.UploadFileAsync(imageFile, "uploads/devices");
         }
 
         public async Task<InstalledDeviceDto> AddDeviceToOrderAsync(InstalledDeviceDto deviceDto, IFormFile? imageFile)
@@ -64,11 +47,7 @@ namespace SecuritySystemsManager.Services
             // Delete old image if exists
             if (!string.IsNullOrEmpty(deviceDto.DeviceImage))
             {
-                string oldImagePath = Path.Combine(_hostEnvironment.ContentRootPath, "wwwroot", deviceDto.DeviceImage.TrimStart('/'));
-                if (File.Exists(oldImagePath))
-                {
-                    File.Delete(oldImagePath);
-                }
+                await _fileStorageService.DeleteFileAsync(deviceDto.DeviceImage);
             }
             
             // Upload new image
@@ -92,11 +71,7 @@ namespace SecuritySystemsManager.Services
                 // Remove existing image if requested
                 if (!string.IsNullOrEmpty(deviceDto.DeviceImage))
                 {
-                    string oldImagePath = Path.Combine(_hostEnvironment.ContentRootPath, "wwwroot", deviceDto.DeviceImage.TrimStart('/'));
-                    if (File.Exists(oldImagePath))
-                    {
-                        File.Delete(oldImagePath);
-                    }
+                    await _fileStorageService.DeleteFileAsync(deviceDto.DeviceImage);
                 }
                 
                 // Clear image path in database

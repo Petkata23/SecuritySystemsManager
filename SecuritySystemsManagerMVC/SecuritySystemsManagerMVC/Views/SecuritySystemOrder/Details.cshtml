@@ -3,9 +3,9 @@
 
 @{
     ViewData["Title"] = "Order Details";
-    bool isClient = User.IsInRole(RoleType.Client.ToString());
-    bool isAdminOrManager = User.IsInRole(RoleType.Admin.ToString()) || User.IsInRole(RoleType.Manager.ToString());
-    bool isTechnician = User.IsInRole(RoleType.Technician.ToString());
+    bool isClient = User.IsInRole("Client");
+    bool isAdminOrManager = User.IsInRole("Admin") || User.IsInRole("Manager");
+    bool isTechnician = User.IsInRole("Technician");
 }
 
 @section Styles {

@@ -37,29 +37,38 @@
                                         @Model.DeviceType.ToString()
                                     </span>
                                 </dd>
-                                
+
                                 <dt class="col-sm-4">Brand</dt>
                                 <dd class="col-sm-8">@Model.Brand</dd>
-                                
+
                                 <dt class="col-sm-4">Model</dt>
                                 <dd class="col-sm-8">@Model.Model</dd>
-                                
+
                                 <dt class="col-sm-4">Quantity</dt>
                                 <dd class="col-sm-8">@Model.Quantity</dd>
-                                
+
                                 <dt class="col-sm-4">Installation Date</dt>
                                 <dd class="col-sm-8">@Model.DateInstalled.ToShortDateString()</dd>
-                                
+
                                 <dt class="col-sm-4">Installed By</dt>
-                                <dd class="col-sm-8">@Model.InstalledByFullName</dd>
+                                <dd class="col-sm-8">@Model.InstalledBy.FullName</dd>
                             </dl>
                         </div>
                         <div class="col-md-6">
                             @if (!string.IsNullOrEmpty(Model.DeviceImage))
                             {
                                 <div class="text-center">
-                                    <img src="~/@Model.DeviceImage" alt="@Model.Brand @Model.Model" 
-                                         class="img-fluid rounded shadow-sm" style="max-height: 200px; object-fit: contain;" />
+                                    @{
+                                        var imageUrl = Model.DeviceImage;
+                                        // Check if it's a relative URL and not a full URL
+                                        if (!imageUrl.StartsWith("http") && !imageUrl.StartsWith("/"))
+                                        {
+                                            imageUrl = "/" + imageUrl;
+                                        }
+                                    }
+                                    <img src="@imageUrl" alt="@Model.Brand @Model.Model"
+                                         class="img-fluid rounded shadow-sm" style="max-height: 200px; object-fit: contain;"
+                                         onerror="this.onerror=null;this.src='/img/favicon.svg';console.error('Device image failed to load:', '@imageUrl');" />
                                 </div>
                             }
                             else
@@ -74,7 +83,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="col-md-4">
             <div class="card shadow-sm">
                 <div class="card-header bg-transparent">
@@ -116,6 +125,17 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Add event listener for image load error
+            $('img').on('error', function() {
+                console.error('Image failed to load:', this.src);
+            });
+        });
+    </script>
+}
 
 @functions {
     string GetDeviceTypeBadgeClass(DeviceType deviceType)

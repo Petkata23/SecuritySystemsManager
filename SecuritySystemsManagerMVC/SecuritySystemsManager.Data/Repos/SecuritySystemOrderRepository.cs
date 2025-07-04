@@ -74,5 +74,91 @@ namespace SecuritySystemsManager.Data.Repos
             // Save changes
             await _context.SaveChangesAsync();
         }
+        
+        // Get orders by client ID with pagination
+        public async Task<IEnumerable<SecuritySystemOrderDto>> GetOrdersByClientIdAsync(int clientId, int pageSize, int pageNumber)
+        {
+            Console.WriteLine($"GetOrdersByClientIdAsync - Client ID: {clientId}, Page Size: {pageSize}, Page Number: {pageNumber}");
+            
+            var query = _context.Orders
+                .Include(o => o.Client)
+                .Include(o => o.Location)
+                .Include(o => o.Technicians)
+                .Include(o => o.InstalledDevices)
+                .Include(o => o.MaintenanceLogs)
+                .Where(o => o.ClientId == clientId);
+                
+            Console.WriteLine($"SQL Query: {query.ToQueryString()}");
+            
+            var count = await query.CountAsync();
+            Console.WriteLine($"Total count before pagination: {count}");
+            
+            var orders = await query
+                .OrderByDescending(o => o.CreatedAt)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+            
+            Console.WriteLine($"GetOrdersByClientIdAsync - Found {orders.Count} orders");
+                
+            return _mapper.Map<IEnumerable<SecuritySystemOrderDto>>(orders);
+        }
+        
+        // Get orders assigned to a technician with pagination
+        public async Task<IEnumerable<SecuritySystemOrderDto>> GetOrdersByTechnicianIdAsync(int technicianId, int pageSize, int pageNumber)
+        {
+            Console.WriteLine($"GetOrdersByTechnicianIdAsync - Technician ID: {technicianId}, Page Size: {pageSize}, Page Number: {pageNumber}");
+            
+            var query = _context.Orders
+                .Include(o => o.Client)
+                .Include(o => o.Location)
+                .Include(o => o.Technicians)
+                .Include(o => o.InstalledDevices)
+                .Include(o => o.MaintenanceLogs)
+                .Where(o => o.Technicians.Any(t => t.Id == technicianId));
+                
+            Console.WriteLine($"SQL Query: {query.ToQueryString()}");
+            
+            var count = await query.CountAsync();
+            Console.WriteLine($"Total count before pagination: {count}");
+            
+            var orders = await query
+                .OrderByDescending(o => o.CreatedAt)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+            
+            Console.WriteLine($"GetOrdersByTechnicianIdAsync - Found {orders.Count} orders");
+                
+            return _mapper.Map<IEnumerable<SecuritySystemOrderDto>>(orders);
+        }
+        
+        // Get total count of orders for a client
+        public async Task<int> GetOrdersCountByClientIdAsync(int clientId)
+        {
+            Console.WriteLine($"GetOrdersCountByClientIdAsync - Client ID: {clientId}");
+            
+            var query = _context.Orders.Where(o => o.ClientId == clientId);
+            Console.WriteLine($"SQL Query: {query.ToQueryString()}");
+            
+            var count = await query.CountAsync();
+            Console.WriteLine($"GetOrdersCountByClientIdAsync - Found {count} orders");
+            
+            return count;
+        }
+        
+        // Get total count of orders assigned to a technician
+        public async Task<int> GetOrdersCountByTechnicianIdAsync(int technicianId)
+        {
+            Console.WriteLine($"GetOrdersCountByTechnicianIdAsync - Technician ID: {technicianId}");
+            
+            var query = _context.Orders.Where(o => o.Technicians.Any(t => t.Id == technicianId));
+            Console.WriteLine($"SQL Query: {query.ToQueryString()}");
+            
+            var count = await query.CountAsync();
+            Console.WriteLine($"GetOrdersCountByTechnicianIdAsync - Found {count} orders");
+            
+            return count;
+        }
     }
 } 

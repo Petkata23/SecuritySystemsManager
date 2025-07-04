@@ -23,7 +23,7 @@
                         </div>
                     }
 
-                    <form asp-action="Register" method="post">
+                    <form asp-action="Register" method="post" enctype="multipart/form-data">
                         @if (!ViewData.ModelState.IsValid && ViewData.ModelState.ContainsKey("") && ViewData.ModelState[""].Errors.Any())
                         {
                             <div class="alert alert-danger mb-3">
@@ -74,6 +74,13 @@
                             <input asp-for="ConfirmPassword" class="form-control" type="password" placeholder="Confirm Password" />
                             <label asp-for="ConfirmPassword">Confirm Password</label>
                             <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label asp-for="ProfileImageFile" class="form-label">Profile Image</label>
+                            <input asp-for="ProfileImageFile" class="form-control" type="file" accept="image/*" />
+                            <span asp-validation-for="ProfileImageFile" class="text-danger"></span>
+                            <div class="form-text">Upload a profile image (optional)</div>
                         </div>
                         
                         <div class="d-grid">

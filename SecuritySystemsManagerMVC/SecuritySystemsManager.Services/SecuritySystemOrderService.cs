@@ -1,5 +1,6 @@
 using SecuritySystemsManager.Shared.Attributes;
 using SecuritySystemsManager.Shared.Dtos;
+using SecuritySystemsManager.Shared.Enums;
 using SecuritySystemsManager.Shared.Repos.Contracts;
 using SecuritySystemsManager.Shared.Services.Contracts;
 
@@ -49,6 +50,76 @@ namespace SecuritySystemsManager.Services
 
             // Use the repository method to remove the technician from the order
             await _orderRepository.RemoveTechnicianFromOrderAsync(orderId, technicianId);
+        }
+        
+        // Get orders based on user role
+        public async Task<IEnumerable<SecuritySystemOrderDto>> GetOrdersByUserRoleAsync(int userId, string userRole, int pageSize, int pageNumber)
+        {
+            Console.WriteLine($"GetOrdersByUserRoleAsync - User ID: {userId}, User Role: {userRole}, Page Size: {pageSize}, Page Number: {pageNumber}");
+            
+            // Admin and Manager can see all orders
+            if (userRole == "Admin" || userRole == "Manager")
+            {
+                Console.WriteLine("User is Admin or Manager - Getting all orders");
+                var orders = await _orderRepository.GetWithPaginationAsync(pageSize, pageNumber);
+                Console.WriteLine($"Found {orders.Count()} orders");
+                return orders;
+            }
+            // Client can see only their orders
+            else if (userRole == "Client")
+            {
+                Console.WriteLine("User is Client - Getting client orders");
+                var orders = await _orderRepository.GetOrdersByClientIdAsync(userId, pageSize, pageNumber);
+                Console.WriteLine($"Found {orders.Count()} orders");
+                return orders;
+            }
+            // Technician can see only orders assigned to them
+            else if (userRole == "Technician")
+            {
+                Console.WriteLine("User is Technician - Getting assigned orders");
+                var orders = await _orderRepository.GetOrdersByTechnicianIdAsync(userId, pageSize, pageNumber);
+                Console.WriteLine($"Found {orders.Count()} orders");
+                return orders;
+            }
+            
+            // Default: return empty list
+            Console.WriteLine("Unknown role - Returning empty list");
+            return new List<SecuritySystemOrderDto>();
+        }
+        
+        // Get orders count based on user role
+        public async Task<int> GetOrdersCountByUserRoleAsync(int userId, string userRole)
+        {
+            Console.WriteLine($"GetOrdersCountByUserRoleAsync - User ID: {userId}, User Role: {userRole}");
+            
+            // Admin and Manager can see all orders
+            if (userRole == "Admin" || userRole == "Manager")
+            {
+                Console.WriteLine("User is Admin or Manager - Getting all orders count");
+                var allOrders = await _orderRepository.GetAllAsync();
+                Console.WriteLine($"Found {allOrders.Count()} orders");
+                return allOrders.Count();
+            }
+            // Client can see only their orders
+            else if (userRole == "Client")
+            {
+                Console.WriteLine("User is Client - Getting client orders count");
+                var count = await _orderRepository.GetOrdersCountByClientIdAsync(userId);
+                Console.WriteLine($"Found {count} orders");
+                return count;
+            }
+            // Technician can see only orders assigned to them
+            else if (userRole == "Technician")
+            {
+                Console.WriteLine("User is Technician - Getting assigned orders count");
+                var count = await _orderRepository.GetOrdersCountByTechnicianIdAsync(userId);
+                Console.WriteLine($"Found {count} orders");
+                return count;
+            }
+            
+            // Default: return 0
+            Console.WriteLine("Unknown role - Returning 0");
+            return 0;
         }
     }
 } 

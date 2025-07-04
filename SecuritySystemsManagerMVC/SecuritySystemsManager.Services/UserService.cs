@@ -12,11 +12,11 @@ namespace SecuritySystemsManager.Services
     [AutoBind]
     public class UserService : BaseCrudService<UserDto, IUserRepository>, IUserService
     {
-        private readonly IHostEnvironment _hostEnvironment;
+        private readonly IFileStorageService _fileStorageService;
 
-        public UserService(IUserRepository repository, IHostEnvironment hostEnvironment) : base(repository)
+        public UserService(IUserRepository repository, IFileStorageService fileStorageService) : base(repository)
         {
-            _hostEnvironment = hostEnvironment;
+            _fileStorageService = fileStorageService;
         }
 
         public async Task<bool> CanUserLoginAsync(string username, string password)
@@ -77,25 +77,8 @@ namespace SecuritySystemsManager.Services
             if (imageFile == null || imageFile.Length == 0)
                 return null;
 
-            // Create uploads directory if it doesn't exist
-            string uploadsFolder = Path.Combine(_hostEnvironment.ContentRootPath, "wwwroot", "uploads", "users");
-            if (!Directory.Exists(uploadsFolder))
-            {
-                Directory.CreateDirectory(uploadsFolder);
-            }
-
-            // Generate unique filename
-            string uniqueFileName = $"{Guid.NewGuid()}_{Path.GetFileName(imageFile.FileName)}";
-            string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-            // Save file
-            using (var fileStream = new FileStream(filePath, FileMode.Create))
-            {
-                await imageFile.CopyToAsync(fileStream);
-            }
-
-            // Return relative path for storage in database
-            return Path.Combine("uploads", "users", uniqueFileName).Replace("\\", "/");
+            // Use the file storage service to upload the file
+            return await _fileStorageService.UploadFileAsync(imageFile, "uploads/users");
         }
         
         public async Task<UserDto> CreateUserWithDetailsAsync(UserDto userDto, string password, IFormFile profileImageFile)

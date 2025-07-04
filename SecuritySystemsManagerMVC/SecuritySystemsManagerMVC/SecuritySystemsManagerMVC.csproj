@@ -31,9 +31,4 @@
     <ProjectReference Include="..\SecuritySystemsManager.Shared\SecuritySystemsManager.Shared.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\uploads\devices\" />
-    <Folder Include="wwwroot\uploads\users\" />
-  </ItemGroup>
-
 </Project>

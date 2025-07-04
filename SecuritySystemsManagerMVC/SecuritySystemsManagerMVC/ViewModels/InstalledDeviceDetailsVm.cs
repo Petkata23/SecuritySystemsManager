@@ -24,7 +24,7 @@ namespace SecuritySystemsManagerMVC.ViewModels
         public string? DeviceImage { get; set; }
 
         [DisplayName("Installed By")]
-        public string InstalledByFullName { get; set; }
+        public UserDetailsVm InstalledBy { get; set; }
 
         [DisplayName("Maintenance Records")]
         public List<MaintenanceDeviceDetailsVm> MaintenanceDevices { get; set; }

@@ -2,6 +2,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using SecuritySystemsManager.Shared;
 using SecuritySystemsManager.Shared.Dtos;
 using SecuritySystemsManager.Shared.Enums;
 using SecuritySystemsManager.Shared.Repos.Contracts;
@@ -50,7 +51,7 @@ namespace SecuritySystemsManagerMVC.Controllers
             // Устанавливаем дату по умолчанию на сегодня + 3 дня
             editVM.RequestedDate = DateTime.Now.AddDays(3);
             
-            if (User.IsInRole(RoleType.Client.ToString()))
+            if (User.IsInRole("Client"))
             {
                 string userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (int.TryParse(userIdStr, out int userId))
@@ -66,7 +67,7 @@ namespace SecuritySystemsManagerMVC.Controllers
         [HttpPost]
         public override async Task<IActionResult> Create(SecuritySystemOrderEditVm editVM)
         {
-            if (User.IsInRole(RoleType.Client.ToString()))
+            if (User.IsInRole("Client"))
             {
                 string userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (int.TryParse(userIdStr, out int userId))
@@ -87,7 +88,7 @@ namespace SecuritySystemsManagerMVC.Controllers
                 return NotFound();
 
             // Only get available technicians for admins and managers
-            if (User.IsInRole(RoleType.Admin.ToString()) || User.IsInRole(RoleType.Manager.ToString()))
+            if (User.IsInRole("Admin") || User.IsInRole("Manager"))
             {
                 // Get all technicians (users with Technician role)
                 var allTechnicians = (await _userService.GetAllAsync())
@@ -114,7 +115,7 @@ namespace SecuritySystemsManagerMVC.Controllers
             var result = await base.Details(id);
             
             // Re-apply ViewBag values after base implementation
-            if (User.IsInRole(RoleType.Admin.ToString()) || User.IsInRole(RoleType.Manager.ToString()))
+            if (User.IsInRole("Admin") || User.IsInRole("Manager"))
             {
                 ViewBag.AvailableTechnicians = ViewBag.AvailableTechnicians;
                 ViewBag.CanManageTechnicians = true;
@@ -200,6 +201,54 @@ namespace SecuritySystemsManagerMVC.Controllers
         public override async Task<IActionResult> Delete(int id)
         {
             return await base.Delete(id);
+        }
+
+        [HttpGet]
+        public override async Task<IActionResult> List(int pageSize = DefaultPageSize, int pageNumber = DefaultPageNumber)
+        {
+            if (pageSize <= 0 || pageSize > MaxPageSize || pageNumber <= 0)
+            {
+                return BadRequest(Constants.InvalidPagination);
+            }
+
+            // Get current user ID and role
+            string userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string userRole = User.FindFirstValue(ClaimTypes.Role);
+            
+            // Debug information
+            Console.WriteLine($"User ID: {userIdStr}, User Role: {userRole}");
+            
+            // Check all claims
+            Console.WriteLine("All claims:");
+            foreach (var claim in User.Claims)
+            {
+                Console.WriteLine($"Type: {claim.Type}, Value: {claim.Value}");
+            }
+            
+            if (string.IsNullOrEmpty(userIdStr) || string.IsNullOrEmpty(userRole))
+            {
+                return Unauthorized();
+            }
+            
+            if (!int.TryParse(userIdStr, out int userId))
+            {
+                return BadRequest("Invalid user ID");
+            }
+
+            // Get orders based on user role
+            var orders = await _service.GetOrdersByUserRoleAsync(userId, userRole, pageSize, pageNumber);
+            var totalOrders = await _service.GetOrdersCountByUserRoleAsync(userId, userRole);
+            var totalPages = (int)Math.Ceiling((double)totalOrders / pageSize);
+            
+            // Debug information
+            Console.WriteLine($"Orders count: {orders.Count()}, Total orders: {totalOrders}, Total pages: {totalPages}");
+
+            var mappedModels = _mapper.Map<IEnumerable<SecuritySystemOrderDetailsVm>>(orders);
+
+            ViewBag.TotalPages = totalPages;
+            ViewBag.CurrentPage = pageNumber;
+
+            return View(nameof(List), mappedModels);
         }
     }
 } 

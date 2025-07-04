@@ -104,6 +104,9 @@ $(document).ready(function() {
             $('.notification-dropdown .badge').text(badgeText);
         }
     }
+    
+    // Debug images
+    debugImages();
 });
 
 // Mobile navigation enhancements
@@ -256,8 +259,10 @@ function formatCurrency(amount, currency = 'BGN') {
 
 // Format date
 function formatDate(dateString) {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString('bg-BG', options);
+    const date = new Date(dateString);
+    return date.toLocaleDateString('bg-BG', { 
+        year: 'numeric', month: 'long', day: 'numeric' 
+    });
 }
 
 // Confirm action
@@ -269,10 +274,10 @@ function confirmAction(message, callback) {
 
 // Show toast notification
 function showToast(message, type = 'success') {
-    toastr[type](message);
+    // Implementation depends on the toast library you're using
 }
 
-// Debounce function for search inputs
+// Debounce function for search inputs etc.
 function debounce(func, wait = 300) {
     let timeout;
     return function executedFunction(...args) {
@@ -285,22 +290,87 @@ function debounce(func, wait = 300) {
     };
 }
 
-// Search functionality
-const handleSearch = debounce(function(searchTerm) {
-    // This would typically be an AJAX call to search
-    console.log('Searching for:', searchTerm);
-});
-
-// Event listener for search input
-$(document).on('input', '.search-input', function() {
-    handleSearch($(this).val());
-});
-
-// Handle mobile menu
-$('.navbar-toggler').click(function() {
-    if ($(this).hasClass('collapsed')) {
-        $(this).removeClass('collapsed');
-    } else {
-        $(this).addClass('collapsed');
+// Debug images
+function debugImages() {
+    // Глобален кеш за изображенията, който ще се запази между навигациите
+    window.imageCache = window.imageCache || {};
+    
+    // Функция за предварително зареждане на изображение
+    function preloadImage(src) {
+        if (!src || src.includes('favicon.svg')) {
+            return Promise.resolve(null);
+        }
+        
+        if (window.imageCache[src]) {
+            return Promise.resolve(window.imageCache[src]);
+        }
+        
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            
+            img.onload = () => {
+                window.imageCache[src] = img;
+                resolve(img);
+            };
+            
+            img.onerror = (e) => {
+                console.error(`Failed to preload image: ${src}`, e);
+                reject(e);
+            };
+            
+            // Добавяме случаен параметър, за да избегнем кеширане от браузъра
+            img.src = src.includes('?') ? src + '&_t=' + new Date().getTime() : src + '?_t=' + new Date().getTime();
+        });
     }
-});
+    
+    // Функция за прилагане на кеширани изображения
+    function applyCachedImages() {
+        const profileImages = document.querySelectorAll('.profile-pic');
+        
+        profileImages.forEach(img => {
+            const src = img.getAttribute('data-original-src') || img.getAttribute('src');
+            
+            // Запазваме оригиналния URL
+            if (!img.getAttribute('data-original-src')) {
+                img.setAttribute('data-original-src', src);
+            }
+            
+            if (window.imageCache[src]) {
+                // Ако изображението е кеширано, го прилагаме веднага
+                img.src = window.imageCache[src].src;
+                img.classList.add('image-loaded');
+            } else {
+                // Иначе зареждаме изображението
+                preloadImage(src)
+                    .then(cachedImg => {
+                        if (cachedImg) {
+                            img.src = cachedImg.src;
+                            img.classList.add('image-loaded');
+                        }
+                    })
+                    .catch(() => {
+                        // При грешка, показваме изображението по подразбиране
+                        img.src = '/img/favicon.svg';
+                    });
+            }
+        });
+    }
+    
+    // Прилагаме кеширани изображения при зареждане на страницата
+    applyCachedImages();
+    
+    // Прилагаме кеширани изображения след всяка AJAX заявка
+    $(document).ajaxComplete(function() {
+        setTimeout(applyCachedImages, 100);
+    });
+    
+    // Прилагаме кеширани изображения при всяка промяна в DOM
+    const observer = new MutationObserver(function(mutations) {
+        setTimeout(applyCachedImages, 100);
+    });
+    
+    observer.observe(document.body, { 
+        childList: true, 
+        subtree: true 
+    });
+}

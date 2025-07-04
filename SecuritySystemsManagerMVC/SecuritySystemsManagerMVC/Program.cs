@@ -4,6 +4,7 @@ using SecuritySystemsManager.Data;
 using SecuritySystemsManager.Data.Repos;
 using SecuritySystemsManager.Services;
 using SecuritySystemsManager.Shared.Extensions;
+using SecuritySystemsManager.Shared.Services.Contracts;
 using SecuritySystemsManagerMVC;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,9 +12,25 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+// Add HttpClient for image proxy
+builder.Services.AddHttpClient();
+
 // Configure AutoMapper
 builder.Services.AddAutoMapper(m => m.AddProfile(new AutoMapperConfiguration()));
 
+// Add CORS policy for Dropbox
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowDropbox", policy =>
+    {
+        policy.WithOrigins("https://dl.dropboxusercontent.com", "https://www.dropbox.com")
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
+// Register file storage service
+builder.Services.AddScoped<IFileStorageService, DropboxStorageService>();
 
 // Automatically bind services and repositories by convention
 builder.Services.AutoBind(typeof(LocationService).Assembly);
@@ -49,6 +66,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+// Use CORS
+app.UseCors("AllowDropbox");
 
 app.UseAuthorization();
 

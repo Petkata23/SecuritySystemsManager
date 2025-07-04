@@ -4,8 +4,8 @@
 
 @{
     ViewData["Title"] = "Create Order";
-    bool isClient = User.IsInRole(RoleType.Client.ToString());
-    bool isAdminOrManager = User.IsInRole(RoleType.Admin.ToString()) || User.IsInRole(RoleType.Manager.ToString());
+    bool isClient = User.IsInRole("Client");
+    bool isAdminOrManager = User.IsInRole("Admin") || User.IsInRole("Manager");
 }
 
 <div class="container-fluid animate-fade-in px-4">

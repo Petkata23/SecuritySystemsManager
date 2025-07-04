@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Security Systems Hristovi provides professional security solutions for homes and businesses across Bulgaria." />
+    <meta http-equiv="Cache-control" content="public, max-age=31536000">
     <title>@ViewData["Title"] - Security Systems Hristovi</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,6 +14,18 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="icon" type="image/svg+xml" href="~/img/favicon.svg">
     @await RenderSectionAsync("Styles", required: false)
+    <style>
+        /* Inline styles for critical rendering */
+        .profile-pic {
+            opacity: 0;
+            animation: fadeIn 0.3s ease forwards;
+        }
+        
+        @@keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
 </head>
 <body class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "home-page" : "")">
     <!-- Top Bar -->
@@ -62,24 +75,23 @@
                                 <a class="nav-link" asp-controller="Location" asp-action="List">Locations</a>
                             </li>
                         }
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="MaintenanceLog" asp-action="Index">Maintenance</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="User" asp-action="List">Users</a>
-                        </li>
+                        @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="User" asp-action="List">Users</a>
+                            </li>
+                        }
+                        
                     </ul>
                     
                     <!-- Right side navigation items -->
-                    <ul class="navbar-nav right-nav">
+                    <div class="navbar-nav right-nav">
                         @if (User.Identity.IsAuthenticated)
                         {
                             <!-- Notifications -->
                             @await Html.PartialAsync("_NotificationsPartial")
                             
-                            <li class="nav-item d-none d-lg-block">
-                                <div class="nav-divider-vertical"></div>
-                            </li>
+                            <div class="nav-divider-vertical d-none d-lg-block"></div>
                             
                             <!-- User Profile -->
                             @await Html.PartialAsync("_UserProfilePartial")
@@ -89,7 +101,7 @@
                             <!-- Login/Register buttons -->
                             @await Html.PartialAsync("_UserProfilePartial")
                         }
-                    </ul>
+                    </div>
                 </div>
             </div>
         </nav>

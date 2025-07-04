@@ -12,20 +12,26 @@
 
 @if (User.Identity.IsAuthenticated)
 {
-    <li class="nav-item dropdown profile-dropdown">
+    <div class="dropdown profile-dropdown">
         <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            @if (!string.IsNullOrEmpty(currentUser?.ProfileImage))
-            {
-                <img src="~/uploads/users/@currentUser.ProfileImage" alt="Profile" class="rounded-circle profile-pic me-2" width="32" height="32">
-            }
-            else
-            {
-                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
-                    <i class="bi bi-person-fill"></i>
-                </div>
-            }
-            <span class="d-none d-md-inline">@(currentUser?.FirstName ?? User.Identity.Name)</span>
-            <span class="d-md-none ms-2 me-auto">My Account</span>
+            <div class="profile-image-container me-2">
+                @if (!string.IsNullOrEmpty(currentUser?.ProfileImage))
+                {
+                    <img src="@currentUser.ProfileImage" alt="Profile" class="profile-pic rounded-circle" 
+                         loading="eager" fetchpriority="high" decoding="async"
+                         onerror="this.onerror=null;this.src='/img/favicon.svg';" />
+                }
+                else
+                {
+                    <div class="bg-primary text-white d-flex align-items-center justify-content-center rounded-circle" style="width: 40px; height: 40px;">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+                }
+            </div>
+            <div class="profile-text">
+                <span class="d-none d-md-inline">@(currentUser?.FirstName ?? User.Identity.Name)</span>
+                <span class="d-md-none">My Account</span>
+            </div>
         </a>
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
             <li>
@@ -40,32 +46,32 @@
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item" asp-controller="Auth" asp-action="Logout"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
         </ul>
-    </li>
+    </div>
     
     <!-- Mobile logout button - visible only on small screens -->
-    <li class="nav-item d-lg-none">
+    <div class="nav-item d-lg-none">
         <a class="nav-link text-danger" asp-controller="Auth" asp-action="Logout">
             <i class="bi bi-box-arrow-right me-2"></i>Logout
         </a>
-    </li>
+    </div>
 }
 else
 {
-    <li class="nav-item d-none d-lg-block">
+    <div class="nav-item d-none d-lg-block">
         <a class="btn btn-login" asp-controller="Auth" asp-action="Login">Login</a>
-    </li>
-    <li class="nav-item d-none d-lg-block ms-2">
+    </div>
+    <div class="nav-item d-none d-lg-block ms-2">
         <a class="btn btn-register" asp-controller="Auth" asp-action="Register">Register</a>
-    </li>
+    </div>
     <!-- Mobile login/register links -->
-    <li class="nav-item d-lg-none">
+    <div class="nav-item d-lg-none">
         <a class="nav-link" asp-controller="Auth" asp-action="Login">
             <i class="bi bi-box-arrow-in-right me-2"></i>Login
         </a>
-    </li>
-    <li class="nav-item d-lg-none">
+    </div>
+    <div class="nav-item d-lg-none">
         <a class="nav-link" asp-controller="Auth" asp-action="Register">
             <i class="bi bi-person-plus me-2"></i>Register
         </a>
-    </li>
+    </div>
 } 

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
+using Microsoft.AspNetCore.Http;
 
 namespace SecuritySystemsManagerMVC.ViewModels
 {
@@ -36,6 +37,9 @@ namespace SecuritySystemsManagerMVC.ViewModels
         [EmailAddress(ErrorMessage = "Invalid email address")]
         [DisplayName("Email")]
         public string Email { get; set; }
+
+        [DisplayName("Profile Image")]
+        public IFormFile? ProfileImageFile { get; set; }
 
         [DisplayName("Profile Image URL")]
         public string? ProfileImage { get; set; }
