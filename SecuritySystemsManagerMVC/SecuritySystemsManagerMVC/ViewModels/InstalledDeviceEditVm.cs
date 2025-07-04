@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using SecuritySystemsManager.Shared.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
@@ -39,6 +40,9 @@ namespace SecuritySystemsManagerMVC.ViewModels
 
         [DisplayName("Device Image (URL or path)")]
         public string? DeviceImage { get; set; }
+
+        [DisplayName("Device Image File")]
+        public IFormFile? DeviceImageFile { get; set; }
 
         [Required(ErrorMessage = "Technician is required")]
         [DisplayName("Installed By")]

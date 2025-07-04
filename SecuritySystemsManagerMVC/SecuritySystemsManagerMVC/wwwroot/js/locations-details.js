@@ -189,7 +189,7 @@ document.addEventListener("DOMContentLoaded", function () {
             maxWidth: 280
         }).setContent(popupContent);
         
-        marker.bindPopup(popup).openPopup();
+        marker.bindPopup(popup);
 
         // Add a circle around the marker to highlight the area
         L.circle([lat, lon], {

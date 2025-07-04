@@ -1,0 +1,93 @@
+@model SecuritySystemsManagerMVC.ViewModels.InstalledDeviceDetailsVm
+@using SecuritySystemsManager.Shared.Enums
+
+@{
+    ViewData["Title"] = "Delete Device";
+}
+
+<div class="container-fluid px-4">
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-danger text-white">
+            <h5 class="mb-0">Confirm Delete</h5>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-warning">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                <strong>Warning!</strong> Are you sure you want to delete this device? This action cannot be undone.
+            </div>
+            
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <h6 class="mb-3">Device Information</h6>
+                    <dl class="row">
+                        <dt class="col-sm-4">Device Type</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge bg-@GetDeviceTypeBadgeClass(Model.DeviceType)">
+                                @Model.DeviceType.ToString()
+                            </span>
+                        </dd>
+                        
+                        <dt class="col-sm-4">Brand</dt>
+                        <dd class="col-sm-8">@Model.Brand</dd>
+                        
+                        <dt class="col-sm-4">Model</dt>
+                        <dd class="col-sm-8">@Model.Model</dd>
+                        
+                        <dt class="col-sm-4">Quantity</dt>
+                        <dd class="col-sm-8">@Model.Quantity</dd>
+                        
+                        <dt class="col-sm-4">Installation Date</dt>
+                        <dd class="col-sm-8">@Model.DateInstalled.ToShortDateString()</dd>
+                        
+                        <dt class="col-sm-4">Installed By</dt>
+                        <dd class="col-sm-8">@Model.InstalledByFullName</dd>
+                    </dl>
+                </div>
+                <div class="col-md-6">
+                    @if (!string.IsNullOrEmpty(Model.DeviceImage))
+                    {
+                        <div class="text-center">
+                            <h6 class="mb-3">Device Image</h6>
+                            <img src="~/@Model.DeviceImage" alt="@Model.Brand @Model.Model" 
+                                 class="img-fluid rounded shadow-sm" style="max-height: 200px; object-fit: contain;" />
+                        </div>
+                    }
+                </div>
+            </div>
+            
+            @if (Model.MaintenanceDevices != null && Model.MaintenanceDevices.Any())
+            {
+                <div class="alert alert-danger mt-4">
+                    <i class="bi bi-exclamation-circle me-2"></i>
+                    <strong>Warning!</strong> This device has @Model.MaintenanceDevices.Count maintenance records that will also be deleted.
+                </div>
+            }
+            
+            <form asp-action="Delete" method="post" class="mt-4">
+                <input type="hidden" asp-for="Id" />
+                <div class="d-flex justify-content-between">
+                    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">
+                        <i class="bi bi-x-circle me-2"></i>Cancel
+                    </a>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash me-2"></i>Delete
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@functions {
+    string GetDeviceTypeBadgeClass(DeviceType deviceType)
+    {
+        return deviceType switch
+        {
+            DeviceType.Camera => "info",
+            DeviceType.AccessControl => "primary",
+            DeviceType.Alarm => "danger",
+            DeviceType.Other => "secondary",
+            _ => "secondary"
+        };
+    }
+} 

@@ -1,0 +1,124 @@
+@model SecuritySystemsManagerMVC.ViewModels.InstalledDeviceEditVm
+@using SecuritySystemsManager.Shared.Enums
+
+@{
+    ViewData["Title"] = "Edit Device";
+}
+
+<div class="container-fluid px-4">
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Edit Device</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Id" />
+                
+                <div class="mb-3">
+                    <label asp-for="SecuritySystemOrderId" class="form-label"></label>
+                    <select asp-for="SecuritySystemOrderId" class="form-select" asp-items="Model.AllOrders">
+                        <option value="">-- Select Order --</option>
+                    </select>
+                    <span asp-validation-for="SecuritySystemOrderId" class="text-danger"></span>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="DeviceType" class="form-label"></label>
+                            <select asp-for="DeviceType" class="form-select" asp-items="Model.DeviceTypeOptions">
+                                <option value="">-- Select Device Type --</option>
+                            </select>
+                            <span asp-validation-for="DeviceType" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="InstalledById" class="form-label"></label>
+                            <select asp-for="InstalledById" class="form-select" asp-items="Model.AllTechnicians">
+                                <option value="">-- Select Technician --</option>
+                            </select>
+                            <span asp-validation-for="InstalledById" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="Brand" class="form-label"></label>
+                            <input asp-for="Brand" class="form-control" />
+                            <span asp-validation-for="Brand" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="Model" class="form-label"></label>
+                            <input asp-for="Model" class="form-control" />
+                            <span asp-validation-for="Model" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="Quantity" class="form-label"></label>
+                            <input asp-for="Quantity" class="form-control" type="number" min="1" />
+                            <span asp-validation-for="Quantity" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="DateInstalled" class="form-label"></label>
+                            <input asp-for="DateInstalled" class="form-control" type="date" />
+                            <span asp-validation-for="DateInstalled" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="DeviceImageFile" class="form-label">Device Image</label>
+                            <input asp-for="DeviceImageFile" class="form-control" type="file" accept="image/*" />
+                            <small class="form-text text-muted">Upload a new image to replace the existing one (optional)</small>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        @if (!string.IsNullOrEmpty(Model.DeviceImage))
+                        {
+                            <div class="mb-3">
+                                <label class="form-label">Current Image</label>
+                                <div class="border rounded p-2 text-center">
+                                    <img src="~/@Model.DeviceImage" alt="Current device image" 
+                                         class="img-fluid" style="max-height: 150px; object-fit: contain;" />
+                                </div>
+                                <div class="form-check mt-2">
+                                    <input class="form-check-input" type="checkbox" name="RemoveImage" id="RemoveImage" value="true" />
+                                    <label class="form-check-label" for="RemoveImage">
+                                        Remove existing image
+                                    </label>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left me-2"></i>Back to Details
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save me-2"></i>Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+} 

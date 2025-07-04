@@ -1,0 +1,132 @@
+@model SecuritySystemsManagerMVC.ViewModels.InstalledDeviceDetailsVm
+@using SecuritySystemsManager.Shared.Enums
+
+@{
+    ViewData["Title"] = "Device Details";
+}
+
+<div class="container-fluid px-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">Device Details</h1>
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
+                <i class="bi bi-pencil me-2"></i>Edit
+            </a>
+            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">
+                <i class="bi bi-trash me-2"></i>Delete
+            </a>
+            <a asp-controller="SecuritySystemOrder" asp-action="Details" asp-route-id="@ViewBag.OrderId" class="btn btn-secondary">
+                <i class="bi bi-arrow-left me-2"></i>Back to Order
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-transparent">
+                    <h5 class="mb-0">Device Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl class="row mb-0">
+                                <dt class="col-sm-4">Device Type</dt>
+                                <dd class="col-sm-8">
+                                    <span class="badge bg-@GetDeviceTypeBadgeClass(Model.DeviceType)">
+                                        @Model.DeviceType.ToString()
+                                    </span>
+                                </dd>
+                                
+                                <dt class="col-sm-4">Brand</dt>
+                                <dd class="col-sm-8">@Model.Brand</dd>
+                                
+                                <dt class="col-sm-4">Model</dt>
+                                <dd class="col-sm-8">@Model.Model</dd>
+                                
+                                <dt class="col-sm-4">Quantity</dt>
+                                <dd class="col-sm-8">@Model.Quantity</dd>
+                                
+                                <dt class="col-sm-4">Installation Date</dt>
+                                <dd class="col-sm-8">@Model.DateInstalled.ToShortDateString()</dd>
+                                
+                                <dt class="col-sm-4">Installed By</dt>
+                                <dd class="col-sm-8">@Model.InstalledByFullName</dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            @if (!string.IsNullOrEmpty(Model.DeviceImage))
+                            {
+                                <div class="text-center">
+                                    <img src="~/@Model.DeviceImage" alt="@Model.Brand @Model.Model" 
+                                         class="img-fluid rounded shadow-sm" style="max-height: 200px; object-fit: contain;" />
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="text-center border rounded p-4 bg-light">
+                                    <i class="bi bi-camera text-muted" style="font-size: 3rem;"></i>
+                                    <p class="text-muted mt-2">No image available</p>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-transparent">
+                    <h5 class="mb-0">Maintenance Records</h5>
+                </div>
+                <div class="card-body p-0">
+                    @if (Model.MaintenanceDevices != null && Model.MaintenanceDevices.Any())
+                    {
+                        <div class="list-group list-group-flush">
+                            @foreach (var maintenance in Model.MaintenanceDevices)
+                            {
+                                <div class="list-group-item">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">@maintenance.InstalledDeviceName</h6>
+                                        <small>@maintenance.MaintenanceLogDate</small>
+                                    </div>
+                                    <p class="mb-1">@maintenance.Notes</p>
+                                    <small class="text-muted">
+                                        Status: @(maintenance.IsFixed ? "Fixed" : "Pending")
+                                    </small>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center p-4">
+                            <i class="bi bi-wrench text-muted" style="font-size: 2rem;"></i>
+                            <p class="text-muted mt-2">No maintenance records available</p>
+                        </div>
+                    }
+                </div>
+                <div class="card-footer bg-transparent">
+                    <a href="#" class="btn btn-sm btn-outline-primary w-100">
+                        <i class="bi bi-plus-circle me-2"></i>Add Maintenance Record
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    string GetDeviceTypeBadgeClass(DeviceType deviceType)
+    {
+        return deviceType switch
+        {
+            DeviceType.Camera => "info",
+            DeviceType.AccessControl => "primary",
+            DeviceType.Alarm => "danger",
+            DeviceType.Other => "secondary",
+            _ => "secondary"
+        };
+    }
+} 
