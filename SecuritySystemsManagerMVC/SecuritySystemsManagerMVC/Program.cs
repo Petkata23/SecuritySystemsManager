@@ -1,11 +1,19 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SecuritySystemsManager.Data;
+using SecuritySystemsManager.Data.Entities;
 using SecuritySystemsManager.Data.Repos;
 using SecuritySystemsManager.Services;
+using SecuritySystemsManager.Shared;
+using SecuritySystemsManager.Shared.Attributes;
 using SecuritySystemsManager.Shared.Extensions;
 using SecuritySystemsManager.Shared.Services.Contracts;
 using SecuritySystemsManagerMVC;
+using System;
+using System.Text.Encodings.Web;
+using Microsoft.VisualBasic;
+using Constants = SecuritySystemsManager.Shared.Constants;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,19 +40,57 @@ builder.Services.AddCors(options =>
 // Register file storage service
 builder.Services.AddScoped<IFileStorageService, DropboxStorageService>();
 
+// Register UrlEncoder for QR code generation
+builder.Services.AddSingleton<UrlEncoder>(UrlEncoder.Default);
+
 // Automatically bind services and repositories by convention
 builder.Services.AutoBind(typeof(LocationService).Assembly);
 builder.Services.AutoBind(typeof(LocationRepository).Assembly);
-
-// Configure authentication
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie();
 
 // Configure DbContext with connection string
 builder.Services.AddDbContext<SecuritySystemsManagerDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+// Конфигуриране на Identity
+builder.Services.AddIdentity<User, Role>(options =>
+{
+    // Настройки на паролата
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequiredLength = 6;
+
+    // Настройки за заключване на акаунт
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.AllowedForNewUsers = true;
+
+    // Настройки за потребител
+    options.User.RequireUniqueEmail = true;
+    options.User.AllowedUserNameCharacters = Constants.AllowedUserNameCharacters;
+
+    // Настройки за потвърждение на имейл
+    options.SignIn.RequireConfirmedEmail = false;
+    options.SignIn.RequireConfirmedAccount = false;
+})
+    .AddEntityFrameworkStores<SecuritySystemsManagerDbContext>()
+    .AddDefaultTokenProviders();
+
+// Конфигуриране на cookie настройки
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Auth/Login";
+    options.LogoutPath = "/Auth/Logout";
+    options.AccessDeniedPath = "/Auth/AccessDenied";
+    options.SlidingExpiration = true;
+    options.ExpireTimeSpan = TimeSpan.FromDays(7);
+});
+
+// Add Identity UI
+builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
@@ -67,13 +113,15 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// Use CORS
 app.UseCors("AllowDropbox");
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapRazorPages();
 
 app.Run();

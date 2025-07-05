@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const latitudeInput = document.getElementById('latitudeInput');
     const longitudeInput = document.getElementById('longitudeInput');
     const addressInput = document.getElementById('addressInput');
+    const toggleMapLayersBtn = document.getElementById('toggleMapLayersBtn');
 
     // Default coordinates (center of Bulgaria)
     const defaultLat = 42.6977;
@@ -176,14 +177,30 @@ document.addEventListener("DOMContentLoaded", function () {
         })
     };
     
-    // Add layer control to switch between map styles
-    L.control.layers(baseMaps, null, {
+    // Create layer control but don't add it to the map yet
+    const layerControl = L.control.layers(baseMaps, null, {
         position: 'bottomright',
         collapsed: false
-    }).addTo(map);
+    });
     
     // Select the detailed map by default
     baseMaps["Detailed"].addTo(map);
+
+    // Toggle map layers control
+    let layersVisible = false;
+    
+    if (toggleMapLayersBtn) {
+        toggleMapLayersBtn.addEventListener('click', function() {
+            if (layersVisible) {
+                map.removeControl(layerControl);
+                toggleMapLayersBtn.innerHTML = '<i class="bi bi-layers me-1"></i> Show Map Layers';
+            } else {
+                layerControl.addTo(map);
+                toggleMapLayersBtn.innerHTML = '<i class="bi bi-layers-fill me-1"></i> Hide Map Layers';
+            }
+            layersVisible = !layersVisible;
+        });
+    }
     
     // Add geocoder control with enhanced features
     const geocoder = L.Control.geocoder({

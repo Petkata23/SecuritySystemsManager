@@ -9,8 +9,9 @@ namespace SecuritySystemsManager.Shared.Services.Contracts
         Task<bool> CanUserLoginAsync(string username, string password);
         Task<UserDto> GetByUsernameAsync(string username);
         Task<UserDto> CreateUserWithPasswordAsync(UserDto userDto, string password);
-        Task<UserDto> UpdateUserWithPasswordAsync(UserDto userDto, string password = null);
+        Task<UserDto> UpdateUserWithPasswordAsync(UserDto userDto, string? password = null);
         Task<string> UploadUserProfileImageAsync(IFormFile imageFile);
+        Task<string> UploadProfileImageAsync(int userId, IFormFile profileImageFile);
         Task<UserDto> CreateUserWithDetailsAsync(UserDto userDto, string password, IFormFile profileImageFile);
     }
 } 

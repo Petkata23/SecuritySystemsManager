@@ -25,6 +25,23 @@
             from { opacity: 0; }
             to { opacity: 1; }
         }
+
+        /* Navigation separator styles */
+        .nav-separator {
+            height: 24px;
+            width: 1px;
+            background-color: rgba(0, 0, 0, 0.1);
+            margin: 0 15px;
+            align-self: center;
+        }
+
+        @@media (max-width: 991.98px) {
+            .nav-separator {
+                height: 1px;
+                width: 100%;
+                margin: 8px 0;
+            }
+        }
     </style>
 </head>
 <body class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "home-page" : "")">
@@ -63,12 +80,29 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav me-auto">
+                        <!-- Main navigation group -->
                         <li class="nav-item">
                             <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="SecuritySystemOrder" asp-action="List">Orders</a>
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Privacy" ? "active" : "")" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
+                        
+                        <!-- Separator between navigation groups -->
+                        <li class="d-none d-lg-block">
+                            <div class="nav-separator"></div>
+                        </li>
+                        <li class="d-lg-none">
+                            <hr class="dropdown-divider nav-separator">
+                        </li>
+                        
+                        <!-- Authenticated user navigation group -->
+                        @if (User.IsInRole("Admin") || User.IsInRole("Manager") || User.IsInRole("Client"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="SecuritySystemOrder" asp-action="List">Orders</a>
+                            </li>
+                        }
                         @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
                         {
                             <li class="nav-item">
@@ -160,6 +194,9 @@
             <div class="container">
                 <div class="copyright">
                     &copy; @DateTime.Now.Year <strong><span>Security Systems Hristovi</span></strong>. All Rights Reserved
+                    <div class="mt-2">
+                        <a asp-controller="Home" asp-action="Privacy" class="text-muted text-decoration-none">Privacy Policy</a>
+                    </div>
                 </div>
             </div>
         </div>

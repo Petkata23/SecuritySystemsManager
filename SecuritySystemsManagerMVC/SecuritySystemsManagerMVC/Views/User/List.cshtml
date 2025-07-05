@@ -54,7 +54,7 @@
                                         <div class="d-flex align-items-center">
                                             @if (!string.IsNullOrEmpty(user.ProfileImage))
                                             {
-                                                <img src="/@user.ProfileImage" alt="Profile" class="rounded-circle me-3" width="40" height="40">
+                                                <img src="@user.ProfileImage" alt="Profile" class="rounded-circle me-3" width="40" height="40" style="object-fit: cover;">
                                             }
                                             else
                                             {

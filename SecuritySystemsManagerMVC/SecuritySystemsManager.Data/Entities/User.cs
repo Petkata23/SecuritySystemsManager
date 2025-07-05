@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace SecuritySystemsManager.Data.Entities
 {
-    public class User : BaseEntity
+    public class User : IdentityUser<int>, IBaseEntity
     {
         public User()
         {
@@ -14,15 +15,18 @@ namespace SecuritySystemsManager.Data.Entities
             AssignedOrders = new List<SecuritySystemOrder>();
         }
 
-        public string Username { get; set; }
-        public string Password { get; set; }
+        // Запазваме само полетата, които не са част от IdentityUser
+        // IdentityUser вече има Username, Email, PasswordHash и други
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string Email { get; set; }
         public string? ProfileImage { get; set; }
+        
+        // Имплементация на IBaseEntity
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
 
-        public int RoleId { get; set; }
-        public virtual Role Role { get; set; }
+        public int? RoleId { get; set; }
+        public virtual Role? Role { get; set; }
 
         // For Clients
         public virtual ICollection<SecuritySystemOrder> OrdersAsClient { get; set; }

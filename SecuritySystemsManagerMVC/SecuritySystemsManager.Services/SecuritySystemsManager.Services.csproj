@@ -9,11 +9,15 @@
   <ItemGroup>
     <PackageReference Include="Dropbox.Api" Version="7.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="8.0.6" />
+    <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="8.0.6" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SecuritySystemsManager.Shared\SecuritySystemsManager.Shared.csproj" />
+    <ProjectReference Include="..\SecuritySystemsManager.Data\SecuritySystemsManager.Data.csproj" />
   </ItemGroup>
 
 </Project>

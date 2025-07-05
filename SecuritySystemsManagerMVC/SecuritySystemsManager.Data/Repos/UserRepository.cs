@@ -15,19 +15,19 @@ namespace SecuritySystemsManager.Data.Repos
 
         public async Task<bool> CanUserLoginAsync(string username, string password)
         {
-            var userEntity = await _dbSet.FirstOrDefaultAsync(u => u.Username == username);
+            var userEntity = await _dbSet.FirstOrDefaultAsync(u => u.UserName == username);
 
             if (userEntity == null)
             {
                 return false;
             }
 
-            return PasswordHasher.VerifyPassword(password, userEntity.Password);
+            return PasswordHasher.VerifyPassword(password, userEntity.PasswordHash);
         }
 
         public async Task<UserDto> GetByUsernameAsync(string username)
         {
-            return MapToModel(await _dbSet.FirstOrDefaultAsync(u => u.Username == username));
+            return MapToModel(await _dbSet.FirstOrDefaultAsync(u => u.UserName == username));
         }
 
     }

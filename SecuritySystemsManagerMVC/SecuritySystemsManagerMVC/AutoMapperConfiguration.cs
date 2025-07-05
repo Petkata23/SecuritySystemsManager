@@ -16,7 +16,16 @@ namespace SecuritySystemsManagerMVC
             CreateMap<InstalledDeviceDto, InstalledDeviceDetailsVm>().ReverseMap();
             CreateMap<InstalledDeviceDto, InstalledDeviceEditVm>().ReverseMap();
 
-            CreateMap<User, UserDto>().ReverseMap();
+            CreateMap<User, UserDto>()
+                .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.UserName))
+                .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.PasswordHash));
+                
+            CreateMap<UserDto, User>()
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Username))
+                .ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.Password))
+                .ForMember(dest => dest.NormalizedUserName, opt => opt.MapFrom(src => src.Username.ToUpper()))
+                .ForMember(dest => dest.NormalizedEmail, opt => opt.MapFrom(src => src.Email != null ? src.Email.ToUpper() : null));
+                
             CreateMap<UserDto, UserDetailsVm>().ReverseMap();
             CreateMap<UserDto, UserEditVm>().ReverseMap();
 

@@ -1,0 +1,127 @@
+@model SecuritySystemsManagerMVC.ViewModels.TwoFactorAuthenticationViewModel
+@{
+    ViewData["Title"] = "Configure Authenticator App";
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">@ViewData["Title"]</h4>
+                </div>
+                <div class="card-body">
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            @TempData["Error"]
+                        </div>
+                    }
+
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success" role="alert">
+                            <i class="bi bi-check-circle-fill me-2"></i>
+                            @TempData["Success"]
+                        </div>
+                    }
+
+                    <div class="alert alert-info">
+                        <h5><i class="bi bi-info-circle me-2"></i>How to set up two-factor authentication:</h5>
+                        <ol class="mt-3">
+                            <li class="mb-3">
+                                <p>
+                                    Download a two-factor authenticator app like Microsoft Authenticator,
+                                    Google Authenticator, or another compatible app for
+                                    <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=en" target="_blank">Android</a> or
+                                    <a href="https://apps.apple.com/us/app/google-authenticator/id388497605" target="_blank">iOS</a>.
+                                </p>
+                            </li>
+                            <li class="mb-3">
+                                <p>Scan the QR code or enter this key into your app:</p>
+                                <div class="row g-4">
+                                    <div class="col-md-5">
+                                        <div class="qr-container p-3 bg-white rounded shadow-sm d-flex justify-content-center align-items-center">
+                                            <div id="qrCode"></div>
+                                        </div>
+                                        <div id="qrCodeData" data-url="@Model.AuthenticatorUri" class="d-none"></div>
+                                    </div>
+                                    <div class="col-md-7">
+                                        <div class="card bg-light">
+                                            <div class="card-body">
+                                                <h6 class="card-title">Key for manual entry:</h6>
+                                                <div class="secret-key p-2 bg-white rounded border mt-2">
+                                                    @Model.SharedKey
+                                                </div>
+                                                <div class="alert alert-warning mt-3 mb-0">
+                                                    <p class="mb-0"><strong>Important:</strong> The QR code contains a special format that is only recognized by two-factor authentication apps.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="mt-4">
+                                <p>After scanning the QR code or entering the key, your app will generate a verification code. Enter that code below:</p>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <form method="post" class="card bg-light">
+                                            <div class="card-body">
+                                                @Html.AntiForgeryToken()
+                                                <div class="mb-3">
+                                                    <label asp-for="Code" class="form-label fw-bold">Verification Code</label>
+                                                    <input asp-for="Code" class="form-control form-control-lg" autocomplete="off" placeholder="Enter 6-digit code" />
+                                                    <span asp-validation-for="Code" class="text-danger"></span>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary btn-lg">Verify</button>
+                                                <div asp-validation-summary="ModelOnly" class="text-danger mt-3"></div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script type="text/javascript" src="~/lib/qrcode/qrcode.min.js"></script>
+    <script type="text/javascript">
+        window.addEventListener('load', function() {
+            try {
+                new QRCode(document.getElementById("qrCode"), {
+                    text: "@Html.Raw(Model.AuthenticatorUri)",
+                    width: 200,
+                    height: 200,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+            } catch (e) {
+                console.error("Error creating QR code:", e);
+                document.getElementById("qrCode").innerHTML = 
+                    "<p class='text-danger'>Error generating QR code. Please try refreshing the page.</p>";
+            }
+        });
+    </script>
+}
+
+@section Styles {
+    <style>
+        .qr-container {
+            width: 230px;
+            height: 230px;
+        }
+        .secret-key {
+            font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 1.1em;
+            word-break: break-all;
+        }
+    </style>
+} 

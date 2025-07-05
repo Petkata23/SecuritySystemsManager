@@ -23,26 +23,51 @@
         </a>
     </div>
 
-    <!-- Map Card -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card shadow-sm">
-                <div class="card-header bg-transparent">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">Location Map</h5>
-                        <div class="map-controls-toggle">
-                            <button class="btn btn-sm btn-outline-primary" id="toggleMapSize">
-                                <i class="bi bi-arrows-angle-expand"></i> Expand
-                            </button>
+    @if (Model.Any())
+    {
+        <!-- Map Card -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-transparent">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Location Map</h5>
+                            <div class="map-controls-toggle">
+                                <button class="btn btn-sm btn-outline-primary" id="toggleMapSize">
+                                    <i class="bi bi-arrows-angle-expand"></i> Expand
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="card-body p-0">
-                    <div id="locationsMap" class="map-container locations-list-map"></div>
+                    <div class="card-body p-0">
+                        <div id="locationsMap" class="map-container locations-list-map"></div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    }
+    else
+    {
+        <!-- Empty Map Card -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-transparent">
+                        <h5 class="mb-0">Location Map</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center py-5">
+                            <div class="mb-3">
+                                <i class="bi bi-map text-muted" style="font-size: 3rem;"></i>
+                            </div>
+                            <h5>No Locations to Display on Map</h5>
+                            <p class="text-muted">Add your first location to see it on the map</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 
     <div class="row">
         <div class="col-12">
@@ -50,12 +75,15 @@
                 <div class="card-header bg-transparent">
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">All Locations</h5>
-                        <div class="input-group" style="width: 300px;">
-                            <input type="text" id="locationSearch" class="form-control" placeholder="Search locations...">
-                            <button class="btn btn-outline-secondary" type="button">
-                                <i class="bi bi-search"></i>
-                            </button>
-                        </div>
+                        @if (Model.Any())
+                        {
+                            <div class="input-group" style="width: 300px;">
+                                <input type="text" id="locationSearch" class="form-control" placeholder="Search locations...">
+                                <button class="btn btn-outline-secondary" type="button">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </div>
+                        }
                     </div>
                 </div>
                 <div class="card-body p-0">
@@ -160,61 +188,64 @@
 </div>
 
 @section Scripts {
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
-    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
-    <script src="https://unpkg.com/leaflet.fullscreen@1.6.0/Control.FullScreen.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.79.0/dist/L.Control.Locate.min.js"></script>
-    <script src="~/js/locations.js"></script>
-    <script src="~/js/locations-list.js"></script>
-    <script>
-        $(document).ready(function() {
-            // Search functionality
-            $("#locationSearch").on("keyup", function() {
-                var value = $(this).val().toLowerCase();
-                $("#locationsTable tbody tr").filter(function() {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    @if (Model.Any())
+    {
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+        <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+        <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+        <script src="https://unpkg.com/leaflet.fullscreen@1.6.0/Control.FullScreen.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.79.0/dist/L.Control.Locate.min.js"></script>
+        <script src="~/js/locations.js"></script>
+        <script src="~/js/locations-list.js"></script>
+        <script>
+            $(document).ready(function() {
+                // Search functionality
+                $("#locationSearch").on("keyup", function() {
+                    var value = $(this).val().toLowerCase();
+                    $("#locationsTable tbody tr").filter(function() {
+                        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                    });
+                });
+                
+                // Tooltip initialization
+                $('[data-bs-toggle="tooltip"]').tooltip();
+                
+                // Toggle map size
+                $("#toggleMapSize").on("click", function() {
+                    var mapContainer = $("#locationsMap");
+                    var icon = $(this).find("i");
+                    var buttonText = $(this).text().trim();
+                    
+                    if (mapContainer.hasClass("map-container-lg")) {
+                        mapContainer.removeClass("map-container-lg");
+                        icon.removeClass("bi-arrows-angle-contract").addClass("bi-arrows-angle-expand");
+                        $(this).html('<i class="bi bi-arrows-angle-expand"></i> Expand');
+                    } else {
+                        mapContainer.addClass("map-container-lg");
+                        icon.removeClass("bi-arrows-angle-expand").addClass("bi-arrows-angle-contract");
+                        $(this).html('<i class="bi bi-arrows-angle-contract"></i> Collapse');
+                    }
+                    
+                    // Trigger map resize event
+                    setTimeout(function() {
+                        window.dispatchEvent(new Event('resize'));
+                    }, 200);
+                });
+                
+                // Highlight location on map when hovering over table row
+                $(".location-row").on("mouseenter", function() {
+                    var locationId = $(this).data("location-id");
+                    if (window.highlightMarker) {
+                        window.highlightMarker(locationId);
+                    }
+                }).on("mouseleave", function() {
+                    if (window.unhighlightMarkers) {
+                        window.unhighlightMarkers();
+                    }
                 });
             });
-            
-            // Tooltip initialization
-            $('[data-bs-toggle="tooltip"]').tooltip();
-            
-            // Toggle map size
-            $("#toggleMapSize").on("click", function() {
-                var mapContainer = $("#locationsMap");
-                var icon = $(this).find("i");
-                var buttonText = $(this).text().trim();
-                
-                if (mapContainer.hasClass("map-container-lg")) {
-                    mapContainer.removeClass("map-container-lg");
-                    icon.removeClass("bi-arrows-angle-contract").addClass("bi-arrows-angle-expand");
-                    $(this).html('<i class="bi bi-arrows-angle-expand"></i> Expand');
-                } else {
-                    mapContainer.addClass("map-container-lg");
-                    icon.removeClass("bi-arrows-angle-expand").addClass("bi-arrows-angle-contract");
-                    $(this).html('<i class="bi bi-arrows-angle-contract"></i> Collapse');
-                }
-                
-                // Trigger map resize event
-                setTimeout(function() {
-                    window.dispatchEvent(new Event('resize'));
-                }, 200);
-            });
-            
-            // Highlight location on map when hovering over table row
-            $(".location-row").on("mouseenter", function() {
-                var locationId = $(this).data("location-id");
-                if (window.highlightMarker) {
-                    window.highlightMarker(locationId);
-                }
-            }).on("mouseleave", function() {
-                if (window.unhighlightMarkers) {
-                    window.unhighlightMarkers();
-                }
-            });
-        });
-    </script>
+        </script>
+    }
     
     <style>
         .location-icon {

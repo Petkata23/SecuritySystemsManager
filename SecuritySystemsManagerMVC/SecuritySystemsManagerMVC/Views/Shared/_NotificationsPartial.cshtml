@@ -13,7 +13,8 @@
     var unreadCount = notifications.Count(n => !n.IsRead);
 }
 
-<div class="dropdown notification-dropdown">
+<!-- Desktop notifications dropdown -->
+<div class="dropdown notification-dropdown d-none d-lg-block">
     <a class="nav-link dropdown-toggle position-relative d-flex align-items-center" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
         <div class="notification-icon-container">
             <i class="bi bi-bell-fill"></i>
@@ -25,7 +26,6 @@
                 </span>
             }
         </div>
-        <span class="d-lg-none ms-2">Notifications</span>
     </a>
     <ul class="dropdown-menu dropdown-menu-end notification-dropdown-menu" aria-labelledby="notificationDropdown">
         <li>
@@ -79,4 +79,19 @@
             </li>
         }
     </ul>
+</div>
+
+<!-- Mobile notifications link -->
+<div class="nav-item d-lg-none">
+    <a class="nav-link position-relative" asp-controller="Notification" asp-action="Index">
+        <i class="bi bi-bell-fill me-2"></i>
+        Notifications
+        @if (unreadCount > 0)
+        {
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="margin-left: -15px;">
+                @(unreadCount > 9 ? "9+" : unreadCount.ToString())
+                <span class="visually-hidden">unread notifications</span>
+            </span>
+        }
+    </a>
 </div> 

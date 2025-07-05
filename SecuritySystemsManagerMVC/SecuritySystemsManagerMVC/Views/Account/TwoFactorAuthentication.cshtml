@@ -1,0 +1,82 @@
+@model SecuritySystemsManagerMVC.ViewModels.TwoFactorAuthenticationViewModel
+
+@{
+    ViewData["Title"] = "Two-factor Authentication";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if (TempData["RecoveryCodes"] != null)
+{
+    <div class="alert alert-warning" role="alert">
+        <p><strong>@TempData["Message"]</strong></p>
+        <p>Here are your recovery codes:</p>
+        <pre class="recovery-codes">@TempData["RecoveryCodes"]</pre>
+        <p>Store these codes in a secure location. If you lose your device and don't have the recovery codes you will lose access to your account.</p>
+    </div>
+}
+
+<div>
+    <h4>Two-factor authentication status</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Is2faEnabled)
+        </dt>
+        <dd class="col-sm-9">
+            @if (Model.Is2faEnabled)
+            {
+                <span class="badge bg-success">Enabled</span>
+            }
+            else
+            {
+                <span class="badge bg-danger">Disabled</span>
+            }
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.HasAuthenticator)
+        </dt>
+        <dd class="col-sm-9">
+            @if (Model.HasAuthenticator)
+            {
+                <span class="badge bg-success">Yes</span>
+            }
+            else
+            {
+                <span class="badge bg-danger">No</span>
+            }
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.RecoveryCodesLeft)
+        </dt>
+        <dd class="col-sm-9">
+            @Model.RecoveryCodesLeft
+        </dd>
+    </dl>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        @if (!Model.Is2faEnabled)
+        {
+            <a asp-action="EnableAuthenticator" class="btn btn-primary">Set up authenticator app</a>
+        }
+        else
+        {
+            <a asp-action="Disable2fa" class="btn btn-danger">Disable 2FA</a>
+            <a asp-action="ResetAuthenticator" class="btn btn-warning ms-2">Reset authenticator app</a>
+        }
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .recovery-codes {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 1.1em;
+        }
+    </style>
+} 

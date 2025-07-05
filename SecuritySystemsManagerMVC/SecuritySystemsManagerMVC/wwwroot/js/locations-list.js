@@ -5,6 +5,13 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error("❌ Error: Map container with id='locationsMap' not found.");
         return;
     }
+    
+    // Check if we have any locations to display
+    var locationRows = document.querySelectorAll('.location-row');
+    if (locationRows.length === 0) {
+        console.log("No locations found to display on map.");
+        return;
+    }
 
     // Initialize map with colorful theme
     var map = L.map('locationsMap', {

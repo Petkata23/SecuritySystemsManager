@@ -13,5 +13,6 @@ namespace SecuritySystemsManager.Shared
         public const string InvalidId = "Invalid ID.";
         public const string InvalidCredentials = "Invalid Credentials.";
         public const string UserAlreadyExists = "User already exists.";
+        public const string AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
     }
 }

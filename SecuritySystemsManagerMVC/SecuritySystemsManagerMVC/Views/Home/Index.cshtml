@@ -12,7 +12,14 @@
                 <p class="hero-text">Security Systems Hristovi delivers cutting-edge security solutions for businesses and homes. Our integrated systems provide complete protection and peace of mind.</p>
                 <div class="hero-buttons">
                     <a href="#services" class="btn btn-primary btn-lg">Explore Solutions</a>
-                    <a href="#contact" class="btn btn-outline-secondary btn-lg">Contact Us</a>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <a asp-controller="SecuritySystemOrder" asp-action="Create" class="btn btn-outline-secondary btn-lg">Create Order</a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Auth" asp-action="Login" class="btn btn-outline-secondary btn-lg">Contact Us</a>
+                    }
                 </div>
                 <div class="hero-stats mt-5">
                     <div class="row">
@@ -319,7 +326,14 @@
             <h2 class="cta-title">Ready to Enhance Your Security?</h2>
             <p class="cta-text">Contact us today for a free consultation and personalized security assessment.</p>
             <div class="cta-buttons">
-                <a href="#contact" class="btn btn-cta-primary">Get Started</a>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <a asp-controller="SecuritySystemOrder" asp-action="Create" class="btn btn-cta-primary">Create Order</a>
+                }
+                else
+                {
+                    <a asp-controller="Auth" asp-action="Login" class="btn btn-cta-primary">Get Started</a>
+                }
                 <a href="#" class="btn btn-cta-secondary">Learn More</a>
             </div>
         </div>

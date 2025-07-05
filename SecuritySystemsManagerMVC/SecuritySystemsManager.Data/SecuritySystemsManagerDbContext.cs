@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SecuritySystemsManager.Data.Entities;
 using SecuritySystemsManager.Shared.Enums;
@@ -10,13 +12,11 @@ using SecuritySystemsManager.Shared.Security;
 
 namespace SecuritySystemsManager.Data
 {
-    public class SecuritySystemsManagerDbContext : DbContext
+    public class SecuritySystemsManagerDbContext : IdentityDbContext<User, Role, int>
     {
         // Статична дата за seed данните
         private static readonly DateTime _seedDate = new DateTime(2023, 1, 1);
 
-        public DbSet<User> Users { get; set; }
-        public DbSet<Role> Roles { get; set; }
         public DbSet<Location> Locations { get; set; }
         public DbSet<SecuritySystemOrder> Orders { get; set; }
         public DbSet<InstalledDevice> InstalledDevices { get; set; }
@@ -48,15 +48,31 @@ namespace SecuritySystemsManager.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            // Промяна на имената на таблиците по подразбиране за Identity
+            modelBuilder.Entity<User>().ToTable("Users");
+            modelBuilder.Entity<Role>().ToTable("Roles");
+            modelBuilder.Entity<IdentityUserClaim<int>>().ToTable("UserClaims");
+            modelBuilder.Entity<IdentityUserRole<int>>().ToTable("UserRoles");
+            modelBuilder.Entity<IdentityUserLogin<int>>().ToTable("UserLogins");
+            modelBuilder.Entity<IdentityRoleClaim<int>>().ToTable("RoleClaims");
+            modelBuilder.Entity<IdentityUserToken<int>>().ToTable("UserTokens");
+
+            // Модифициране на Identity релациите, за да избегнем циклични каскадни пътища
+            modelBuilder.Entity<IdentityUserRole<int>>()
+                .HasOne<User>()
+                .WithMany()
+                .HasForeignKey(ur => ur.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<IdentityUserRole<int>>()
+                .HasOne<Role>()
+                .WithMany()
+                .HasForeignKey(ur => ur.RoleId)
+                .OnDelete(DeleteBehavior.NoAction);
+
             // ===== КОНФИГУРАЦИЯ НА РЕЛАЦИИТЕ =====
 
-            // 👥 Role <-> Users (1:N)
-            // Ролите са основни данни и не трябва да се изтриват, ако има потребители с тази роля
-            modelBuilder.Entity<Role>()
-                .HasMany(r => r.Users)
-                .WithOne(u => u.Role)
-                .HasForeignKey(u => u.RoleId)
-                .OnDelete(DeleteBehavior.Restrict);
+            // 👥 Role <-> Users (1:N) - вече се управлява от Identity
 
             // 👤 User <-> Orders as Client (1:N)
             // Клиентът не трябва да може да бъде изтрит, ако има поръчки
@@ -151,38 +167,52 @@ namespace SecuritySystemsManager.Data
                 .Property(i => i.TotalAmount)
                 .HasPrecision(18, 2);
 
-            // ✅ Уникален Username
-            modelBuilder.Entity<User>()
-                .HasIndex(u => u.Username)
-                .IsUnique();
+            // ✅ Уникален Username - вече се управлява от Identity
 
             // ===== SEED ДАННИ =====
 
             // 🌱 Сийдване на роли
-            foreach (var role in Enum.GetValues(typeof(RoleType)).Cast<RoleType>())
+            foreach (var roleType in Enum.GetValues(typeof(RoleType)).Cast<RoleType>())
             {
                 modelBuilder.Entity<Role>().HasData(new Role
                 {
-                    Id = (int)role,
-                    Name = role.ToString(),
-                    RoleType = role,
+                    Id = (int)roleType,
+                    Name = roleType.ToString(),
+                    NormalizedName = roleType.ToString().ToUpper(),
+                    RoleType = roleType,
                     CreatedAt = _seedDate,
                     UpdatedAt = _seedDate
                 });
             }
 
             // 🌱 Сийдване на потребител с роля Administrator
-            modelBuilder.Entity<User>().HasData(new User
+            var adminUser = new User
             {
                 Id = 1,
-                Username = "admin",
+                UserName = "admin",
+                NormalizedUserName = "ADMIN",
                 FirstName = "Admin",
                 LastName = "User",
-                Password = PasswordHasher.HashPassword("string"),
                 Email = "admin@securitysystems.com",
+                NormalizedEmail = "ADMIN@SECURITYSYSTEMS.COM",
+                EmailConfirmed = true,
+                SecurityStamp = Guid.NewGuid().ToString(),
                 RoleId = (int)RoleType.Admin,
                 CreatedAt = _seedDate,
                 UpdatedAt = _seedDate
+            };
+            
+            // Хеширане на паролата с Identity
+            var passwordHasher = new PasswordHasher<User>();
+            adminUser.PasswordHash = passwordHasher.HashPassword(adminUser, "string");
+            
+            modelBuilder.Entity<User>().HasData(adminUser);
+            
+            // Добавяне на админ потребителя към админ ролята
+            modelBuilder.Entity<IdentityUserRole<int>>().HasData(new IdentityUserRole<int>
+            {
+                RoleId = (int)RoleType.Admin,
+                UserId = 1
             });
         }
     }
