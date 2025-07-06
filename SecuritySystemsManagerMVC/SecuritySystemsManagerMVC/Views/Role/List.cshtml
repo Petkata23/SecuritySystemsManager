@@ -1,0 +1,140 @@
+@model IEnumerable<SecuritySystemsManagerMVC.ViewModels.RoleDetailsVm>
+
+@{
+    ViewData["Title"] = "Roles";
+}
+
+<div class="container-fluid animate-fade-in px-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">Roles</h1>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-lg me-2"></i>Add New Role
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-transparent">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">All Roles</h5>
+                        @if (Model.Any())
+                        {
+                            <div class="input-group" style="width: 300px;">
+                                <input type="text" id="roleSearch" class="form-control" placeholder="Search roles...">
+                                <button class="btn btn-outline-secondary" type="button">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    @if (Model.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0" id="rolesTable">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Role Type</th>
+                                        <th>Users</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var role in Model)
+                                    {
+                                        <tr class="role-row">
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="role-icon me-3">
+                                                        <i class="bi bi-shield-lock text-primary"></i>
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-0">@role.Name</h6>
+                                                        <small class="text-muted">ID: @role.Id</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-@GetRoleBadgeClass(role.RoleType)">@role.RoleType</span>
+                                            </td>
+                                            <td>
+                                                @if (role.Users != null && role.Users.Any())
+                                                {
+                                                    <span class="badge bg-primary rounded-pill">@role.Users.Count</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-secondary">No Users</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a asp-action="Details" asp-route-id="@role.Id" class="btn btn-sm btn-info">
+                                                        <i class="bi bi-info-circle"></i>
+                                                    </a>
+                                                    <a asp-action="Edit" asp-route-id="@role.Id" class="btn btn-sm btn-primary">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </a>
+                                                    <a asp-action="Delete" asp-route-id="@role.Id" class="btn btn-sm btn-danger">
+                                                        <i class="bi bi-trash"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <div class="mb-3">
+                                <i class="bi bi-shield-lock text-muted" style="font-size: 3rem;"></i>
+                            </div>
+                            <h5>No Roles Found</h5>
+                            <p class="text-muted">Start by adding your first role</p>
+                            <a asp-action="Create" class="btn btn-primary">
+                                <i class="bi bi-plus-lg me-2"></i>Add Role
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Search functionality
+            $("#roleSearch").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $("#rolesTable tbody tr").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+            
+            // Tooltip initialization
+            $('[data-bs-toggle="tooltip"]').tooltip();
+        });
+    </script>
+}
+
+@functions {
+    string GetRoleBadgeClass(string roleType)
+    {
+        return roleType switch
+        {
+            "Admin" => "danger",
+            "Manager" => "warning",
+            "Technician" => "info",
+            "Client" => "success",
+            _ => "secondary"
+        };
+    }
+} 

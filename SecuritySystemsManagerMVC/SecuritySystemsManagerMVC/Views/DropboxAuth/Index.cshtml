@@ -1,0 +1,85 @@
+@{
+    ViewData["Title"] = "Dropbox Authentication";
+}
+
+<div class="container mt-4">
+    <h2>Dropbox Authentication</h2>
+    
+    <div class="alert alert-warning">
+        <h4>Important!</h4>
+        <p>Before proceeding, make sure to add the following Redirect URI to your Dropbox App Console:</p>
+        <div class="input-group mb-3">
+            <input type="text" id="redirectUri" class="form-control" value="@ViewBag.RedirectUri" readonly>
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard('redirectUri')">Copy</button>
+            </div>
+        </div>
+        <p>
+            <ol>
+                <li>Go to <a href="https://www.dropbox.com/developers/apps" target="_blank">Dropbox App Console</a></li>
+                <li>Select your app</li>
+                <li>In the OAuth 2 section, find "Redirect URIs"</li>
+                <li>Add the URI shown above</li>
+                <li>Save changes</li>
+            </ol>
+        </p>
+    </div>
+    
+    <p>Click the button below to authorize the application to access your Dropbox account.</p>
+    <p>This will generate a refresh token that you can use in your application settings.</p>
+    
+    <div class="mt-4">
+        <a href="@ViewBag.AuthUrl" class="btn btn-primary">Authorize with Dropbox</a>
+    </div>
+    
+    <div class="mt-4">
+        <h4>Instructions:</h4>
+        <ol>
+            <li>Click the button above to authorize the application.</li>
+            <li>Log in to your Dropbox account if prompted.</li>
+            <li>Allow the requested permissions.</li>
+            <li>You will be redirected back to this application with your tokens.</li>
+            <li>Copy the refresh token and update your appsettings.json file.</li>
+        </ol>
+    </div>
+    
+    <div class="mt-4">
+        <h4>Test Token Refresh</h4>
+        <p>If you have already set up your refresh token in appsettings.json, you can test the token refresh functionality:</p>
+        <button id="testRefreshBtn" class="btn btn-info">Test Token Refresh</button>
+        <div id="testResult" class="mt-3"></div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function copyToClipboard(elementId) {
+            var copyText = document.getElementById(elementId);
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            document.execCommand("copy");
+            alert("Copied to clipboard!");
+        }
+        
+        $(document).ready(function() {
+            $("#testRefreshBtn").click(function() {
+                $("#testResult").html("<div class='spinner-border text-primary' role='status'><span class='sr-only'>Loading...</span></div>");
+                
+                $.ajax({
+                    url: '@Url.Action("TestTokenRefresh", "DropboxAuth")',
+                    type: 'GET',
+                    success: function(result) {
+                        if (result.success) {
+                            $("#testResult").html("<div class='alert alert-success'>" + result.message + "<br>Token: " + result.tokenFirstChars + "</div>");
+                        } else {
+                            $("#testResult").html("<div class='alert alert-danger'>" + result.message + "</div>");
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        $("#testResult").html("<div class='alert alert-danger'>Error: " + error + "</div>");
+                    }
+                });
+            });
+        });
+    </script>
+} 

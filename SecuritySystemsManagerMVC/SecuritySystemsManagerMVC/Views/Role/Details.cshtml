@@ -1,0 +1,140 @@
+@model SecuritySystemsManagerMVC.ViewModels.RoleDetailsVm
+
+@{
+    ViewData["Title"] = "Role Details";
+}
+
+<div class="container-fluid animate-fade-in px-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">Role Details</h1>
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
+                <i class="bi bi-pencil me-2"></i>Edit
+            </a>
+            <a asp-action="List" class="btn btn-secondary">
+                <i class="bi bi-arrow-left me-2"></i>Back to List
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-transparent">
+                    <h5 class="mb-0">Role Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <div class="role-icon-large mb-3">
+                            <i class="bi bi-shield-lock display-1 text-primary"></i>
+                        </div>
+                        <h4 class="mb-1">@Model.Name</h4>
+                        <span class="badge bg-@GetRoleBadgeClass(Model.RoleType) px-3 py-2 fs-6">@Model.RoleType</span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h6 class="text-muted mb-1">Role ID</h6>
+                        <p>@Model.Id</p>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h6 class="text-muted mb-1">Created At</h6>
+                        <p>@Model.CreatedAt.ToString("dd MMM yyyy, HH:mm")</p>
+                    </div>
+                    
+                    @if (Model.UpdatedAt.HasValue)
+                    {
+                        <div class="mb-3">
+                            <h6 class="text-muted mb-1">Last Updated</h6>
+                            <p>@Model.UpdatedAt.Value.ToString("dd MMM yyyy, HH:mm")</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-transparent">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Users with this Role</h5>
+                        <span class="badge bg-primary rounded-pill">@Model.Users.Count</span>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    @if (Model.Users != null && Model.Users.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>User</th>
+                                        <th>Email</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var user in Model.Users)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="user-avatar me-3">
+                                                        @if (!string.IsNullOrEmpty(user.ProfileImage))
+                                                        {
+                                                            <img src="@user.ProfileImage" alt="@user.FirstName @user.LastName" class="rounded-circle" width="40" height="40">
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="avatar-placeholder rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                                                @(user.FirstName?.Substring(0, 1))@(user.LastName?.Substring(0, 1))
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-0">@user.FirstName @user.LastName</h6>
+                                                        <small class="text-muted">ID: @user.Id</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>@user.Email</td>
+                                            <td>
+                                                <a asp-controller="User" asp-action="Details" asp-route-id="@user.Id" class="btn btn-sm btn-info">
+                                                    <i class="bi bi-info-circle"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <div class="mb-3">
+                                <i class="bi bi-people text-muted" style="font-size: 3rem;"></i>
+                            </div>
+                            <h5>No Users Found</h5>
+                            <p class="text-muted">This role doesn't have any assigned users</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    string GetRoleBadgeClass(string roleType)
+    {
+        return roleType switch
+        {
+            "Admin" => "danger",
+            "Manager" => "warning",
+            "Technician" => "info",
+            "Client" => "success",
+            _ => "secondary"
+        };
+    }
+} 

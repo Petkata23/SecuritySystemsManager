@@ -1,0 +1,64 @@
+@{
+    ViewData["Title"] = "Dropbox Authentication Complete";
+}
+
+<div class="container mt-4">
+    <h2>Dropbox Authentication Complete</h2>
+    <div class="alert alert-success">
+        <p>Authentication successful! Your tokens have been generated.</p>
+    </div>
+    
+    <div class="card mt-4">
+        <div class="card-header">
+            <h4>Refresh Token</h4>
+        </div>
+        <div class="card-body">
+            <p>Copy this refresh token and update your appsettings.json file:</p>
+            <div class="input-group">
+                <input type="text" id="refreshToken" class="form-control" value="@ViewBag.RefreshToken" readonly>
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard('refreshToken')">Copy</button>
+                </div>
+            </div>
+            <small class="form-text text-muted">This refresh token does not expire and can be used to generate new access tokens.</small>
+        </div>
+    </div>
+    
+    <div class="card mt-4">
+        <div class="card-header">
+            <h4>Access Token</h4>
+        </div>
+        <div class="card-body">
+            <p>Current access token (expires in @ViewBag.ExpiresIn seconds):</p>
+            <div class="input-group">
+                <input type="text" id="accessToken" class="form-control" value="@ViewBag.AccessToken" readonly>
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard('accessToken')">Copy</button>
+                </div>
+            </div>
+            <small class="form-text text-muted">This access token will expire. Use the refresh token to generate new access tokens.</small>
+        </div>
+    </div>
+    
+    <div class="mt-4">
+        <h4>Next Steps:</h4>
+        <ol>
+            <li>Copy the refresh token above.</li>
+            <li>Open your appsettings.json file.</li>
+            <li>Update the "RefreshToken" value in the "Dropbox" section.</li>
+            <li>Restart your application.</li>
+        </ol>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function copyToClipboard(elementId) {
+            var copyText = document.getElementById(elementId);
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            document.execCommand("copy");
+            alert("Copied to clipboard!");
+        }
+    </script>
+} 

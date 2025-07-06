@@ -37,7 +37,8 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Register file storage service
+// Register Dropbox services
+builder.Services.AddSingleton<DropboxTokenManager>();
 builder.Services.AddScoped<IFileStorageService, DropboxStorageService>();
 
 // Register UrlEncoder for QR code generation

@@ -115,6 +115,12 @@
                                 <a class="nav-link" asp-controller="User" asp-action="List">Users</a>
                             </li>
                         }
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Role" asp-action="List">Roles</a>
+                            </li>
+                        }
                         
                     </ul>
                     

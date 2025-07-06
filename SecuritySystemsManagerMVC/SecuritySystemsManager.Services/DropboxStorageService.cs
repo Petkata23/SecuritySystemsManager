@@ -17,15 +17,21 @@ namespace SecuritySystemsManager.Services
     [AutoBind]
     public class DropboxStorageService : IFileStorageService
     {
-        private readonly string _accessToken;
         private readonly string _rootFolder;
+        private readonly DropboxTokenManager _tokenManager;
         // Кеш за URL адресите, за да не правим заявки всеки път
         private static readonly Dictionary<string, string> _urlCache = new Dictionary<string, string>();
 
-        public DropboxStorageService(IConfiguration configuration)
+        public DropboxStorageService(IConfiguration configuration, DropboxTokenManager tokenManager)
         {
-            _accessToken = configuration["Dropbox:AccessToken"];
+            _tokenManager = tokenManager;
             _rootFolder = configuration["Dropbox:RootFolder"] ?? "SecuritySystemsManager";
+        }
+
+        private async Task<DropboxClient> GetClientAsync()
+        {
+            var accessToken = await _tokenManager.GetAccessTokenAsync();
+            return new DropboxClient(accessToken);
         }
 
         public async Task<string> UploadFileAsync(IFormFile file, string folder)
@@ -39,7 +45,7 @@ namespace SecuritySystemsManager.Services
             
             Console.WriteLine($"Uploading file to Dropbox path: {dropboxPath}");
             
-            using (var client = new DropboxClient(_accessToken))
+            using (var client = await GetClientAsync())
             using (var memoryStream = new MemoryStream())
             {
                 // Copy file to memory stream
@@ -69,7 +75,7 @@ namespace SecuritySystemsManager.Services
 
             try
             {
-                using (var client = new DropboxClient(_accessToken))
+                using (var client = await GetClientAsync())
                 {
                     // Опитваме да създадем постоянна споделена връзка
                     var sharedLinkArg = new CreateSharedLinkWithSettingsArg(dropboxPath);
@@ -113,7 +119,7 @@ namespace SecuritySystemsManager.Services
                 try
                 {
                     // Като резервен вариант, опитваме временен линк
-                    using (var client = new DropboxClient(_accessToken))
+                    using (var client = await GetClientAsync())
                     {
                         var tempLink = await client.Files.GetTemporaryLinkAsync(dropboxPath);
                         string directUrl = tempLink.Link;
@@ -161,7 +167,7 @@ namespace SecuritySystemsManager.Services
 
                 Console.WriteLine($"Attempting to delete file at: {dropboxPath}");
                 
-                using (var client = new DropboxClient(_accessToken))
+                using (var client = await GetClientAsync())
                 {
                     var deleteArg = new DeleteArg(dropboxPath);
                     await client.Files.DeleteV2Async(deleteArg);
