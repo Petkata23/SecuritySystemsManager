@@ -10,7 +10,8 @@
 
 @section Styles {
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-    <link rel="stylesheet" href="~/css/orders.css" />
+    <link rel="stylesheet" href="~/css/orders.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/order-details.css" asp-append-version="true" />
 }
 
 <div class="container-fluid animate-fade-in px-4">
@@ -71,8 +72,17 @@
                             @if (Model.Client != null)
                             {
                                 <div class="d-flex align-items-center mb-3">
-                                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3" style="width: 48px; height: 48px;">
-                                        <i class="bi bi-person fs-4"></i>
+                                    <div class="client-avatar me-3">
+                                        @if (!string.IsNullOrEmpty(Model.Client.ProfileImage))
+                                        {
+                                            <img src="@Model.Client.ProfileImage" alt="@Model.Client.FirstName @Model.Client.LastName" class="rounded-circle" width="48" height="48">
+                                        }
+                                        else
+                                        {
+                                            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center client-initials">
+                                                @(Model.Client.FirstName?.Substring(0, 1))@(Model.Client.LastName?.Substring(0, 1))
+                                            </div>
+                                        }
                                     </div>
                                     <div>
                                         <h6 class="mb-0">@Model.Client.FirstName @Model.Client.LastName</h6>
@@ -118,7 +128,7 @@
                                      data-name="@Model.Location.Name"
                                      data-address="@Model.Location.Address"
                                      data-description="@Model.Location.Description"
-                                     style="height: 200px; border-radius: 8px;">
+                                     class="location-map">
                                 </div>
                             </div>
                         </div>
@@ -212,7 +222,7 @@
                     {
                         <div class="text-center py-4">
                             <div class="mb-3">
-                                <i class="bi bi-device-hdd text-muted" style="font-size: 2.5rem;"></i>
+                                <i class="bi bi-device-hdd text-muted icon-large"></i>
                             </div>
                             <p class="text-muted mb-0">No devices have been installed yet</p>
                         </div>
@@ -280,7 +290,7 @@
                     {
                         <div class="text-center py-4">
                             <div class="mb-3">
-                                <i class="bi bi-journal-text text-muted" style="font-size: 2.5rem;"></i>
+                                <i class="bi bi-journal-text text-muted icon-large"></i>
                             </div>
                             <p class="text-muted mb-0">No maintenance logs have been added yet</p>
                         </div>
@@ -329,7 +339,7 @@
                     {
                         <div class="text-center py-4">
                             <div class="mb-3">
-                                <i class="bi bi-receipt text-muted" style="font-size: 2.5rem;"></i>
+                                <i class="bi bi-receipt text-muted icon-large"></i>
                             </div>
                             <p class="text-muted mb-3">No invoice has been generated yet</p>
                             @if (isAdminOrManager)
@@ -362,8 +372,17 @@
                             {
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <div class="d-flex align-items-center">
-                                        <div class="rounded-circle bg-info text-white d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
-                                            <i class="bi bi-person"></i>
+                                        <div class="technician-avatar me-3">
+                                            @if (!string.IsNullOrEmpty(tech.ProfileImage))
+                                            {
+                                                <img src="@tech.ProfileImage" alt="@tech.FirstName @tech.LastName" class="rounded-circle" width="40" height="40">
+                                            }
+                                            else
+                                            {
+                                                <div class="rounded-circle bg-info text-white d-flex align-items-center justify-content-center tech-initials">
+                                                    @(tech.FirstName?.Substring(0, 1))@(tech.LastName?.Substring(0, 1))
+                                                </div>
+                                            }
                                         </div>
                                         <div>
                                             <h6 class="mb-0">@tech.FirstName @tech.LastName</h6>
@@ -388,7 +407,7 @@
                     {
                         <div class="text-center py-4">
                             <div class="mb-3">
-                                <i class="bi bi-people text-muted" style="font-size: 2.5rem;"></i>
+                                <i class="bi bi-people text-muted icon-large"></i>
                             </div>
                             <p class="text-muted mb-0">No technicians assigned yet</p>
                         </div>
@@ -464,35 +483,7 @@
                     </div>
                 </div>
                 
-                <style>
-                    /* Custom styles for the assign technician modal */
-                    #assignTechnicianModal .modal-content {
-                        border-radius: 0.5rem;
-                        overflow: hidden;
-                    }
-                    
-                    #assignTechnicianModal .form-select {
-                        padding: 0.75rem 1rem;
-                        font-size: 1rem;
-                        border-radius: 0.375rem;
-                        color: black !important;
-                    }
-                    
-                    #assignTechnicianModal .form-select option {
-                        padding: 10px;
-                        color: white !important;
-                    }
-                    
-                    #assignTechnicianModal .form-select option:first-child {
-                        color: #6c757d;
-                        font-style: italic;
-                    }
-                    
-                    #assignTechnicianModal .form-select option:not(:first-child) {
-                        color: #212529;
-                        font-weight: normal;
-                    }
-                </style>
+
             }
             
             <!-- Activity Timeline -->
@@ -566,53 +557,7 @@
     <script src="~/js/locations.js"></script>
     <script src="~/js/locations-details.js"></script>
     
-    <style>
-        .timeline {
-            position: relative;
-            padding-left: 30px;
-        }
-        
-        .timeline:before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 15px;
-            height: 100%;
-            width: 2px;
-            background: var(--bs-border-color);
-        }
-        
-        .timeline-item {
-            position: relative;
-            padding-bottom: 25px;
-        }
-        
-        .timeline-marker {
-            position: absolute;
-            left: -30px;
-            width: 15px;
-            height: 15px;
-            border-radius: 50%;
-            top: 6px;
-        }
-        
-        .timeline-content {
-            padding-left: 10px;
-        }
-        
-        #assignTechnicianModal .form-select {
-            background-color: #f8f9fa;
-            padding: 10px;
-            font-size: 1rem;
-            border-radius: 0.375rem;
-            color: black !important;
-        }
-        
-        #assignTechnicianModal .form-select option {
-            padding: 10px;
-            color: white !important;
-        }
-    </style>
+
 }
 
 @functions {

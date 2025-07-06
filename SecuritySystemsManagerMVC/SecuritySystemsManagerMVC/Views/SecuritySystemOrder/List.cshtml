@@ -5,143 +5,344 @@
     ViewData["Title"] = "Orders";
     bool isClient = User.IsInRole("Client");
     bool isAdminOrManager = User.IsInRole("Admin") || User.IsInRole("Manager");
+    
+    var pendingCount = Model.Count(o => o.Status == OrderStatus.Pending);
+    var inProgressCount = Model.Count(o => o.Status == OrderStatus.InProgress);
+    var completedCount = Model.Count(o => o.Status == OrderStatus.Completed);
+    var cancelledCount = Model.Count(o => o.Status == OrderStatus.Cancelled);
+    var totalCount = Model.Count();
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="h3 mb-0">All Orders</h1>
-    <a asp-action="Create" class="btn btn-primary">
-        <i class="bi bi-plus-lg me-2"></i>New Order
-    </a>
-</div>
+@section Styles {
+    <link rel="stylesheet" href="~/css/orders-list.css" asp-append-version="true" />
+}
 
-<div class="card mb-4">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Filter Orders</h5>
-        <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse">
-            <i class="bi bi-funnel me-2"></i>Toggle Filters
-        </button>
-    </div>
-    <div class="collapse" id="filterCollapse">
-        <div class="card-body">
-            <form id="filterForm" method="get" class="row g-3">
-                <div class="col-md-4">
-                    <label class="form-label">Status</label>
-                    <select id="statusFilter" class="form-select">
-                        <option value="">All Statuses</option>
-                        <option value="Pending">Pending</option>
-                        <option value="InProgress">In Progress</option>
-                        <option value="Completed">Completed</option>
-                        <option value="Cancelled">Cancelled</option>
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label">Date Range</label>
-                    <div class="input-group">
-                        <input type="date" id="startDate" class="form-control" placeholder="Start Date">
-                        <span class="input-group-text">to</span>
-                        <input type="date" id="endDate" class="form-control" placeholder="End Date">
+<div class="orders-container">
+    <!-- Enhanced Header Banner -->
+    <div class="orders-banner">
+        <div class="banner-content">
+            <div class="banner-text">
+                <h1 class="banner-title">Security System Orders</h1>
+                <p class="banner-description">
+                    @if (Model.Any())
+                    {
+                        <span>Manage and track all your security system installations and maintenance orders.</span>
+                    }
+                    else
+                    {
+                        <span>Start securing your properties by creating your first security system order.</span>
+                    }
+                </p>
+            </div>
+            <div class="banner-actions">
+                <a asp-action="Create" class="btn btn-primary btn-create-banner">
+                    <i class="bi bi-plus-lg me-2"></i>New Order
+                </a>
+                @if (Model.Any())
+                {
+                    <div class="order-counts">
+                        <div class="count-item">
+                            <span class="count-value">@totalCount</span>
+                            <span class="count-label">Total</span>
+                        </div>
+                        <div class="count-divider"></div>
+                        <div class="count-item @(pendingCount > 0 ? "has-count" : "")">
+                            <span class="count-value">@pendingCount</span>
+                            <span class="count-label">Pending</span>
+                        </div>
+                        <div class="count-divider"></div>
+                        <div class="count-item @(inProgressCount > 0 ? "has-count" : "")">
+                            <span class="count-value">@inProgressCount</span>
+                            <span class="count-label">In Progress</span>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label">Search</label>
-                    <div class="input-group">
-                        <input type="text" id="searchInput" class="form-control" placeholder="Search orders...">
-                        <button class="btn btn-primary" type="button" id="searchBtn">
-                            <i class="bi bi-search"></i>
-                        </button>
-                    </div>
-                </div>
-            </form>
+                }
+            </div>
         </div>
     </div>
-</div>
 
-<div class="card">
-    <div class="card-header">
-        <h5 class="mb-0">Manage Orders</h5>
-    </div>
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover mb-0" id="ordersTable">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Title</th>
-                        <th>Client</th>
-                        <th>Requested Date</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
+    @if (Model.Any())
+    {
+        <!-- Filter Card -->
+        <div class="card filter-card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5><i class="bi bi-funnel"></i> Filter Orders</h5>
+                <button class="btn btn-sm btn-outline-secondary btn-filter-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse">
+                    <i class="bi bi-sliders me-1"></i>Toggle Filters
+                </button>
+            </div>
+            <div class="collapse" id="filterCollapse">
+                <div class="card-body">
+                    <form id="filterForm" method="get" class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Status</label>
+                            <select id="statusFilter" class="form-select">
+                                <option value="">All Statuses</option>
+                                <option value="Pending">Pending</option>
+                                <option value="InProgress">In Progress</option>
+                                <option value="Completed">Completed</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Date Range</label>
+                            <div class="input-group">
+                                <input type="date" id="startDate" class="form-control" placeholder="Start Date">
+                                <span class="input-group-text">to</span>
+                                <input type="date" id="endDate" class="form-control" placeholder="End Date">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Search</label>
+                            <div class="input-group">
+                                <input type="text" id="searchInput" class="form-control" placeholder="Search orders...">
+                                <button class="btn btn-primary" type="button" id="searchBtn">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Orders Table Card -->
+        <div class="card orders-card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5><i class="bi bi-list-check"></i> Manage Orders</h5>
+                    <div class="header-actions">
+                        <div class="btn-group view-toggle" role="group" aria-label="View toggle">
+                            <button type="button" class="btn btn-outline-primary active" id="tableViewBtn">
+                                <i class="bi bi-table"></i> Table
+                            </button>
+                            <button type="button" class="btn btn-outline-primary" id="cardViewBtn">
+                                <i class="bi bi-grid-3x3-gap"></i> Cards
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Table View -->
+            <div class="card-body p-0" id="tableView">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0" id="ordersTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Title</th>
+                                <th>Client</th>
+                                <th>Requested Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var order in Model)
+                            {
+                                <tr data-status="@order.Status" data-date="@order.RequestedDate.ToString("yyyy-MM-dd")">
+                                    <td><span class="order-id">#@order.Id</span></td>
+                                    <td class="order-title">@order.Title</td>
+                                    <td>
+                                        <div class="client-name">
+                                            @if (order.Client != null)
+                                            {
+                                                <div class="client-avatar">
+                                                    @if (!string.IsNullOrEmpty(order.Client.ProfileImage))
+                                                    {
+                                                        <img src="@order.Client.ProfileImage" alt="@order.Client.FirstName @order.Client.LastName">
+                                                    }
+                                                    else
+                                                    {
+                                                        @(order.Client.FirstName?.Substring(0, 1))@(order.Client.LastName?.Substring(0, 1))
+                                                    }
+                                                </div>
+                                                <span>@(order.Client.FirstName + " " + order.Client.LastName)</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">Not assigned</span>
+                                            }
+                                        </div>
+                                    </td>
+                                    <td class="order-date">
+                                        <i class="bi bi-calendar3 me-1"></i>
+                                        @order.RequestedDate.ToString("MMM dd, yyyy")
+                                    </td>
+                                    <td>
+                                        <span class="status-badge bg-@GetStatusBadgeClass(order.Status)">
+                                            <i class="bi @GetStatusIcon(order.Status)"></i>
+                                            @GetStatusDisplayName(order.Status)
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <a asp-action="Details" asp-route-id="@order.Id" class="btn btn-sm btn-info btn-action" data-bs-toggle="tooltip" title="View Details">
+                                                <i class="bi bi-info-circle"></i>
+                                            </a>
+                                            @if (isAdminOrManager)
+                                            {
+                                                <a asp-action="Edit" asp-route-id="@order.Id" class="btn btn-sm btn-primary btn-action" data-bs-toggle="tooltip" title="Edit Order">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <a asp-action="Delete" asp-route-id="@order.Id" class="btn btn-sm btn-danger btn-action" data-bs-toggle="tooltip" title="Delete Order">
+                                                    <i class="bi bi-trash"></i>
+                                                </a>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Card View (hidden by default) -->
+            <div class="card-body p-3 d-none" id="cardView">
+                <div class="row">
                     @foreach (var order in Model)
                     {
-                        <tr data-status="@order.Status" data-date="@order.RequestedDate.ToString("yyyy-MM-dd")">
-                            <td>#@order.Id</td>
-                            <td>@order.Title</td>
-                            <td>@(order.Client?.FirstName + " " + order.Client?.LastName)</td>
-                            <td>@order.RequestedDate.ToShortDateString()</td>
-                            <td>
-                                <span class="badge bg-@GetStatusBadgeClass(order.Status)">
-                                    @GetStatusDisplayName(order.Status)
-                                </span>
-                            </td>
-                            <td>
-                                <div class="btn-group">
-                                    <a asp-action="Details" asp-route-id="@order.Id" class="btn btn-sm btn-info">
-                                        <i class="bi bi-info-circle"></i>
+                        <div class="col-xl-4 col-md-6 mb-4 order-card-col" data-status="@order.Status" data-date="@order.RequestedDate.ToString("yyyy-MM-dd")">
+                            <div class="order-card-item">
+                                <div class="order-card-header status-@order.Status.ToString().ToLower()">
+                                    <span class="status-indicator">
+                                        <i class="bi @GetStatusIcon(order.Status)"></i>
+                                        @GetStatusDisplayName(order.Status)
+                                    </span>
+                                    <span class="order-number">#@order.Id</span>
+                                </div>
+                                <div class="order-card-body">
+                                    <h5 class="order-card-title">@order.Title</h5>
+                                    <div class="order-card-info">
+                                        <div class="info-row">
+                                            <i class="bi bi-person"></i>
+                                            <span>
+                                                @if (order.Client != null)
+                                                {
+                                                    @(order.Client.FirstName + " " + order.Client.LastName)
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">Not assigned</span>
+                                                }
+                                            </span>
+                                        </div>
+                                        <div class="info-row">
+                                            <i class="bi bi-calendar3"></i>
+                                            <span>@order.RequestedDate.ToString("MMM dd, yyyy")</span>
+                                        </div>
+                                        @if (!string.IsNullOrEmpty(order.Description))
+                                        {
+                                            <div class="info-row description">
+                                                <i class="bi bi-card-text"></i>
+                                                <span>@(order.Description.Length > 50 ? order.Description.Substring(0, 50) + "..." : order.Description)</span>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="order-card-footer">
+                                    <a asp-action="Details" asp-route-id="@order.Id" class="btn btn-sm btn-outline-info">
+                                        <i class="bi bi-info-circle me-1"></i> Details
                                     </a>
                                     @if (isAdminOrManager)
                                     {
-                                        <a asp-action="Edit" asp-route-id="@order.Id" class="btn btn-sm btn-primary">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-                                        <a asp-action="Delete" asp-route-id="@order.Id" class="btn btn-sm btn-danger">
-                                            <i class="bi bi-trash"></i>
+                                        <a asp-action="Edit" asp-route-id="@order.Id" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-pencil me-1"></i> Edit
                                         </a>
                                     }
                                 </div>
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     }
-                </tbody>
-            </table>
+                </div>
+            </div>
+            
+            <div class="pagination-container">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center mb-0">
+                        @{
+                            int totalPages = ViewBag.TotalPages ?? 1;
+                            int currentPage = ViewBag.CurrentPage ?? 1;
+                            
+                            <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                                <a class="page-link" asp-action="List" asp-route-pageNumber="@(currentPage - 1)" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            
+                            @for (int i = 1; i <= totalPages; i++)
+                            {
+                                <li class="page-item @(i == currentPage ? "active" : "")">
+                                    <a class="page-link" asp-action="List" asp-route-pageNumber="@i">@i</a>
+                                </li>
+                            }
+                            
+                            <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                                <a class="page-link" asp-action="List" asp-route-pageNumber="@(currentPage + 1)" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            </div>
         </div>
-    </div>
-    <div class="card-footer">
-        <nav aria-label="Page navigation">
-            <ul class="pagination justify-content-center mb-0">
-                @{
-                    int totalPages = ViewBag.TotalPages ?? 1;
-                    int currentPage = ViewBag.CurrentPage ?? 1;
-                    
-                    <li class="page-item @(currentPage == 1 ? "disabled" : "")">
-                        <a class="page-link" asp-action="List" asp-route-pageNumber="@(currentPage - 1)" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    
-                    @for (int i = 1; i <= totalPages; i++)
-                    {
-                        <li class="page-item @(i == currentPage ? "active" : "")">
-                            <a class="page-link" asp-action="List" asp-route-pageNumber="@i">@i</a>
-                        </li>
-                    }
-                    
-                    <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
-                        <a class="page-link" asp-action="List" asp-route-pageNumber="@(currentPage + 1)" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                }
-            </ul>
-        </nav>
-    </div>
+    }
+    else
+    {
+        <!-- Empty State -->
+        <div class="card orders-card">
+            <div class="card-body">
+                <div class="empty-state">
+                    <div class="empty-state-icon">
+                        <i class="bi bi-shield-lock"></i>
+                    </div>
+                    <h4>No Orders Found</h4>
+                    <p>
+                        @if (isClient)
+                        {
+                            <span>You haven't placed any security system orders yet. Create your first order to get started with securing your property.</span>
+                        }
+                        else
+                        {
+                            <span>There are no security system orders in the system yet. Create the first order to start managing security installations.</span>
+                        }
+                    </p>
+                    <a asp-action="Create" class="btn btn-primary btn-create-first">
+                        <i class="bi bi-plus-lg me-2"></i>Create Your First Order
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
 </div>
 
 @section Scripts {
     <script>
         $(document).ready(function() {
+            // Initialize tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+            
+            // View toggle functionality
+            $("#tableViewBtn").click(function() {
+                $(this).addClass('active');
+                $("#cardViewBtn").removeClass('active');
+                $("#tableView").removeClass('d-none');
+                $("#cardView").addClass('d-none');
+            });
+            
+            $("#cardViewBtn").click(function() {
+                $(this).addClass('active');
+                $("#tableViewBtn").removeClass('active');
+                $("#tableView").addClass('d-none');
+                $("#cardView").removeClass('d-none');
+            });
+            
             // Filter functionality
             $("#statusFilter, #startDate, #endDate").on("change", filterOrders);
             $("#searchBtn").on("click", filterOrders);
@@ -157,54 +358,109 @@
                 const endDate = $("#endDate").val();
                 const searchText = $("#searchInput").val().toLowerCase();
                 
+                // Filter table view
                 $("#ordersTable tbody tr").each(function() {
-                    const rowStatus = $(this).data("status").toString().toLowerCase();
-                    const rowDate = $(this).data("date");
-                    const rowText = $(this).text().toLowerCase();
-                    
-                    let statusMatch = status === "" || rowStatus.includes(status);
-                    let dateMatch = true;
-                    
-                    if (startDate && rowDate < startDate) {
-                        dateMatch = false;
-                    }
-                    
-                    if (endDate && rowDate > endDate) {
-                        dateMatch = false;
-                    }
-                    
-                    let textMatch = searchText === "" || rowText.includes(searchText);
-                    
-                    if (statusMatch && dateMatch && textMatch) {
-                        $(this).show();
-                    } else {
-                        $(this).hide();
-                    }
+                    filterElement($(this), status, startDate, endDate, searchText);
                 });
+                
+                // Filter card view
+                $(".order-card-col").each(function() {
+                    filterElement($(this), status, startDate, endDate, searchText);
+                });
+                
+                // Show empty message if all rows are hidden in the active view
+                const activeView = $("#tableView").hasClass("d-none") ? "card" : "table";
+                
+                if (activeView === "table") {
+                    const visibleRows = $("#ordersTable tbody tr:visible").length;
+                    if (visibleRows === 0) {
+                        if ($("#no-results-row").length === 0) {
+                            $("#ordersTable tbody").append(
+                                '<tr id="no-results-row"><td colspan="6" class="text-center py-4">' +
+                                '<i class="bi bi-search text-muted mb-2" style="font-size: 2rem;"></i>' +
+                                '<p class="mb-0">No orders match your search criteria</p>' +
+                                '</td></tr>'
+                            );
+                        }
+                    } else {
+                        $("#no-results-row").remove();
+                    }
+                } else {
+                    const visibleCards = $(".order-card-col:visible").length;
+                    if (visibleCards === 0) {
+                        if ($("#no-results-card").length === 0) {
+                            $("#cardView .row").append(
+                                '<div id="no-results-card" class="col-12 text-center py-5">' +
+                                '<i class="bi bi-search text-muted mb-2" style="font-size: 2rem;"></i>' +
+                                '<p class="mb-0">No orders match your search criteria</p>' +
+                                '</div>'
+                            );
+                        }
+                    } else {
+                        $("#no-results-card").remove();
+                    }
+                }
+            }
+            
+            function filterElement(element, status, startDate, endDate, searchText) {
+                const rowStatus = element.data("status").toString().toLowerCase();
+                const rowDate = element.data("date");
+                const rowText = element.text().toLowerCase();
+                
+                let statusMatch = status === "" || rowStatus.includes(status);
+                let dateMatch = true;
+                
+                if (startDate && rowDate < startDate) {
+                    dateMatch = false;
+                }
+                
+                if (endDate && rowDate > endDate) {
+                    dateMatch = false;
+                }
+                
+                let textMatch = searchText === "" || rowText.includes(searchText);
+                
+                if (statusMatch && dateMatch && textMatch) {
+                    element.show();
+                } else {
+                    element.hide();
+                }
             }
         });
     </script>
 }
 
 @functions {
-    string GetStatusBadgeClass(SecuritySystemsManager.Shared.Enums.OrderStatus status)
+    string GetStatusBadgeClass(OrderStatus status)
     {
         return status switch
         {
-            SecuritySystemsManager.Shared.Enums.OrderStatus.Pending => "warning",
-            SecuritySystemsManager.Shared.Enums.OrderStatus.InProgress => "primary",
-            SecuritySystemsManager.Shared.Enums.OrderStatus.Completed => "success",
-            SecuritySystemsManager.Shared.Enums.OrderStatus.Cancelled => "danger",
+            OrderStatus.Pending => "warning",
+            OrderStatus.InProgress => "primary",
+            OrderStatus.Completed => "success",
+            OrderStatus.Cancelled => "danger",
             _ => "secondary"
         };
     }
     
-    string GetStatusDisplayName(SecuritySystemsManager.Shared.Enums.OrderStatus status)
+    string GetStatusDisplayName(OrderStatus status)
     {
         return status switch
         {
-            SecuritySystemsManager.Shared.Enums.OrderStatus.InProgress => "In Progress",
+            OrderStatus.InProgress => "In Progress",
             _ => status.ToString()
+        };
+    }
+    
+    string GetStatusIcon(OrderStatus status)
+    {
+        return status switch
+        {
+            OrderStatus.Pending => "bi-hourglass-split",
+            OrderStatus.InProgress => "bi-gear-wide-connected",
+            OrderStatus.Completed => "bi-check-circle",
+            OrderStatus.Cancelled => "bi-x-circle",
+            _ => "bi-question-circle"
         };
     }
 } 
