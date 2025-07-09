@@ -1,0 +1,244 @@
+/* Maintenance Logs Styling */
+.maintenance-section {
+    background-color: var(--card-bg);
+    border-radius: 10px;
+    box-shadow: var(--card-shadow);
+    margin-bottom: 2rem;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
+.maintenance-header {
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.maintenance-body {
+    padding: 1.5rem;
+}
+
+.maintenance-card {
+    border-radius: 8px;
+    box-shadow: var(--card-shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    background-color: var(--card-bg);
+}
+
+.maintenance-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3);
+    border-color: var(--accent-color);
+}
+
+.maintenance-card-header {
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.maintenance-card-body {
+    padding: 1.5rem;
+    background-color: transparent;
+}
+
+.maintenance-card-footer {
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.status-badge {
+    padding: 0.35rem 0.65rem;
+    border-radius: 50rem;
+    font-weight: 500;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-resolved {
+    background-color: rgba(40, 199, 111, 0.2);
+    color: var(--success-color);
+    border: 1px solid var(--success-color);
+}
+
+.status-pending {
+    background-color: rgba(255, 159, 67, 0.2);
+    color: var(--warning-color);
+    border: 1px solid var(--warning-color);
+}
+
+.device-list {
+    margin-top: 1.5rem;
+}
+
+.device-item {
+    border-left: 3px solid var(--border-color);
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.75rem;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 0 4px 4px 0;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.device-item:hover {
+    border-left-color: var(--accent-color);
+    background-color: rgba(79, 109, 245, 0.1);
+}
+
+.device-item.fixed {
+    border-left-color: var(--success-color);
+}
+
+.device-item.not-fixed {
+    border-left-color: var(--danger-color);
+}
+
+.maintenance-form .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.maintenance-form label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+}
+
+.maintenance-form textarea {
+    min-height: 120px;
+}
+
+.maintenance-details-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.maintenance-details-header h2 {
+    margin-bottom: 0;
+    color: var(--light-color);
+}
+
+.maintenance-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.maintenance-meta-item {
+    display: flex;
+    align-items: center;
+}
+
+.maintenance-meta-item i {
+    margin-right: 0.5rem;
+    color: var(--accent-color);
+}
+
+.maintenance-description {
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    border: 1px solid var(--border-color);
+}
+
+.maintenance-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Card styling for details page */
+.maintenance-section .card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--card-shadow);
+}
+
+.maintenance-section .card-header {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.maintenance-section .card-body {
+    background-color: transparent;
+}
+
+.maintenance-section .list-group-item {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+    color: var(--text-color);
+}
+
+/* Progress bar styling */
+.maintenance-section .progress {
+    background-color: rgba(0, 0, 0, 0.2);
+    height: 20px;
+    border-radius: 50px;
+    overflow: hidden;
+}
+
+.maintenance-section .progress-bar {
+    border-radius: 50px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767.98px) {
+    .maintenance-details-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .maintenance-meta {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+}
+
+/* Animation for new items */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease forwards;
+}
+
+/* Print styles */
+@media print {
+    .maintenance-actions, 
+    .btn, 
+    nav, 
+    footer, 
+    header {
+        display: none !important;
+    }
+    
+    .maintenance-card {
+        box-shadow: none;
+        border: 1px solid #dee2e6;
+        page-break-inside: avoid;
+    }
+    
+    body {
+        padding: 0;
+        margin: 0;
+    }
+    
+    .container {
+        max-width: 100%;
+        padding: 0;
+        margin: 0;
+    }
+} 

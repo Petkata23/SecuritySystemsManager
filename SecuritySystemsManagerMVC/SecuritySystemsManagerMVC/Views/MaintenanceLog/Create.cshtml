@@ -1,0 +1,126 @@
+@model SecuritySystemsManagerMVC.ViewModels.MaintenanceLogEditVm
+@{
+    ViewData["Title"] = "Create Maintenance Log";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/maintenance-logs.css" asp-append-version="true" />
+}
+
+<div class="maintenance-section">
+    <div class="maintenance-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2 class="mb-0"><i class="bi bi-plus-circle me-2"></i>Create Maintenance Log</h2>
+            <a asp-action="List" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Back to List
+            </a>
+        </div>
+    </div>
+    
+    <div class="maintenance-body">
+        <form asp-action="Create" class="maintenance-form">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Basic Information</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group mb-3">
+                                <label asp-for="SecuritySystemOrderId" class="form-label"></label>
+                                <select asp-for="SecuritySystemOrderId" asp-items="Model.AllOrders" class="form-select">
+                                    <option value="">-- Select Order --</option>
+                                </select>
+                                <span asp-validation-for="SecuritySystemOrderId" class="text-danger"></span>
+                                <small class="form-text text-muted">Select the security system order this maintenance is for</small>
+                            </div>
+                            
+                            <div class="form-group mb-3">
+                                <label asp-for="TechnicianId" class="form-label"></label>
+                                <select asp-for="TechnicianId" asp-items="Model.AllTechnicians" class="form-select">
+                                    <option value="">-- Select Technician --</option>
+                                </select>
+                                <span asp-validation-for="TechnicianId" class="text-danger"></span>
+                                <small class="form-text text-muted">Select the technician who performed the maintenance</small>
+                            </div>
+                            
+                            <div class="form-group mb-3">
+                                <label asp-for="Date" class="form-label"></label>
+                                <input asp-for="Date" class="form-control" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                                <span asp-validation-for="Date" class="text-danger"></span>
+                                <small class="form-text text-muted">Date when the maintenance was performed</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="bi bi-card-text me-2"></i>Details</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group mb-3">
+                                <label asp-for="Description" class="form-label"></label>
+                                <textarea asp-for="Description" class="form-control" rows="5" placeholder="Enter detailed description of the maintenance performed..."></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                                <small class="form-text text-muted">Provide a detailed description of the maintenance performed</small>
+                            </div>
+                            
+                            <div class="form-check form-switch mb-3">
+                                <input asp-for="Resolved" class="form-check-input" type="checkbox" />
+                                <label asp-for="Resolved" class="form-check-label"></label>
+                                <span asp-validation-for="Resolved" class="text-danger"></span>
+                                <small class="d-block form-text text-muted">Check if all maintenance issues have been resolved</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Note</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info" role="alert">
+                        <i class="bi bi-info-circle-fill me-2"></i>
+                        After creating the maintenance log, you'll be able to add specific devices that were maintained.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="d-flex justify-content-end gap-2">
+                <a asp-action="List" class="btn btn-outline-secondary">
+                    <i class="bi bi-x-lg me-1"></i> Cancel
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-save me-1"></i> Create Maintenance Log
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        $(document).ready(function() {
+            // Set current date as default
+            const today = new Date().toISOString().split('T')[0];
+            $("#Date").val(today);
+            
+            // Form validation styling enhancement
+            $("form").on("submit", function() {
+                $(this).find(".form-control, .form-select").each(function() {
+                    if ($(this).hasClass("input-validation-error")) {
+                        $(this).parent().addClass("has-error");
+                    }
+                });
+            });
+        });
+    </script>
+} 

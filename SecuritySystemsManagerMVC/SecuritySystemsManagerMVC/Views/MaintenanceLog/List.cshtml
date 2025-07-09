@@ -1,0 +1,183 @@
+@model IEnumerable<SecuritySystemsManagerMVC.ViewModels.MaintenanceLogDetailsVm>
+@{
+    ViewData["Title"] = "Maintenance Logs";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/maintenance-logs.css" asp-append-version="true" />
+}
+
+<div class="maintenance-section">
+    <div class="maintenance-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2 class="mb-0"><i class="bi bi-tools me-2"></i>Maintenance Logs</h2>
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-plus-lg me-1"></i> New Maintenance Log
+            </a>
+        </div>
+    </div>
+    
+    <div class="maintenance-body">
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <input type="text" id="searchInput" class="form-control" placeholder="Search maintenance logs...">
+                    <button class="btn btn-outline-secondary" type="button" id="searchButton">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select id="statusFilter" class="form-select">
+                    <option value="all">All Statuses</option>
+                    <option value="resolved">Resolved</option>
+                    <option value="pending">Pending</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select id="dateFilter" class="form-select">
+                    <option value="all">All Dates</option>
+                    <option value="today">Today</option>
+                    <option value="week">This Week</option>
+                    <option value="month">This Month</option>
+                </select>
+            </div>
+        </div>
+
+        @if (!Model.Any())
+        {
+            <div class="alert alert-info" role="alert">
+                <i class="bi bi-info-circle me-2"></i> No maintenance logs found. Click the "New Maintenance Log" button to create one.
+            </div>
+        }
+        else
+        {
+            <div class="row" id="maintenanceLogsList">
+                @foreach (var log in Model)
+                {
+                    <div class="col-lg-6 maintenance-log-item" data-resolved="@log.Resolved.ToString().ToLower()" data-date="@log.Date.ToString("yyyy-MM-dd")">
+                        <div class="maintenance-card fade-in">
+                            <div class="maintenance-card-header">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-calendar-check me-2"></i>
+                                    @log.Date.ToString("MMM dd, yyyy")
+                                </h5>
+                                <span class="status-badge @(log.Resolved ? "status-resolved" : "status-pending")">
+                                    @(log.Resolved ? "Resolved" : "Pending")
+                                </span>
+                            </div>
+                            <div class="maintenance-card-body">
+                                <div class="mb-3">
+                                    <strong><i class="bi bi-building me-2"></i>Order:</strong>
+                                    <span>@log.OrderTitle</span>
+                                </div>
+                                <div class="mb-3">
+                                    <strong><i class="bi bi-person-badge me-2"></i>Technician:</strong>
+                                    <span>@log.TechnicianFullName</span>
+                                </div>
+                                <div>
+                                    <strong><i class="bi bi-card-text me-2"></i>Description:</strong>
+                                    <p class="mt-2">@(log.Description.Length > 100 ? log.Description.Substring(0, 100) + "..." : log.Description)</p>
+                                </div>
+                                
+                                <div class="device-summary mt-3">
+                                    <strong><i class="bi bi-cpu me-2"></i>Devices:</strong>
+                                    <span class="badge bg-secondary">@log.MaintenanceDevices.Count</span>
+                                    <span class="badge bg-success ms-1">Fixed: @log.MaintenanceDevices.Count(d => d.IsFixed)</span>
+                                    <span class="badge bg-danger ms-1">Pending: @log.MaintenanceDevices.Count(d => !d.IsFixed)</span>
+                                </div>
+                            </div>
+                            <div class="maintenance-card-footer">
+                                <div class="maintenance-actions">
+                                    <a asp-action="Details" asp-route-id="@log.Id" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-eye me-1"></i> Details
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@log.Id" class="btn btn-sm btn-outline-secondary">
+                                        <i class="bi bi-pencil me-1"></i> Edit
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@log.Id" class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-trash me-1"></i> Delete
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Search functionality
+            $("#searchInput, #statusFilter, #dateFilter").on("keyup change", function() {
+                filterLogs();
+            });
+            
+            $("#searchButton").on("click", function() {
+                filterLogs();
+            });
+            
+            function filterLogs() {
+                const searchText = $("#searchInput").val().toLowerCase();
+                const statusFilter = $("#statusFilter").val();
+                const dateFilter = $("#dateFilter").val();
+                
+                $(".maintenance-log-item").each(function() {
+                    const $item = $(this);
+                    const cardText = $item.text().toLowerCase();
+                    const isResolved = $item.data("resolved");
+                    const itemDate = new Date($item.data("date"));
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    
+                    // Status filter
+                    let statusMatch = true;
+                    if (statusFilter === "resolved") {
+                        statusMatch = isResolved === true;
+                    } else if (statusFilter === "pending") {
+                        statusMatch = isResolved === false;
+                    }
+                    
+                    // Date filter
+                    let dateMatch = true;
+                    if (dateFilter === "today") {
+                        const itemDateOnly = new Date(itemDate);
+                        itemDateOnly.setHours(0, 0, 0, 0);
+                        dateMatch = itemDateOnly.getTime() === today.getTime();
+                    } else if (dateFilter === "week") {
+                        const weekStart = new Date(today);
+                        weekStart.setDate(today.getDate() - today.getDay());
+                        dateMatch = itemDate >= weekStart;
+                    } else if (dateFilter === "month") {
+                        dateMatch = itemDate.getMonth() === today.getMonth() && 
+                                   itemDate.getFullYear() === today.getFullYear();
+                    }
+                    
+                    // Text search
+                    const textMatch = searchText === "" || cardText.includes(searchText);
+                    
+                    // Show/hide based on all filters
+                    if (statusMatch && dateMatch && textMatch) {
+                        $item.show();
+                    } else {
+                        $item.hide();
+                    }
+                });
+                
+                // Show message if no results
+                if ($(".maintenance-log-item:visible").length === 0) {
+                    if ($("#no-results-message").length === 0) {
+                        $("#maintenanceLogsList").append(
+                            '<div id="no-results-message" class="col-12"><div class="alert alert-info">No maintenance logs match your filters</div></div>'
+                        );
+                    }
+                } else {
+                    $("#no-results-message").remove();
+                }
+            }
+        });
+    </script>
+} 

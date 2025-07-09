@@ -3,6 +3,8 @@
 /* General Styles */
 .orders-container {
     animation: fadeIn 0.5s ease-in-out;
+    padding-left: 60px;
+    padding-right: 60px;
 }
 
 @keyframes fadeIn {

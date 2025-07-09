@@ -68,6 +68,10 @@ namespace SecuritySystemsManager.Services
                 var result = await _userManager.CreateAsync(user, password);
                 if (result.Succeeded)
                 {
+                    // Add user to the appropriate role based on RoleId
+                    string roleName = ((SecuritySystemsManager.Shared.Enums.RoleType)userDto.RoleId).ToString();
+                    await _userManager.AddToRoleAsync(user, roleName);
+                    
                     return await _repository.GetByIdAsync(user.Id);
                 }
                 throw new InvalidOperationException($"Failed to create user: {string.Join(", ", result.Errors.Select(e => e.Description))}");
@@ -82,11 +86,14 @@ namespace SecuritySystemsManager.Services
         public async Task<UserDto> UpdateUserWithPasswordAsync(UserDto userDto, string? password = null)
         {
             // If we have UserManager and password is provided, use it for password hashing
-            if (_userManager != null && !string.IsNullOrEmpty(password))
+            if (_userManager != null)
             {
                 var user = await _userManager.FindByIdAsync(userDto.Id.ToString());
                 if (user != null)
                 {
+                    // Check if the role has changed
+                    int oldRoleId = user.RoleId ?? 0;
+                    
                     user.Email = userDto.Email;
                     user.FirstName = userDto.FirstName;
                     user.LastName = userDto.LastName;
@@ -98,6 +105,23 @@ namespace SecuritySystemsManager.Services
                     if (!result.Succeeded)
                     {
                         throw new InvalidOperationException($"Failed to update user: {string.Join(", ", result.Errors.Select(e => e.Description))}");
+                    }
+                    
+                    // Update role if changed
+                    if (oldRoleId != userDto.RoleId)
+                    {
+                        // Get current roles
+                        var currentRoles = await _userManager.GetRolesAsync(user);
+                        
+                        // Remove from all current roles
+                        if (currentRoles.Any())
+                        {
+                            await _userManager.RemoveFromRolesAsync(user, currentRoles);
+                        }
+                        
+                        // Add to new role
+                        string newRoleName = ((SecuritySystemsManager.Shared.Enums.RoleType)userDto.RoleId).ToString();
+                        await _userManager.AddToRoleAsync(user, newRoleName);
                     }
                     
                     if (!string.IsNullOrEmpty(password))

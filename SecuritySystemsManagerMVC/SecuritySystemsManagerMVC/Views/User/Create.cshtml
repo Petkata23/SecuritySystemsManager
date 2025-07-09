@@ -17,22 +17,6 @@
         </div>
     </div>
 
-    @if (!ViewData.ModelState.IsValid)
-    {
-        <div class="alert alert-danger mb-4">
-            <h5 class="alert-heading">Form validation errors:</h5>
-            <ul>
-                @foreach (var modelState in ViewData.ModelState.Values)
-                {
-                    foreach (var error in modelState.Errors)
-                    {
-                        <li>@error.ErrorMessage</li>
-                    }
-                }
-            </ul>
-        </div>
-    }
-
     <div class="row">
         <div class="col-lg-8">
             <div class="card shadow-sm mb-4">

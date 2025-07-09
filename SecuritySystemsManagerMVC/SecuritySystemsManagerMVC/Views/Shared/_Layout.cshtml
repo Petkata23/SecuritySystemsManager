@@ -82,10 +82,10 @@
                     <ul class="navbar-nav me-auto">
                         <!-- Main navigation group -->
                         <li class="nav-item">
-                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")" asp-controller="Home" asp-action="Index"><i class="bi bi-house-door me-2"></i>Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Privacy" ? "active" : "")" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Privacy" ? "active" : "")" asp-controller="Home" asp-action="Privacy"><i class="bi bi-shield-lock me-2"></i>Privacy</a>
                         </li>
                         
                         <!-- Separator between navigation groups -->
@@ -100,28 +100,39 @@
                         @if (User.IsInRole("Admin") || User.IsInRole("Manager") || User.IsInRole("Client"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="SecuritySystemOrder" asp-action="List">Orders</a>
+                                <a class="nav-link" asp-controller="SecuritySystemOrder" asp-action="List"><i class="bi bi-cart me-2"></i>Orders</a>
+                            </li>
+                        }
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "MaintenanceLog" ? "active" : "")" asp-controller="MaintenanceLog" asp-action="List">
+                                    <i class="bi bi-tools me-2"></i>Maintenance
+                                </a>
                             </li>
                         }
                         @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Location" asp-action="List">Locations</a>
+                                <a class="nav-link" asp-controller="Location" asp-action="List"><i class="bi bi-geo-alt me-2"></i>Locations</a>
                             </li>
                         }
                         @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
                         {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="User" asp-action="List">Users</a>
+                            <!-- Administration Dropdown Menu -->
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="administrationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-gear me-2"></i>Administration
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="administrationDropdown">
+                                    <li><a class="dropdown-item" asp-controller="User" asp-action="List"><i class="bi bi-people me-2"></i>Users</a></li>
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <li><a class="dropdown-item" asp-controller="Role" asp-action="List"><i class="bi bi-person-badge me-2"></i>Roles</a></li>
+                                    }
+                                </ul>
                             </li>
                         }
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Role" asp-action="List">Roles</a>
-                            </li>
-                        }
-                        
                     </ul>
                     
                     <!-- Right side navigation items -->
