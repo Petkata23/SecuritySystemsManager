@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <link rel="stylesheet" href="~/css/orders.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/order-details.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/custom-modal.css" asp-append-version="true" />
 }
 
 <div class="container-fluid animate-fade-in px-4">
@@ -359,7 +360,7 @@
                     <h5 class="mb-0">Assigned Technicians</h5>
                     @if (ViewBag.CanManageTechnicians == true)
                     {
-                        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#assignTechnicianModal">
+                        <button type="button" class="btn btn-sm btn-primary" id="openCustomModal">
                             <i class="bi bi-plus-lg me-2"></i>Assign
                         </button>
                     }
@@ -418,17 +419,18 @@
             <!-- Assign Technician Modal -->
             @if (ViewBag.CanManageTechnicians == true)
             {
-                <div class="modal fade" id="assignTechnicianModal" tabindex="-1" aria-labelledby="assignTechnicianModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content border-0 shadow">
-                            <div class="modal-header bg-primary text-white py-3">
-                                <h5 class="modal-title" id="assignTechnicianModalLabel">
+                <div id="customModal" class="custom-modal">
+                    <div class="custom-modal-overlay" id="customModalOverlay"></div>
+                    <div class="custom-modal-container">
+                        <div class="custom-modal-content">
+                            <div class="custom-modal-header bg-primary text-white py-3">
+                                <h5 class="mb-0">
                                     <i class="bi bi-person-plus-fill me-2"></i>Assign Technician
                                 </h5>
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <button type="button" class="btn-close btn-close-white" id="closeCustomModal"></button>
                             </div>
                             <form asp-action="AddTechnician" method="post">
-                                <div class="modal-body p-4">
+                                <div class="custom-modal-body p-4">
                                     <input type="hidden" name="orderId" value="@Model.Id" />
                                     <div class="mb-4">
                                         <div class="form-group">
@@ -461,8 +463,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="modal-footer bg-light py-3">
-                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                <div class="custom-modal-footer bg-light py-3">
+                                    <button type="button" class="btn btn-outline-secondary" id="cancelCustomModal">
                                         <i class="bi bi-x-lg me-2"></i>Cancel
                                     </button>
                                     @if (ViewBag.AvailableTechnicians != null && ViewBag.AvailableTechnicians.Count > 0)
@@ -482,8 +484,6 @@
                         </div>
                     </div>
                 </div>
-                
-
             }
             
             <!-- Activity Timeline -->
@@ -556,8 +556,37 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="~/js/locations.js"></script>
     <script src="~/js/locations-details.js"></script>
-    
-
+    <script>
+        $(document).ready(function() {
+            // Custom modal functionality
+            var $customModal = $('#customModal');
+            var $customModalOverlay = $('#customModalOverlay');
+            var $openCustomModalBtn = $('#openCustomModal');
+            var $closeCustomModalBtn = $('#closeCustomModal');
+            var $cancelCustomModalBtn = $('#cancelCustomModal');
+            
+            // Open modal
+            $openCustomModalBtn.on('click', function() {
+                $customModal.addClass('show');
+            });
+            
+            // Close modal
+            function closeCustomModal() {
+                $customModal.removeClass('show');
+            }
+            
+            $closeCustomModalBtn.on('click', closeCustomModal);
+            $cancelCustomModalBtn.on('click', closeCustomModal);
+            $customModalOverlay.on('click', closeCustomModal);
+            
+            // Close modal on ESC key
+            $(document).on('keydown', function(e) {
+                if (e.key === 'Escape' && $customModal.hasClass('show')) {
+                    closeCustomModal();
+                }
+            });
+        });
+    </script>
 }
 
 @functions {

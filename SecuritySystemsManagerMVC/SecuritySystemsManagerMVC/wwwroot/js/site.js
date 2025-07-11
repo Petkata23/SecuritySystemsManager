@@ -1,5 +1,96 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
+﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 // for details on configuring this project to bundle and minify static web assets.
+
+// Write your JavaScript code.
+
+// Initialize Bootstrap components
+document.addEventListener('DOMContentLoaded', function() {
+    // Fix for multiple modal backdrops
+    const removeExtraBackdrops = () => {
+        const backdrops = document.querySelectorAll('.modal-backdrop');
+        if (backdrops.length > 1) {
+            for (let i = 1; i < backdrops.length; i++) {
+                backdrops[i].remove();
+            }
+        }
+    };
+    
+    // Clean up any stray modal-open classes or backdrops on page load
+    document.body.classList.remove('modal-open');
+    removeExtraBackdrops();
+
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+
+    // Initialize popovers
+    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+        return new bootstrap.Popover(popoverTriggerEl);
+    });
+
+    // Initialize alerts
+    var alertList = [].slice.call(document.querySelectorAll('.alert'));
+    alertList.map(function (alertEl) {
+        return new bootstrap.Alert(alertEl);
+    });
+
+    // Initialize dropdowns
+    var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
+    var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
+        return new bootstrap.Dropdown(dropdownToggleEl);
+    });
+
+    // Initialize modals
+    var modalTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="modal"]'));
+    modalTriggerList.map(function (modalTriggerEl) {
+        modalTriggerEl.addEventListener('click', function(event) {
+            var targetModalSelector = this.getAttribute('data-bs-target');
+            if (targetModalSelector) {
+                var targetModal = document.querySelector(targetModalSelector);
+                if (targetModal) {
+                    // Check if this modal already has a Bootstrap modal instance
+                    var existingModal = bootstrap.Modal.getInstance(targetModal);
+                    if (existingModal) {
+                        existingModal.show();
+                    } else {
+                        var modal = new bootstrap.Modal(targetModal, {
+                            backdrop: true,
+                            keyboard: true,
+                            focus: true
+                        });
+                        modal.show();
+                    }
+                    
+                    // Fix for multiple backdrops
+                    setTimeout(removeExtraBackdrops, 50);
+                }
+            }
+        });
+    });
+
+    // Add event listener for all modals when they're hidden
+    document.querySelectorAll('.modal').forEach(function(modalEl) {
+        modalEl.addEventListener('hidden.bs.modal', function() {
+            removeExtraBackdrops();
+            
+            // If no modals are visible, remove modal-open class from body
+            if (document.querySelectorAll('.modal.show').length === 0) {
+                document.body.classList.remove('modal-open');
+            }
+        });
+    });
+
+    // Close button for alerts
+    var closeButtons = document.querySelectorAll('.alert .btn-close');
+    closeButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            this.closest('.alert').classList.add('d-none');
+        });
+    });
+});
 
 // Security Systems Hristovi - Main JavaScript
 

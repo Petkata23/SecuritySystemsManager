@@ -247,6 +247,7 @@
 
     .orders-card .table tbody tr {
         transition: all 0.2s ease;
+        color: white !important;
     }
 
         .orders-card .table tbody tr:hover {
@@ -260,6 +261,7 @@
 
     .orders-card .table .order-title {
         font-weight: 500;
+        color: white;
     }
 
     .orders-card .table .client-name {
@@ -398,6 +400,7 @@
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
+    color: gray;
 }
 
 .info-row {
@@ -602,3 +605,172 @@
     ::-webkit-scrollbar-thumb:hover {
         background: #a8a8a8;
     }
+
+/* Order Cards */
+.order-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    margin-bottom: 1rem;
+    border: none;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+    .order-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .order-card .card-header {
+        font-weight: 600;
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .order-card .card-body {
+        padding: 1rem;
+    }
+
+    .order-card .card-footer {
+        padding: 0.75rem 1rem;
+        background-color: rgba(0, 0, 0, 0.02);
+    }
+
+/* Order Status Badges */
+.status-badge {
+    padding: 0.35rem 0.75rem;
+    border-radius: 50px;
+    font-weight: 500;
+    font-size: 0.8rem;
+    letter-spacing: 0.03rem;
+}
+
+.status-pending {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.status-inprogress {
+    background-color: #0dcaf0;
+    color: #212529;
+}
+
+.status-completed {
+    background-color: #198754;
+    color: white;
+}
+
+.status-cancelled {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Order List Filters */
+.order-filters {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    border-radius: 8px;
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+    .order-filters .form-control,
+    .order-filters .form-select {
+        font-size: 0.9rem;
+    }
+
+/* Pagination */
+.pagination {
+    margin-top: 1.5rem;
+    justify-content: center;
+}
+
+    .pagination .page-link {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.9rem;
+    }
+
+/* Mobile Responsive Improvements */
+@media (max-width: 768px) {
+    /* Adjust card layout */
+    .order-card {
+        margin-bottom: 0.75rem;
+    }
+
+        .order-card .card-header {
+            padding: 0.6rem 0.8rem;
+        }
+
+        .order-card .card-body {
+            padding: 0.8rem;
+        }
+
+        .order-card .card-footer {
+            padding: 0.6rem 0.8rem;
+        }
+
+    /* Adjust status badges */
+    .status-badge {
+        padding: 0.25rem 0.6rem;
+        font-size: 0.75rem;
+    }
+
+    /* Adjust filters */
+    .order-filters {
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+        .order-filters .form-control,
+        .order-filters .form-select {
+            font-size: 0.85rem;
+            padding: 0.4rem 0.6rem;
+        }
+
+    /* Adjust buttons */
+    .btn {
+        padding: 0.4rem 0.7rem;
+        font-size: 0.85rem;
+    }
+
+    /* Adjust pagination */
+    .pagination .page-item:not(.active):not(:first-child):not(:last-child) {
+        display: none;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 576px) {
+    /* Stack filter elements */
+    .order-filters .row > div {
+        margin-bottom: 0.5rem;
+    }
+
+        .order-filters .row > div:last-child {
+            margin-bottom: 0;
+        }
+
+    /* Adjust card content */
+    .order-card .card-title {
+        font-size: 1rem;
+    }
+
+    .order-card .card-text {
+        font-size: 0.85rem;
+    }
+
+    /* Stack buttons in card footer */
+    .order-card .card-footer .d-flex {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .order-card .card-footer .btn {
+        width: 100%;
+    }
+
+    /* Adjust pagination */
+    .pagination .page-item:not(.active):not(:first-child):not(:last-child) {
+        display: none;
+    }
+
+
+}

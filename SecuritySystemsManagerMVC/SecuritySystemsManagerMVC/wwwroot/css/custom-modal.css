@@ -1,0 +1,165 @@
+/* Custom Modal CSS */
+
+/* Modal Container */
+.custom-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2000;
+}
+
+/* Modal Overlay */
+.custom-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 2001;
+}
+
+/* Modal Container */
+.custom-modal-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2002;
+    width: 100%;
+    max-width: 500px;
+}
+
+/* Modal Content */
+.custom-modal-content {
+    background-color: #fff;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+}
+
+/* Modal Header */
+.custom-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    border-bottom: 1px solid #dee2e6;
+}
+
+/* Modal Body */
+.custom-modal-body {
+    padding: 1rem;
+}
+
+/* Modal Footer */
+.custom-modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 1rem;
+    border-top: 1px solid #dee2e6;
+}
+
+/* Modal Footer Buttons */
+.custom-modal-footer button {
+    margin-left: 0.5rem;
+}
+
+/* Modal Animation */
+.custom-modal.show {
+    display: block;
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Mobile Responsive Improvements */
+@media (max-width: 768px) {
+    /* Adjust modal container */
+    .custom-modal-container {
+        max-width: 90%;
+    }
+    
+    /* Adjust modal header */
+    .custom-modal-header {
+        padding: 0.75rem;
+    }
+    
+    .custom-modal-header h5 {
+        font-size: 1rem;
+    }
+    
+    /* Adjust modal body */
+    .custom-modal-body {
+        padding: 0.75rem;
+    }
+    
+    /* Adjust modal footer */
+    .custom-modal-footer {
+        padding: 0.75rem;
+    }
+    
+    /* Adjust buttons */
+    .custom-modal-footer button {
+        padding: 0.4rem 0.75rem;
+        font-size: 0.85rem;
+    }
+    
+    /* Adjust form elements */
+    .custom-modal-body .form-label {
+        font-size: 0.85rem;
+    }
+    
+    .custom-modal-body .form-select,
+    .custom-modal-body .form-control {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.6rem;
+    }
+    
+    .custom-modal-body .form-text {
+        font-size: 0.75rem;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 576px) {
+    /* Adjust modal container */
+    .custom-modal-container {
+        max-width: 95%;
+    }
+    
+    /* Adjust modal header */
+    .custom-modal-header {
+        padding: 0.6rem;
+    }
+    
+    /* Adjust modal body */
+    .custom-modal-body {
+        padding: 0.6rem;
+    }
+    
+    /* Adjust modal footer */
+    .custom-modal-footer {
+        padding: 0.6rem;
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    /* Stack buttons */
+    .custom-modal-footer button {
+        margin-left: 0;
+        margin-top: 0.5rem;
+        width: 100%;
+    }
+    
+    .custom-modal-footer button:first-child {
+        margin-top: 0;
+    }
+} 

@@ -1,0 +1,122 @@
+/* Mobile Navigation Improvements */
+
+/* Adjust navbar for mobile */
+@media (max-width: 991.98px) {
+    /* Navbar brand/logo */
+    .navbar-brand {
+        font-size: 1rem;
+        padding: 0.5rem 0;
+    }
+
+    .logo-icon {
+        font-size: 1.2rem;
+        margin-right: 0.3rem;
+    }
+
+    /* Navbar toggler */
+    .navbar-toggler {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.9rem;
+        border: none;
+    }
+
+        .navbar-toggler:focus {
+            box-shadow: none;
+        }
+
+    /* Navbar items */
+    .navbar-nav .nav-item {
+        margin: 0.25rem 0;
+    }
+
+    .navbar-nav .nav-link {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.9rem;
+    }
+
+        .navbar-nav .nav-link i {
+            font-size: 0.9rem;
+            width: 1.2rem;
+            text-align: center;
+            margin-right: 0.5rem;
+        }
+
+    /* Dropdown menu */
+    .dropdown-menu {
+        padding: 0.5rem 0;
+        margin: 0;
+        border: none;
+        box-shadow: none;
+        background-color: rgba(0, 0, 0, 0.03);
+    }
+
+    .dropdown-item {
+        padding: 0.5rem 1.5rem;
+        font-size: 0.85rem;
+    }
+
+    /* User profile section */
+    .right-nav {
+        margin-top: 0.5rem;
+        padding-top: 0.5rem;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    /* Notifications */
+    .notification-badge {
+        top: 0.25rem;
+        right: 0.25rem;
+        font-size: 0.65rem;
+        padding: 0.15rem 0.35rem;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 576px) {
+    /* Navbar container */
+    .navbar {
+        padding: 0.5rem 0.75rem;
+    }
+
+    /* Navbar brand */
+    .navbar-brand {
+        font-size: 0.9rem;
+    }
+
+    .logo-text {
+        /* max-width: 180px; */
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    /* User avatar */
+    .user-avatar {
+        width: 32px;
+        height: 32px;
+    }
+
+    /* Dropdown menu */
+    .dropdown-menu {
+        width: 100%;
+    }
+
+    /* Top bar */
+    .top-bar {
+        display: none !important;
+    }
+
+    /* Page title section */
+    .page-title-section {
+        padding: 1rem 0;
+    }
+
+    .page-title {
+        font-size: 1.25rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .breadcrumb {
+        font-size: 0.75rem;
+    }
+}

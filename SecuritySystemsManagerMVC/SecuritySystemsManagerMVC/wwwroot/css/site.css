@@ -491,6 +491,7 @@ select.form-select {
     background-color: rgba(0, 0, 0, 0.2);
     color: var(--text-color);
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23d0d2d6' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+    /* color: black !important; */
 }
 
     select.form-control option,
@@ -706,12 +707,12 @@ select:-webkit-autofill:focus {
     .footer h4 {
         margin-top: 20px;
     }
-    
+
     /* Remove space between nav and content on mobile */
     .main-content {
         margin-top: 0;
     }
-    
+
     .hero-section {
         padding-top: 1rem;
     }
@@ -1889,16 +1890,16 @@ section {
     .logo-icon {
         font-size: 1.5rem;
     }
-    
+
     /* Further reduce spacing on very small devices */
     .main-content {
-        margin-top: 0;
+        margin-top: 25px;
     }
-    
+
     .hero-section {
         padding-top: 0.5rem;
     }
-    
+
     .hero-title {
         font-size: 2rem;
     }
@@ -2040,8 +2041,202 @@ section {
     .main-content {
         margin-top: 20px;
     }
-    
+
     .hero-section {
         padding-top: 2rem;
+    }
+}
+
+/* Fix for Bootstrap modal issues */
+body.modal-open {
+    overflow: hidden;
+    padding-right: 0 !important;
+}
+
+.modal-backdrop {
+    opacity: 0.5;
+}
+
+    .modal-backdrop + .modal-backdrop {
+        display: none;
+    }
+
+.modal-open .modal {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+/* Ensure modal content is clickable */
+.modal-content {
+    pointer-events: auto;
+}
+
+/* Ensure buttons in modals are clickable */
+.modal-footer .btn {
+    pointer-events: auto;
+}
+
+.modal-header .btn-close {
+    pointer-events: auto;
+}
+
+/* Mobile Responsive Design Improvements */
+@media (max-width: 768px) {
+    /* General layout improvements */
+    .container-fluid {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    /* Button size adjustments for mobile */
+    .btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+    }
+
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+    }
+
+    .btn-lg {
+        padding: 0.5rem 1rem;
+        font-size: 0.95rem;
+    }
+
+    /* Icon size in buttons */
+    .btn i {
+        font-size: 0.85rem;
+    }
+
+    /* Form controls */
+    .form-control {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.7rem;
+    }
+
+    /* Card adjustments */
+    .card {
+        margin-bottom: 1rem;
+    }
+
+    .card-header {
+        padding: 0.75rem 1rem;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    /* Table adjustments */
+    .table th, .table td {
+        padding: 0.5rem;
+        font-size: 0.85rem;
+    }
+
+    /* Navigation adjustments */
+    .navbar-brand {
+        font-size: 1.1rem;
+    }
+
+    .nav-link {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.9rem;
+    }
+
+    /* Headings */
+    h1, .h1 {
+        font-size: 1.75rem;
+    }
+
+    h2, .h2 {
+        font-size: 1.5rem;
+    }
+
+    h3, .h3 {
+        font-size: 1.3rem;
+    }
+
+    h4, .h4 {
+        font-size: 1.2rem;
+    }
+
+    h5, .h5 {
+        font-size: 1.1rem;
+    }
+
+    /* Spacing adjustments */
+    .mb-4 {
+        margin-bottom: 1rem !important;
+    }
+
+    .mt-4 {
+        margin-top: 1rem !important;
+    }
+
+    .py-4 {
+        padding-top: 1rem !important;
+        padding-bottom: 1rem !important;
+    }
+
+    .px-4 {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 576px) {
+    /* Further reduce sizes for very small screens */
+    .btn {
+        padding: 0.35rem 0.7rem;
+        font-size: 0.8rem;
+    }
+
+    .btn-sm {
+        padding: 0.2rem 0.4rem;
+        font-size: 0.7rem;
+    }
+
+    /* Stack buttons on small screens */
+    .d-flex .btn + .btn {
+        margin-top: 0.5rem;
+    }
+
+    /* Make buttons in card footers stack */
+    .card-footer .btn {
+        display: block;
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+
+        .card-footer .btn:last-child {
+            margin-bottom: 0;
+        }
+
+    /* Adjust button groups */
+    .btn-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+        .btn-group .btn {
+            border-radius: 0.25rem !important;
+            margin-bottom: 0.25rem;
+        }
+
+    /* Adjust table display for small screens */
+    .table-responsive {
+        font-size: 0.8rem;
+    }
+
+    /* Adjust form layouts */
+    .form-group {
+        margin-bottom: 0.75rem;
+    }
+
+    /* Adjust modal sizes */
+    .modal-dialog {
+        margin: 0.5rem;
     }
 }

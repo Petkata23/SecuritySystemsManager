@@ -1,0 +1,188 @@
+/* Mobile Table Improvements */
+
+/* General table styling */
+.table {
+    width: 100%;
+    margin-bottom: 1rem;
+    /* color: #212529; */
+    vertical-align: middle;
+    border-color: #dee2e6;
+}
+
+    .table th {
+        font-weight: 600;
+        background-color: rgba(0, 0, 0, 0.03);
+    }
+
+    .table td, .table th {
+        padding: 0.75rem;
+        vertical-align: middle;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+/* Table responsive container */
+.table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Mobile Responsive Improvements */
+@media (max-width: 768px) {
+    /* Adjust table padding */
+    .table td, .table th {
+        padding: 0.5rem;
+        font-size: 0.85rem;
+    }
+
+    /* Adjust table header */
+    .table th {
+        font-size: 0.85rem;
+        white-space: nowrap;
+    }
+
+    /* Adjust button groups in tables */
+    .table .btn-group {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .table .btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+    }
+
+        .table .btn i {
+            font-size: 0.75rem;
+        }
+
+    /* Adjust table caption */
+    .table caption {
+        font-size: 0.85rem;
+        padding: 0.5rem;
+    }
+
+    /* Adjust table responsive container */
+    .table-responsive {
+        margin-bottom: 1rem;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 576px) {
+    /* Card-based table alternative for very small screens */
+    .table-card-view .table {
+        display: none;
+    }
+
+    .table-card-view .card {
+        margin-bottom: 0.75rem;
+        border-radius: 0.375rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .table-card-view .card-header {
+        padding: 0.5rem 0.75rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+        background-color: rgba(0, 0, 0, 0.03);
+    }
+
+    .table-card-view .card-body {
+        padding: 0.75rem;
+    }
+
+    .table-card-view .card-footer {
+        padding: 0.5rem 0.75rem;
+        background-color: rgba(0, 0, 0, 0.02);
+    }
+
+    /* Data row styling */
+    .table-card-view .data-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+        font-size: 0.85rem;
+    }
+
+        .table-card-view .data-row:last-child {
+            margin-bottom: 0;
+        }
+
+    .table-card-view .data-label {
+        font-weight: 600;
+        color: #6c757d;
+    }
+
+    .table-card-view .data-value {
+        text-align: right;
+    }
+
+    /* Actions row */
+    .table-card-view .actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.5rem;
+    }
+
+    /* Alternative: Horizontal scrolling tables */
+    .table-horizontal-scroll {
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+        .table-horizontal-scroll .table {
+            min-width: 500px;
+        }
+
+    /* Alternative: Stacked tables */
+    .table-stacked .table,
+    .table-stacked .table thead,
+    .table-stacked .table tbody,
+    .table-stacked .table th,
+    .table-stacked .table td,
+    .table-stacked .table tr {
+        display: block;
+    }
+
+        .table-stacked .table thead tr {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+        }
+
+        .table-stacked .table tr {
+            border: 1px solid #dee2e6;
+            margin-bottom: 0.75rem;
+            border-radius: 0.375rem;
+        }
+
+        .table-stacked .table td {
+            border: none;
+            border-bottom: 1px solid #eee;
+            position: relative;
+            padding-left: 50%;
+            text-align: right;
+        }
+
+            .table-stacked .table td:last-child {
+                border-bottom: none;
+            }
+
+            .table-stacked .table td:before {
+                position: absolute;
+                top: 0.5rem;
+                left: 0.5rem;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+                text-align: left;
+                font-weight: 600;
+                content: attr(data-label);
+            }
+}
