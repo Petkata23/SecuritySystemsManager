@@ -168,12 +168,14 @@
                     </div>
                     <div class="card-body">
                         <div class="d-grid gap-2">
-                            <a href="#" class="btn btn-outline-primary">
+                            <a asp-controller="MaintenanceDevice" asp-action="CreateForLog" asp-route-logId="@Model.Id" class="btn btn-outline-primary">
                                 <i class="bi bi-plus-circle me-2"></i> Add Device
                             </a>
-                            <a href="#" class="btn btn-outline-success">
-                                <i class="bi bi-check2-all me-2"></i> Mark All as Fixed
-                            </a>
+                            <form asp-controller="MaintenanceDevice" asp-action="MarkAllFixed" asp-route-logId="@Model.Id" method="post">
+                                <button type="submit" class="btn btn-outline-success w-100">
+                                    <i class="bi bi-check2-all me-2"></i> Mark All as Fixed
+                                </button>
+                            </form>
                             <a asp-controller="SecuritySystemOrder" asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary">
                                 <i class="bi bi-file-earmark-text me-2"></i> View Related Order
                             </a>

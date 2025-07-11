@@ -1,0 +1,211 @@
+/* Maintenance Devices - Custom Styles */
+
+/* Main layout */
+.maintenance-device-section {
+    padding: 1.5rem 0;
+}
+
+.maintenance-device-header {
+    margin-bottom: 1.5rem;
+}
+
+.maintenance-device-details-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.maintenance-device-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.maintenance-device-body {
+    margin-bottom: 2rem;
+}
+
+/* Card styling */
+.device-card {
+    border: none;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    margin-bottom: 1.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.device-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.device-card .card-header {
+    background-color: rgba(0, 0, 0, 0.03);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 1rem 1.25rem;
+}
+
+.device-card .card-body {
+    padding: 1.25rem;
+}
+
+.device-card .card-footer {
+    background-color: rgba(0, 0, 0, 0.02);
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 1rem 1.25rem;
+}
+
+/* Device details */
+.device-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.device-info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+.device-info-item i {
+    font-size: 1.25rem;
+    color: #0d6efd;
+    padding-top: 0.125rem;
+}
+
+.device-notes {
+    background-color: rgba(0, 0, 0, 0.02);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.device-notes-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+}
+
+/* Status badges */
+.status-badge {
+    display: inline-block;
+    padding: 0.35em 0.65em;
+    font-size: 0.75em;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.25rem;
+}
+
+.status-fixed {
+    background-color: #198754;
+    color: white;
+}
+
+.status-not-fixed {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Form styling */
+.device-form-card {
+    border: none;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.device-form-card .card-header {
+    background-color: #0d6efd;
+    color: white;
+    padding: 1rem 1.25rem;
+    border-bottom: none;
+}
+
+.device-form-card .card-body {
+    padding: 1.5rem;
+}
+
+.device-form-card .form-group {
+    margin-bottom: 1.25rem;
+}
+
+.device-form-card .form-label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.device-form-card .form-control,
+.device-form-card .form-select {
+    border-radius: 0.375rem;
+    padding: 0.5rem 0.75rem;
+}
+
+.device-form-card .form-check-input {
+    margin-top: 0.25rem;
+}
+
+.device-form-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+}
+
+/* Animation */
+.animate-fade-in {
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .maintenance-device-details-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .maintenance-device-actions {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+    
+    .maintenance-device-actions .btn {
+        flex: 1 0 auto;
+    }
+    
+    .device-info-item {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .device-form-actions {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .device-form-actions .btn {
+        width: 100%;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 576px) {
+    .maintenance-device-actions {
+        flex-direction: column;
+    }
+    
+    .maintenance-device-actions .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+} 

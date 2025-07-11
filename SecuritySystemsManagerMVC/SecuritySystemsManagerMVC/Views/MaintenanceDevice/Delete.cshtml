@@ -1,0 +1,100 @@
+@model SecuritySystemsManagerMVC.ViewModels.MaintenanceDeviceDetailsVm
+@{
+    ViewData["Title"] = "Delete Maintenance Device";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/maintenance-devices.css" asp-append-version="true" />
+}
+
+<div class="maintenance-device-section">
+    <div class="maintenance-device-header">
+        <div class="maintenance-device-details-header">
+            <div>
+                <h2 class="mb-0">
+                    <i class="bi bi-trash me-2"></i>Delete Maintenance Device
+                </h2>
+                <p class="text-muted mt-2">Are you sure you want to delete this maintenance device record?</p>
+            </div>
+            <div class="maintenance-device-actions">
+                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-primary">
+                    <i class="bi bi-eye me-1"></i> View Details
+                </a>
+                <a asp-action="List" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i> Back to List
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="maintenance-device-body">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card device-card animate-fade-in">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Device Information</h5>
+                        <span class="status-badge @(Model.IsFixed ? "status-fixed" : "status-not-fixed")">
+                            @(Model.IsFixed ? "Fixed" : "Not Fixed")
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-danger mb-4">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            <strong>Warning:</strong> This action cannot be undone. All data associated with this maintenance device record will be permanently deleted.
+                        </div>
+                        
+                        <div class="device-info">
+                            <div class="device-info-item">
+                                <i class="bi bi-cpu"></i>
+                                <div>
+                                    <small class="text-muted d-block">Device</small>
+                                    <strong>@Model.InstalledDeviceName</strong>
+                                </div>
+                            </div>
+                            <div class="device-info-item">
+                                <i class="bi bi-calendar-check"></i>
+                                <div>
+                                    <small class="text-muted d-block">Maintenance Date</small>
+                                    <strong>@Model.MaintenanceLogDate</strong>
+                                </div>
+                            </div>
+                            <div class="device-info-item">
+                                <i class="bi bi-check-circle"></i>
+                                <div>
+                                    <small class="text-muted d-block">Status</small>
+                                    <strong>@(Model.IsFixed ? "Fixed" : "Not Fixed")</strong>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        @if (!string.IsNullOrEmpty(Model.Notes))
+                        {
+                            <div class="device-notes">
+                                <div class="device-notes-title">
+                                    <i class="bi bi-card-text"></i> Notes
+                                </div>
+                                <p class="mb-0">@Model.Notes</p>
+                            </div>
+                        }
+                        
+                        <form asp-action="Delete" method="post" class="mt-4">
+                            <input type="hidden" name="Id" value="@Model.Id" />
+                            <div class="device-form-actions">
+                                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary">
+                                    <i class="bi bi-x-circle me-1"></i> Cancel
+                                </a>
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="bi bi-trash me-1"></i> Confirm Delete
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/maintenance-devices.js" asp-append-version="true"></script>
+} 
