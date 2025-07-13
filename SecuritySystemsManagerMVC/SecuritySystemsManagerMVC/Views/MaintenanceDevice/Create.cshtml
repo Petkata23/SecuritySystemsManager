@@ -1,81 +1,119 @@
 @model SecuritySystemsManagerMVC.ViewModels.MaintenanceDeviceEditVm
+
 @{
-    ViewData["Title"] = "Create Maintenance Device";
+    ViewData["Title"] = "Add Maintenance Record";
 }
 
-@section Styles {
-    <link rel="stylesheet" href="~/css/maintenance-devices.css" asp-append-version="true" />
-}
-
-<div class="maintenance-device-section">
-    <div class="maintenance-device-header">
-        <div class="maintenance-device-details-header">
-            <div>
-                <h2 class="mb-0">
-                    <i class="bi bi-plus-circle me-2"></i>Add Maintenance Device
-                </h2>
-                <p class="text-muted mt-2">Add a new device to the maintenance record</p>
-            </div>
-            <div class="maintenance-device-actions">
-                <a asp-action="List" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left me-1"></i> Back to List
+<div class="container-fluid px-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">
+            @if (ViewBag.IsFromMaintenanceLog == true)
+            {
+                <text>Add Device to Maintenance Log</text>
+            }
+            else
+            {
+                <text>Add Maintenance Record</text>
+            }
+        </h1>
+        <div>
+            @if (ViewBag.IsFromMaintenanceLog == true)
+            {
+                <a asp-controller="MaintenanceLog" asp-action="Details" asp-route-id="@ViewBag.LogId" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>Back to Maintenance Log
                 </a>
-            </div>
+            }
+            else
+            {
+                <a asp-controller="InstalledDevice" asp-action="Details" asp-route-id="@ViewBag.DeviceId" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>Back to Device
+                </a>
+            }
         </div>
     </div>
-    
-    <div class="maintenance-device-body">
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="card device-form-card animate-fade-in">
-                    <div class="card-header">
-                        <h5 class="mb-0"><i class="bi bi-cpu me-2"></i>Device Information</h5>
-                    </div>
-                    <div class="card-body">
-                        <form asp-action="Create" method="post">
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-transparent">
+                    @if (ViewBag.IsFromMaintenanceLog == true)
+                    {
+                        <h5 class="mb-0">Maintenance Log: @ViewBag.LogDate</h5>
+                    }
+                    else
+                    {
+                        <h5 class="mb-0">Device: @ViewBag.DeviceInfo</h5>
+                    }
+                </div>
+                <div class="card-body">
+                    @if (ViewBag.IsFromMaintenanceLog == true)
+                    {
+                        <form asp-action="CreateForLog" asp-route-logId="@ViewBag.LogId" method="post">
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                            
-                            <div class="form-group mb-3">
-                                <label asp-for="MaintenanceLogId" class="form-label"></label>
-                                <select asp-for="MaintenanceLogId" asp-items="Model.AllLogs" class="form-select">
-                                    <option value="">-- Select Maintenance Log --</option>
-                                </select>
-                                <span asp-validation-for="MaintenanceLogId" class="text-danger"></span>
-                                <small class="form-text text-muted">Select the maintenance log this device belongs to</small>
-                            </div>
-                            
-                            <div class="form-group mb-3">
-                                <label asp-for="InstalledDeviceId" class="form-label"></label>
+                            <input type="hidden" asp-for="Id" />
+                            <input type="hidden" asp-for="MaintenanceLogId" value="@ViewBag.LogId" />
+
+                            <div class="mb-3">
+                                <label asp-for="InstalledDeviceId" class="form-label">Select Device</label>
                                 <select asp-for="InstalledDeviceId" asp-items="Model.AllInstalledDevices" class="form-select">
                                     <option value="">-- Select Device --</option>
                                 </select>
                                 <span asp-validation-for="InstalledDeviceId" class="text-danger"></span>
-                                <small class="form-text text-muted">Select the device that needs maintenance</small>
                             </div>
-                            
-                            <div class="form-group mb-3">
-                                <label asp-for="Notes" class="form-label"></label>
-                                <textarea asp-for="Notes" class="form-control" rows="4" placeholder="Enter maintenance notes, issues found, etc."></textarea>
+
+                            <div class="mb-3">
+                                <label asp-for="Notes" class="form-label">Notes</label>
+                                <textarea asp-for="Notes" class="form-control" rows="4"></textarea>
                                 <span asp-validation-for="Notes" class="text-danger"></span>
                             </div>
-                            
-                            <div class="form-check mb-4">
+
+                            <div class="form-check mb-3">
                                 <input asp-for="IsFixed" class="form-check-input" />
-                                <label asp-for="IsFixed" class="form-check-label"></label>
+                                <label asp-for="IsFixed" class="form-check-label">Fixed</label>
                                 <span asp-validation-for="IsFixed" class="text-danger"></span>
-                                <small class="form-text text-muted d-block">Check if the issue with this device has been fixed</small>
                             </div>
-                            
-                            <div class="device-form-actions">
-                                <a asp-action="List" class="btn btn-outline-secondary">
-                                    <i class="bi bi-x-circle me-1"></i> Cancel
-                                </a>
+
+                            <div class="d-flex justify-content-end">
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="bi bi-save me-1"></i> Create Device
+                                    <i class="bi bi-save me-2"></i>Save
                                 </button>
                             </div>
                         </form>
-                    </div>
+                    }
+                    else
+                    {
+                        <form asp-action="AddDeviceToMaintenance" asp-route-deviceId="@ViewBag.DeviceId" method="post">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <input type="hidden" asp-for="Id" />
+                            <input type="hidden" asp-for="InstalledDeviceId" value="@ViewBag.DeviceId" />
+
+                            <div class="mb-3">
+                                <label asp-for="MaintenanceLogId" class="form-label">Maintenance Log</label>
+                                <select asp-for="MaintenanceLogId" asp-items="Model.AllMaintenanceLogs" class="form-select">
+                                    <option value="">-- Select Maintenance Log --</option>
+                                </select>
+                                <span asp-validation-for="MaintenanceLogId" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Notes" class="form-label">Notes</label>
+                                <textarea asp-for="Notes" class="form-control" rows="4"></textarea>
+                                <span asp-validation-for="Notes" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-check mb-3">
+                                <input asp-for="IsFixed" class="form-check-input" />
+                                <label asp-for="IsFixed" class="form-check-label">Fixed</label>
+                                <span asp-validation-for="IsFixed" class="text-danger"></span>
+                            </div>
+
+                            <div class="d-flex justify-content-end">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-save me-2"></i>Save
+                                </button>
+                            </div>
+                        </form>
+                    }
                 </div>
             </div>
         </div>
@@ -84,5 +122,4 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script src="~/js/maintenance-devices.js" asp-append-version="true"></script>
 } 

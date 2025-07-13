@@ -202,35 +202,46 @@ $(document).ready(function() {
 
 // Mobile navigation enhancements
 function initMobileNavigation() {
-    // Close navbar when clicking on a nav item on mobile
-    $('.navbar-nav .nav-link').on('click', function() {
-        if (window.innerWidth < 992) {
-            $('.navbar-collapse').collapse('hide');
-        }
-    });
-
-    // Handle dropdowns in mobile navigation
-    $('.dropdown-toggle').on('click', function(e) {
-        if (window.innerWidth < 992) {
-            e.preventDefault();
-            e.stopPropagation();
-            $(this).next('.dropdown-menu').toggleClass('show');
-        }
-    });
-
-    // Close other dropdowns when one is opened
-    $('.dropdown').on('show.bs.dropdown', function() {
-        if (window.innerWidth < 992) {
-            $('.dropdown-menu.show').removeClass('show');
-        }
-    });
-
-    // Close dropdowns when clicking outside
-    $(document).on('click', function(e) {
-        if (window.innerWidth < 992) {
-            if (!$(e.target).closest('.dropdown').length) {
-                $('.dropdown-menu.show').removeClass('show');
+    const navbarToggler = document.querySelector('.navbar-toggler');
+    const navbarCollapse = document.querySelector('.navbar-collapse');
+    const body = document.body;
+    const isSmallScreen = () => window.innerWidth < 992;
+    
+    // Handle body scroll lock when menu opens/closes
+    if (navbarCollapse) {
+        navbarCollapse.addEventListener('show.bs.collapse', function() {
+            body.classList.add('menu-open');
+        });
+        
+        navbarCollapse.addEventListener('hide.bs.collapse', function() {
+            body.classList.remove('menu-open');
+        });
+    }
+    
+    // Close navbar when clicking on a nav item on mobile (except dropdowns)
+    document.querySelectorAll('.navbar-nav .nav-link:not(.dropdown-toggle)').forEach(function(link) {
+        link.addEventListener('click', function() {
+            if (isSmallScreen() && navbarCollapse && navbarCollapse.classList.contains('show')) {
+                // Use Bootstrap's collapse API
+                const bsCollapse = bootstrap.Collapse.getInstance(navbarCollapse);
+                if (bsCollapse) {
+                    bsCollapse.hide();
+                }
             }
+        });
+    });
+
+    // Handle window resize
+    window.addEventListener('resize', function() {
+        if (!isSmallScreen() && navbarCollapse) {
+            // Reset menu state when resizing to desktop
+            if (navbarCollapse.classList.contains('show')) {
+                const bsCollapse = bootstrap.Collapse.getInstance(navbarCollapse);
+                if (bsCollapse) {
+                    bsCollapse.hide();
+                }
+            }
+            body.classList.remove('menu-open');
         }
     });
 }

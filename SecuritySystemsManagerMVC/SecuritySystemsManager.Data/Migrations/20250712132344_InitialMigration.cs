@@ -14,6 +14,23 @@ namespace SecuritySystemsManager.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "DropboxTokens",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AccessToken = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ExpiryTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DropboxTokens", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Locations",
                 columns: table => new
                 {
@@ -82,7 +99,7 @@ namespace SecuritySystemsManager.Data.Migrations
                     ProfileImage = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    RoleId = table.Column<int>(type: "int", nullable: false),
+                    RoleId = table.Column<int>(type: "int", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -105,8 +122,7 @@ namespace SecuritySystemsManager.Data.Migrations
                         name: "FK_Users_Roles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "Roles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -406,7 +422,7 @@ namespace SecuritySystemsManager.Data.Migrations
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "CreatedAt", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "ProfileImage", "RoleId", "SecurityStamp", "TwoFactorEnabled", "UpdatedAt", "UserName" },
-                values: new object[] { 1, 0, "403d7120-24fb-4512-a4bf-e92e4f4f33f5", new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@securitysystems.com", true, "Admin", "User", false, null, "ADMIN@SECURITYSYSTEMS.COM", "ADMIN", "AQAAAAIAAYagAAAAECbKkyR47scOJKSUI3/+bqGk+muUvyz+eslpYhueI9hnIUF2Zj9ZZUiDe7p5H2Cyqw==", null, false, null, 1, "d51d66af-eaed-46b2-a760-9af3eab171e0", false, new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin" });
+                values: new object[] { 1, 0, "fd703b30-5d13-415b-bab1-bc9f520ca291", new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@securitysystems.com", true, "Admin", "User", false, null, "ADMIN@SECURITYSYSTEMS.COM", "ADMIN", "AQAAAAIAAYagAAAAEEIKVltBYk8WJKFsmab3cmp3YmXVeM+o1ZFLNz8b1hC9r0UFPYo5qub6zC0Kfc3KRw==", null, false, null, 1, "8ec0a4b3-9a12-44d3-b650-7092a5b0d670", false, new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin" });
 
             migrationBuilder.InsertData(
                 table: "UserRoles",
@@ -517,6 +533,9 @@ namespace SecuritySystemsManager.Data.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "DropboxTokens");
+
             migrationBuilder.DropTable(
                 name: "Invoices");
 

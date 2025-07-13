@@ -24,6 +24,7 @@ namespace SecuritySystemsManager.Data
         public DbSet<MaintenanceDevice> MaintenanceDevices { get; set; }
         public DbSet<Invoice> Invoices { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<DropboxToken> DropboxTokens { get; set; }
 
         public SecuritySystemsManagerDbContext() { }
 

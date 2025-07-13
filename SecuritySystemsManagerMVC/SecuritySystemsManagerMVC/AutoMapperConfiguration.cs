@@ -42,7 +42,14 @@ namespace SecuritySystemsManagerMVC
             CreateMap<SecuritySystemOrderDto, SecuritySystemOrderEditVm>().ReverseMap();
 
             CreateMap<MaintenanceDevice, MaintenanceDeviceDto>().ReverseMap();
-            CreateMap<MaintenanceDeviceDto, MaintenanceDeviceDetailsVm>().ReverseMap();
+            CreateMap<MaintenanceDeviceDto, MaintenanceDeviceDetailsVm>()
+                .ForMember(dest => dest.InstalledDeviceName, opt => opt.MapFrom(src => 
+                    src.InstalledDevice != null ? $"{src.InstalledDevice.Brand} {src.InstalledDevice.Model} - {src.InstalledDevice.DeviceType}" : "Unknown Device"))
+                .ForMember(dest => dest.MaintenanceLogDate, opt => opt.MapFrom(src => 
+                    src.MaintenanceLog != null ? src.MaintenanceLog.Date.ToString("MM/dd/yyyy") : "Unknown Date"));
+            CreateMap<MaintenanceDeviceDetailsVm, MaintenanceDeviceDto>()
+                .ForMember(dest => dest.InstalledDevice, opt => opt.Ignore())
+                .ForMember(dest => dest.MaintenanceLog, opt => opt.Ignore());
             CreateMap<MaintenanceDeviceDto, MaintenanceDeviceEditVm>().ReverseMap();
 
             CreateMap<MaintenanceLog, MaintenanceLogDto>().ReverseMap();

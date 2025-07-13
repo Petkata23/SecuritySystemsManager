@@ -40,6 +40,7 @@ builder.Services.AddCors(options =>
 // Register Dropbox services
 builder.Services.AddSingleton<DropboxTokenManager>();
 builder.Services.AddScoped<IFileStorageService, DropboxStorageService>();
+builder.Services.AddHostedService<DropboxTokenRefreshService>();
 
 // Register UrlEncoder for QR code generation
 builder.Services.AddSingleton<UrlEncoder>(UrlEncoder.Default);

@@ -12,10 +12,14 @@ namespace SecuritySystemsManager.Services
     public class MaintenanceLogService : BaseCrudService<MaintenanceLogDto, IMaintenanceLogRepository>, IMaintenanceLogService
     {
         private readonly IMaintenanceLogRepository _maintenanceLogRepository;
+        private readonly ISecuritySystemOrderService _orderService;
 
-        public MaintenanceLogService(IMaintenanceLogRepository repository) : base(repository)
+        public MaintenanceLogService(
+            IMaintenanceLogRepository repository, 
+            ISecuritySystemOrderService orderService) : base(repository)
         {
             _maintenanceLogRepository = repository;
+            _orderService = orderService;
         }
 
         public async Task<IEnumerable<MaintenanceLogDto>> GetLogsByUserRoleAsync(int userId, string userRole, int pageSize, int pageNumber)
@@ -61,6 +65,29 @@ namespace SecuritySystemsManager.Services
             
             // Default: return 0
             return 0;
+        }
+
+        public async Task<MaintenanceLogDto> PrepareMaintenanceLogForOrderAsync(int orderId, int? technicianId = null)
+        {
+            var order = await _orderService.GetByIdIfExistsAsync(orderId);
+            if (order == null)
+            {
+                throw new ArgumentException($"Order with ID {orderId} not found");
+            }
+
+            var maintenanceLog = new MaintenanceLogDto
+            {
+                SecuritySystemOrderId = orderId,
+                SecuritySystemOrder = order,
+                Date = DateTime.Now
+            };
+
+            if (technicianId.HasValue)
+            {
+                maintenanceLog.TechnicianId = technicianId.Value;
+            }
+
+            return maintenanceLog;
         }
     }
 } 

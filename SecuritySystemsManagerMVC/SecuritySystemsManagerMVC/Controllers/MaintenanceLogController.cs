@@ -40,6 +40,55 @@ namespace SecuritySystemsManagerMVC.Controllers
             return editVM;
         }
 
+        // GET: MaintenanceLog/CreateForOrder/5
+        [HttpGet]
+        [Route("MaintenanceLog/CreateForOrder/{orderId}")]
+        public async Task<IActionResult> CreateForOrder(int orderId)
+        {
+            try
+            {
+                // Определяне на текущия потребител ако е техник
+                int? technicianId = null;
+                string userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                string userRole = User.FindFirstValue(ClaimTypes.Role);
+                
+                if (!string.IsNullOrEmpty(userIdStr) && int.TryParse(userIdStr, out int userId) && userRole == "Technician")
+                {
+                    technicianId = userId;
+                }
+                
+                // Използване на сервиса за подготовка на модела
+                var maintenanceLogDto = await _service.PrepareMaintenanceLogForOrderAsync(orderId, technicianId);
+                
+                // Маппинг към ViewModel и попълване на допълнителни данни
+                var vm = _mapper.Map<MaintenanceLogEditVm>(maintenanceLogDto);
+                vm = await PrePopulateVMAsync(vm);
+                
+                ViewBag.OrderTitle = maintenanceLogDto.SecuritySystemOrder?.Title;
+                return View("Create", vm);
+            }
+            catch (ArgumentException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        public override async Task<IActionResult> Details(int id)
+        {
+            var model = await this._service.GetByIdIfExistsAsync(id);
+            if (model == default)
+            {
+                return BadRequest(SecuritySystemsManager.Shared.Constants.InvalidId);
+            }
+            
+            // Set the order ID in ViewBag for the link back to the order
+            ViewBag.OrderId = model.SecuritySystemOrderId;
+            
+            var mappedModel = _mapper.Map<MaintenanceLogDetailsVm>(model);
+            return View(mappedModel);
+        }
+
         [HttpGet]
         public override async Task<IActionResult> List(int pageSize = DefaultPageSize, int pageNumber = DefaultPageNumber)
         {

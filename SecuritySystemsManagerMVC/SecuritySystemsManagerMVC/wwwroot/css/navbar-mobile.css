@@ -18,28 +18,56 @@
         padding: 0.25rem 0.5rem;
         font-size: 0.9rem;
         border: none;
+        transition: transform 0.2s ease-in-out;
     }
 
-        .navbar-toggler:focus {
-            box-shadow: none;
-        }
+    .navbar-toggler:focus {
+        box-shadow: none;
+    }
+    
+    .navbar-toggler:active {
+        transform: scale(0.95);
+    }
+
+    /* Navbar collapse - smooth transition */
+    .navbar-collapse {
+        transition: all 0.3s ease-in-out;
+    }
+
+    .navbar-collapse.collapsing {
+        height: auto;
+        overflow: hidden;
+        transition: height 0.3s ease;
+    }
+
+    .navbar-collapse.show {
+        max-height: 80vh; /* Limit maximum height */
+        overflow-y: auto; /* Enable scrolling if content is too tall */
+    }
 
     /* Navbar items */
     .navbar-nav .nav-item {
         margin: 0.25rem 0;
+        transition: background-color 0.2s ease;
     }
 
     .navbar-nav .nav-link {
         padding: 0.5rem 0.75rem;
         font-size: 0.9rem;
+        transition: background-color 0.2s ease;
+        border-radius: 4px;
     }
 
-        .navbar-nav .nav-link i {
-            font-size: 0.9rem;
-            width: 1.2rem;
-            text-align: center;
-            margin-right: 0.5rem;
-        }
+    .navbar-nav .nav-link:active {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    .navbar-nav .nav-link i {
+        font-size: 0.9rem;
+        width: 1.2rem;
+        text-align: center;
+        margin-right: 0.5rem;
+    }
 
     /* Dropdown menu */
     .dropdown-menu {
@@ -48,11 +76,17 @@
         border: none;
         box-shadow: none;
         background-color: rgba(0, 0, 0, 0.03);
+        border-radius: 4px;
     }
 
     .dropdown-item {
         padding: 0.5rem 1.5rem;
         font-size: 0.85rem;
+        transition: background-color 0.2s ease;
+    }
+
+    .dropdown-item:active {
+        transform: scale(0.98);
     }
 
     /* User profile section */
@@ -68,6 +102,11 @@
         right: 0.25rem;
         font-size: 0.65rem;
         padding: 0.15rem 0.35rem;
+    }
+
+    /* Prevent body scrolling when mobile menu is open */
+    body.menu-open {
+        overflow: hidden;
     }
 }
 

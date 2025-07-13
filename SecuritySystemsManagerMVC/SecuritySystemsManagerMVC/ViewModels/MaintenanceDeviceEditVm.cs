@@ -9,7 +9,7 @@ namespace SecuritySystemsManagerMVC.ViewModels
         [Required(ErrorMessage = "Maintenance log is required")]
         [DisplayName("Maintenance Log")]
         public int MaintenanceLogId { get; set; }
-        public IEnumerable<SelectListItem> AllLogs { get; set; }
+        public IEnumerable<SelectListItem> AllMaintenanceLogs { get; set; }
 
         [Required(ErrorMessage = "Installed device is required")]
         [DisplayName("Installed Device")]
@@ -25,7 +25,7 @@ namespace SecuritySystemsManagerMVC.ViewModels
 
         public MaintenanceDeviceEditVm()
         {
-            AllLogs = new List<SelectListItem>();
+            AllMaintenanceLogs = new List<SelectListItem>();
             AllInstalledDevices = new List<SelectListItem>();
         }
     }

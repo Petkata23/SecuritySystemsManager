@@ -150,6 +150,36 @@ namespace SecuritySystemsManager.Data.Migrations
                     b.ToTable("OrderTechnicians", (string)null);
                 });
 
+            modelBuilder.Entity("SecuritySystemsManager.Data.Entities.DropboxToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AccessToken")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ExpiryTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RefreshToken")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DropboxTokens");
+                });
+
             modelBuilder.Entity("SecuritySystemsManager.Data.Entities.InstalledDevice", b =>
                 {
                     b.Property<int>("Id")
@@ -563,7 +593,7 @@ namespace SecuritySystemsManager.Data.Migrations
                     b.Property<string>("ProfileImage")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("RoleId")
+                    b.Property<int?>("RoleId")
                         .HasColumnType("int");
 
                     b.Property<string>("SecurityStamp")
@@ -598,7 +628,7 @@ namespace SecuritySystemsManager.Data.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "403d7120-24fb-4512-a4bf-e92e4f4f33f5",
+                            ConcurrencyStamp = "fd703b30-5d13-415b-bab1-bc9f520ca291",
                             CreatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@securitysystems.com",
                             EmailConfirmed = true,
@@ -607,10 +637,10 @@ namespace SecuritySystemsManager.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@SECURITYSYSTEMS.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAECbKkyR47scOJKSUI3/+bqGk+muUvyz+eslpYhueI9hnIUF2Zj9ZZUiDe7p5H2Cyqw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEEIKVltBYk8WJKFsmab3cmp3YmXVeM+o1ZFLNz8b1hC9r0UFPYo5qub6zC0Kfc3KRw==",
                             PhoneNumberConfirmed = false,
                             RoleId = 1,
-                            SecurityStamp = "d51d66af-eaed-46b2-a760-9af3eab171e0",
+                            SecurityStamp = "8ec0a4b3-9a12-44d3-b650-7092a5b0d670",
                             TwoFactorEnabled = false,
                             UpdatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserName = "admin"
@@ -784,9 +814,7 @@ namespace SecuritySystemsManager.Data.Migrations
                 {
                     b.HasOne("SecuritySystemsManager.Data.Entities.Role", "Role")
                         .WithMany("Users")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RoleId");
 
                     b.Navigation("Role");
                 });
