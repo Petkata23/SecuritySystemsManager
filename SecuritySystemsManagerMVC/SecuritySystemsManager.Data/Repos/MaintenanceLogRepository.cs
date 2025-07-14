@@ -21,6 +21,21 @@ namespace SecuritySystemsManager.Data.Repos
             _dbContext = context;
         }
 
+        public override async Task<MaintenanceLogDto> GetByIdAsync(int id)
+        {
+            var entity = await _dbContext.MaintenanceLogs
+                .Include(ml => ml.SecuritySystemOrder)
+                .Include(ml => ml.Technician)
+                .Include(ml => ml.MaintenanceDevices)
+                    .ThenInclude(md => md.InstalledDevice)
+                .FirstOrDefaultAsync(e => e.Id == id);
+
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            return MapToModel(entity);
+        }
+
         public async Task<IEnumerable<MaintenanceLogDto>> GetLogsByClientIdAsync(int clientId, int pageSize, int pageNumber)
         {
             var query = _dbContext.MaintenanceLogs

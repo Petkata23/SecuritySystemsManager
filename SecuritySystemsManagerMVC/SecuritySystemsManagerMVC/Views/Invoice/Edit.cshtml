@@ -1,0 +1,142 @@
+@model SecuritySystemsManagerMVC.ViewModels.InvoiceEditVm
+@using SecuritySystemsManager.Shared
+@{
+    ViewData["Title"] = "Edit Invoice";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/invoice/invoice.css" asp-append-version="true" />
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="mb-0">
+                <i class="bi bi-receipt me-2"></i>Edit Invoice
+            </h1>
+            <p class="text-muted">Invoice #@Model.Id</p>
+        </div>
+        <div>
+            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-primary">
+                <i class="bi bi-eye me-1"></i> View Details
+            </a>
+            <a asp-action="List" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Back to List
+            </a>
+        </div>
+    </div>
+
+    <div class="invoice-form-container">
+        <div class="invoice-form-header">
+            <h3>Edit Invoice Information</h3>
+        </div>
+
+        <form asp-action="Edit" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="invoice-form-group">
+                        <label asp-for="SecuritySystemOrderId" class="invoice-form-label"></label>
+                        <select asp-for="SecuritySystemOrderId" asp-items="Model.AllOrders" class="form-select invoice-form-control">
+                            <option value="">-- Select Order --</option>
+                        </select>
+                        <span asp-validation-for="SecuritySystemOrderId" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="invoice-form-group">
+                        <label asp-for="IssuedOn" class="invoice-form-label"></label>
+                        <input asp-for="IssuedOn" type="date" class="form-control invoice-form-control" />
+                        <span asp-validation-for="IssuedOn" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="invoice-form-group">
+                        <label asp-for="TotalAmount" class="invoice-form-label"></label>
+                        <div class="input-group">
+                            <span class="input-group-text" style="background-color: var(--header-bg); color: var(--text-color); border-color: var(--border-color);">$</span>
+                            <input asp-for="TotalAmount" type="number" step="0.01" min="0.01" class="form-control invoice-form-control" />
+                        </div>
+                        <span asp-validation-for="TotalAmount" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="invoice-form-group">
+                        <label asp-for="IsPaid" class="invoice-form-label"></label>
+                        <div class="form-check form-switch mt-2">
+                            <input asp-for="IsPaid" class="form-check-input" role="switch" style="width: 3em; height: 1.5em;" />
+                            <label class="form-check-label" for="IsPaid">Mark as paid</label>
+                        </div>
+                        <span asp-validation-for="IsPaid" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="invoice-form-actions">
+                <button type="button" class="btn btn-outline-secondary" onclick="location.href='@Url.Action("Details", new { id = Model.Id })'">Cancel</button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-save me-1"></i> Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <i class="bi bi-info-circle me-2"></i>Edit History
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="d-flex align-items-center">
+                <div class="me-3">
+                    <div style="background-color: var(--header-bg); border: 1px solid var(--border-color);" class="rounded-circle p-3">
+                        <i class="bi bi-clock-history text-primary" style="font-size: 1.5rem;"></i>
+                    </div>
+                </div>
+                <div>
+                    <p class="mb-1"><strong>Last Updated:</strong> @(Model.UpdatedAt.HasValue ? Model.UpdatedAt.Value.ToString(Constants.DateTimeFormat) : "Not updated yet")</p>
+                    <p class="mb-0 text-muted small">Created on @Model.CreatedAt.ToString(Constants.DateFormat)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $(document).ready(function() {
+            // Format date for input
+            function formatDateForInput(dateString) {
+                const date = new Date(dateString);
+                return date.toISOString().split('T')[0];
+            }
+            
+            // Format the IssuedOn date if needed
+            if ($("#IssuedOn").val()) {
+                $("#IssuedOn").val(formatDateForInput($("#IssuedOn").val()));
+            }
+            
+            // Confirm before saving if amount is changed significantly
+            const originalAmount = parseFloat($("#TotalAmount").val());
+            
+            $("form").submit(function(e) {
+                const newAmount = parseFloat($("#TotalAmount").val());
+                const percentChange = Math.abs((newAmount - originalAmount) / originalAmount * 100);
+                
+                if (percentChange > 20) {
+                    if (!confirm("You're changing the invoice amount by more than 20%. Are you sure you want to continue?")) {
+                        e.preventDefault();
+                    }
+                }
+            });
+        });
+    </script>
+} 

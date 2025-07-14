@@ -48,7 +48,7 @@ namespace SecuritySystemsManager.Data.Repos
             return MapToEnumerableOfModel(await _dbSet.ToListAsync());
         }
 
-        public async Task<TModel> GetByIdAsync(int id)
+        public virtual async Task<TModel> GetByIdAsync(int id)
         {
             var entity = await _dbSet.FirstOrDefaultAsync(e => e.Id == id);
             if (entity == null)

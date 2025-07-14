@@ -14,5 +14,10 @@ namespace SecuritySystemsManager.Shared
         public const string InvalidCredentials = "Invalid Credentials.";
         public const string UserAlreadyExists = "User already exists.";
         public const string AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+        
+        // Date formats
+        public const string DateFormat = "dd/MM/yyyy";
+        public const string DateTimeFormat = "dd/MM/yyyy HH:mm";
+        public const string DateFormatLong = "dd MMMM yyyy";
     }
 }

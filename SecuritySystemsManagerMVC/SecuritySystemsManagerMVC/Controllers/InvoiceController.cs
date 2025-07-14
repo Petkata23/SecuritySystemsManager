@@ -1,10 +1,13 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using SecuritySystemsManager.Shared.Dtos;
 using SecuritySystemsManager.Shared.Repos.Contracts;
 using SecuritySystemsManager.Shared.Services.Contracts;
 using SecuritySystemsManagerMVC.ViewModels;
+using System;
+using System.Threading.Tasks;
 
 namespace SecuritySystemsManagerMVC.Controllers
 {
@@ -24,6 +27,47 @@ namespace SecuritySystemsManagerMVC.Controllers
                 .Select(o => new SelectListItem(o.Title, o.Id.ToString()));
             
             return editVM;
+        }
+
+        [HttpGet]
+        public override async Task<IActionResult> Details(int id)
+        {
+            var invoice = await ((IInvoiceService)_service).GetInvoiceWithDetailsAsync(id);
+            if (invoice == null)
+            {
+                return NotFound();
+            }
+
+            var mappedModel = _mapper.Map<InvoiceDetailsVm>(invoice);
+            return View(mappedModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> MarkAsPaid(int id)
+        {
+            try
+            {
+                await ((IInvoiceService)_service).MarkAsPaidAsync(id);
+                return RedirectToAction(nameof(Details), new { id });
+            }
+            catch (ArgumentException)
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> MarkAsUnpaid(int id)
+        {
+            try
+            {
+                await ((IInvoiceService)_service).MarkAsUnpaidAsync(id);
+                return RedirectToAction(nameof(Details), new { id });
+            }
+            catch (ArgumentException)
+            {
+                return NotFound();
+            }
         }
     }
 } 

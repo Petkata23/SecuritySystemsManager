@@ -1,0 +1,194 @@
+@model SecuritySystemsManagerMVC.ViewModels.InvoiceDetailsVm
+@using SecuritySystemsManager.Shared
+@{
+    ViewData["Title"] = "Invoice Details";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/invoice/invoice.css" asp-append-version="true" />
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="mb-0">
+                <i class="bi bi-receipt me-2"></i>Invoice Details
+            </h1>
+            <p class="text-muted">Invoice #@Model.Id</p>
+        </div>
+        <div class="invoice-actions">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary">
+                <i class="bi bi-pencil me-1"></i> Edit
+            </a>
+            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger">
+                <i class="bi bi-trash me-1"></i> Delete
+            </a>
+            <a asp-action="List" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Back to List
+            </a>
+            <button onclick="window.print()" class="btn btn-outline-dark">
+                <i class="bi bi-printer me-1"></i> Print
+            </button>
+        </div>
+    </div>
+
+    <div class="invoice-container">
+        <div class="invoice-header">
+            <div class="invoice-title">
+                <div>
+                    <img src="~/img/favicon.svg" alt="Company Logo" class="invoice-logo" />
+                    <h2 class="mt-3">Security Systems Manager</h2>
+                    <p class="text-muted mb-0">Professional Security Solutions</p>
+                </div>
+                <div class="text-end">
+                    <h3>INVOICE</h3>
+                    <div class="invoice-status @(Model.IsPaid ? "status-paid" : "status-unpaid")">
+                        @(Model.IsPaid ? "Paid" : "Unpaid")
+                    </div>
+                </div>
+            </div>
+
+            <div class="invoice-meta">
+                <div class="invoice-meta-item">
+                    <h6>Invoice Number</h6>
+                    <p>#@Model.Id.ToString("D6")</p>
+                </div>
+                <div class="invoice-meta-item">
+                    <h6>Issue Date</h6>
+                    <p>@Model.IssuedOn.ToString(Constants.DateFormat)</p>
+                </div>
+                <div class="invoice-meta-item">
+                    <h6>Due Date</h6>
+                    <p>@Model.DueDate.ToString(Constants.DateFormat)</p>
+                </div>
+                <div class="invoice-meta-item">
+                    <h6>Order Reference</h6>
+                    <p>@Model.OrderTitle</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="invoice-body">
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h5 class="mb-3">Bill From</h5>
+                    <div class="p-3 rounded" style="background-color: var(--header-bg); border: 1px solid var(--border-color);">
+                        <p class="mb-1"><strong>Security Systems Manager Inc.</strong></p>
+                        <p class="mb-1">123 Security Street</p>
+                        <p class="mb-1">Tech City, TC 10101</p>
+                        <p class="mb-1">Email: billing@securitysystems.com</p>
+                        <p class="mb-0">Phone: (555) 123-4567</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h5 class="mb-3">Bill To</h5>
+                    <div class="p-3 rounded" style="background-color: var(--header-bg); border: 1px solid var(--border-color);">
+                        <p class="mb-1"><strong>@Model.ClientFullName</strong></p>
+                        <p class="mb-1">@Model.LocationAddress</p>
+                        <p class="mb-1">@Model.LocationName</p>
+                        <p class="mb-1">Email: @Model.ClientEmail</p>
+                        <p class="mb-0">Phone: @Model.ClientPhone</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-responsive mt-4">
+                <table class="invoice-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Item</th>
+                            <th>Description</th>
+                            <th class="text-end">Price</th>
+                            <th class="text-center">Quantity</th>
+                            <th class="text-end">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Security System Installation</td>
+                            <td>@Model.OrderDescription</td>
+                            <td class="text-end">$@Model.TotalAmount.ToString("N2")</td>
+                            <td class="text-center">1</td>
+                            <td class="text-end">$@Model.TotalAmount.ToString("N2")</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="invoice-summary">
+                <div class="invoice-summary-row">
+                    <span>Subtotal</span>
+                    <span>$@Model.TotalAmount.ToString("N2")</span>
+                </div>
+                <div class="invoice-summary-row">
+                    <span>Tax (0%)</span>
+                    <span>$0.00</span>
+                </div>
+                <div class="invoice-summary-row total">
+                    <span>Total</span>
+                    <span>$@Model.TotalAmount.ToString("N2")</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="invoice-footer">
+            <div class="invoice-notes">
+                <h6>Notes</h6>
+                <p>Thank you for your business. Payment is due within 30 days of invoice date. Please make checks payable to Security Systems Manager Inc. or use the online payment system.</p>
+            </div>
+
+            <div class="text-center mt-4">
+                <p class="mb-0 text-muted">
+                    <small>Security Systems Manager Inc. | www.securitysystems.com | (555) 123-4567</small>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Payment Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex gap-3">
+                    @if (!Model.IsPaid)
+                    {
+                        <form asp-action="MarkAsPaid" asp-route-id="@Model.Id" method="post">
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-check-circle me-2"></i>Mark as Paid
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <form asp-action="MarkAsUnpaid" asp-route-id="@Model.Id" method="post">
+                            <button type="submit" class="btn btn-warning">
+                                <i class="bi bi-x-circle me-2"></i>Mark as Unpaid
+                            </button>
+                        </form>
+                    }
+                    <button class="btn btn-outline-primary" onclick="window.print()">
+                        <i class="bi bi-printer me-2"></i>Print Invoice
+                    </button>
+                    <a asp-controller="SecuritySystemOrder" asp-action="Details" asp-route-id="@Model.SecuritySystemOrderId" class="btn btn-outline-secondary">
+                        <i class="bi bi-file-earmark-text me-2"></i>View Order
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Animation for invoice container
+            $(".invoice-container").css("opacity", "0").animate({
+                opacity: 1
+            }, 500);
+        });
+    </script>
+} 

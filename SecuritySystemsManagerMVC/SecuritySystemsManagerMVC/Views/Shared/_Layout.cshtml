@@ -100,14 +100,20 @@
                         </li>
                         
                         <!-- Authenticated user navigation group -->
-                        @if (User.IsInRole("Admin") || User.IsInRole("Manager") || User.IsInRole("Client"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="SecuritySystemOrder" asp-action="List"><i class="bi bi-cart me-2"></i>Orders</a>
-                            </li>
-                        }
                         @if (User.Identity.IsAuthenticated)
                         {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="SecuritySystemOrder" asp-action="List">
+                                    <i class="bi bi-cart me-2"></i>Orders
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Invoice" ? "active" : "")" asp-controller="Invoice" asp-action="List">
+                                    <i class="bi bi-receipt me-2"></i>Invoices
+                                </a>
+                            </li>
+
                             <li class="nav-item">
                                 <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "MaintenanceLog" ? "active" : "")" asp-controller="MaintenanceLog" asp-action="List">
                                     <i class="bi bi-tools me-2"></i>Maintenance

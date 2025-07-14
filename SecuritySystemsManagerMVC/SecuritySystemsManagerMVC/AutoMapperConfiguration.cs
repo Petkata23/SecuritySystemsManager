@@ -53,11 +53,39 @@ namespace SecuritySystemsManagerMVC
             CreateMap<MaintenanceDeviceDto, MaintenanceDeviceEditVm>().ReverseMap();
 
             CreateMap<MaintenanceLog, MaintenanceLogDto>().ReverseMap();
-            CreateMap<MaintenanceLogDto, MaintenanceLogDetailsVm>().ReverseMap();
+            CreateMap<MaintenanceLogDto, MaintenanceLogDetailsVm>()
+                .ForMember(dest => dest.OrderTitle, opt => opt.MapFrom(src => 
+                    src.SecuritySystemOrder != null ? src.SecuritySystemOrder.Title : "Unknown Order"))
+                .ForMember(dest => dest.TechnicianFullName, opt => opt.MapFrom(src => 
+                    src.Technician != null ? $"{src.Technician.FirstName} {src.Technician.LastName}" : "Unknown Technician"));
             CreateMap<MaintenanceLogDto, MaintenanceLogEditVm>().ReverseMap();
 
             CreateMap<Invoice, InvoiceDto>().ReverseMap();
-            CreateMap<InvoiceDto, InvoiceDetailsVm>().ReverseMap();
+            CreateMap<InvoiceDto, InvoiceDetailsVm>()
+                .ForMember(dest => dest.OrderTitle, opt => opt.MapFrom(src => 
+                    src.SecuritySystemOrder != null ? src.SecuritySystemOrder.Title : "Unknown Order"))
+                .ForMember(dest => dest.SecuritySystemOrderId, opt => opt.MapFrom(src => src.SecuritySystemOrderId))
+                .ForMember(dest => dest.ClientFullName, opt => opt.MapFrom(src => 
+                    src.SecuritySystemOrder != null && src.SecuritySystemOrder.Client != null ? 
+                    $"{src.SecuritySystemOrder.Client.FirstName} {src.SecuritySystemOrder.Client.LastName}" : "Unknown Client"))
+                .ForMember(dest => dest.ClientEmail, opt => opt.MapFrom(src => 
+                    src.SecuritySystemOrder != null && src.SecuritySystemOrder.Client != null ? 
+                    src.SecuritySystemOrder.Client.Email : "N/A"))
+                .ForMember(dest => dest.ClientPhone, opt => opt.MapFrom(src => 
+                    src.SecuritySystemOrder != null ? src.SecuritySystemOrder.PhoneNumber : "N/A"))
+                .ForMember(dest => dest.LocationName, opt => opt.MapFrom(src => 
+                    src.SecuritySystemOrder != null && src.SecuritySystemOrder.Location != null ? 
+                    src.SecuritySystemOrder.Location.Name : "N/A"))
+                .ForMember(dest => dest.LocationAddress, opt => opt.MapFrom(src => 
+                    src.SecuritySystemOrder != null && src.SecuritySystemOrder.Location != null ? 
+                    src.SecuritySystemOrder.Location.Address : "N/A"))
+                .ForMember(dest => dest.OrderDescription, opt => opt.MapFrom(src => 
+                    src.SecuritySystemOrder != null ? src.SecuritySystemOrder.Description : "N/A"))
+                .ForMember(dest => dest.OrderStatus, opt => opt.MapFrom(src => 
+                    src.SecuritySystemOrder != null ? src.SecuritySystemOrder.Status.ToString() : "N/A"))
+                .ForMember(dest => dest.OrderRequestedDate, opt => opt.MapFrom(src => 
+                    src.SecuritySystemOrder != null ? src.SecuritySystemOrder.RequestedDate : DateTime.Now));
+            CreateMap<InvoiceDetailsVm, InvoiceDto>();
             CreateMap<InvoiceDto, InvoiceEditVm>().ReverseMap();
 
             CreateMap<Notification, NotificationDto>().ReverseMap();
