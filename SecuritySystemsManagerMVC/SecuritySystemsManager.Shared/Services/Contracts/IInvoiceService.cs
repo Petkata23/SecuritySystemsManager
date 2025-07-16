@@ -8,5 +8,7 @@ namespace SecuritySystemsManager.Shared.Services.Contracts
         Task<InvoiceDto> MarkAsPaidAsync(int id);
         Task<InvoiceDto> MarkAsUnpaidAsync(int id);
         Task<InvoiceDto> GetInvoiceWithDetailsAsync(int id);
+        Task<IEnumerable<InvoiceDto>> GetInvoicesByUserRoleAsync(int userId, string userRole, int pageSize, int pageNumber);
+        Task<int> GetInvoicesCountByUserRoleAsync(int userId, string userRole);
     }
 } 
