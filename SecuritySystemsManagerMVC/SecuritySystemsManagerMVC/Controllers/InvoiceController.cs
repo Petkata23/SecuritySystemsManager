@@ -78,6 +78,84 @@ namespace SecuritySystemsManagerMVC.Controllers
             return View(mappedModel);
         }
 
+        [HttpGet]
+        public override async Task<IActionResult> Create()
+        {
+            // Check if user is a client - clients cannot create invoices
+            string userRole = User.FindFirstValue(ClaimTypes.Role);
+            if (userRole == "Client")
+            {
+                return Forbid();
+            }
+
+            return await base.Create();
+        }
+
+        [HttpPost]
+        public override async Task<IActionResult> Create(InvoiceEditVm editVM)
+        {
+            // Check if user is a client - clients cannot create invoices
+            string userRole = User.FindFirstValue(ClaimTypes.Role);
+            if (userRole == "Client")
+            {
+                return Forbid();
+            }
+
+            return await base.Create(editVM);
+        }
+
+        [HttpGet]
+        public override async Task<IActionResult> Edit(int? id)
+        {
+            // Check if user is a client - clients cannot edit invoices
+            string userRole = User.FindFirstValue(ClaimTypes.Role);
+            if (userRole == "Client")
+            {
+                return Forbid();
+            }
+
+            return await base.Edit(id);
+        }
+
+        [HttpPost]
+        public override async Task<IActionResult> Edit(int id, InvoiceEditVm editVM)
+        {
+            // Check if user is a client - clients cannot edit invoices
+            string userRole = User.FindFirstValue(ClaimTypes.Role);
+            if (userRole == "Client")
+            {
+                return Forbid();
+            }
+
+            return await base.Edit(id, editVM);
+        }
+
+        [HttpGet]
+        public override async Task<IActionResult> Delete(int? id)
+        {
+            // Check if user is a client - clients cannot delete invoices
+            string userRole = User.FindFirstValue(ClaimTypes.Role);
+            if (userRole == "Client")
+            {
+                return Forbid();
+            }
+
+            return await base.Delete(id);
+        }
+
+        [HttpPost]
+        public override async Task<IActionResult> Delete(int id)
+        {
+            // Check if user is a client - clients cannot delete invoices
+            string userRole = User.FindFirstValue(ClaimTypes.Role);
+            if (userRole == "Client")
+            {
+                return Forbid();
+            }
+
+            return await base.Delete(id);
+        }
+
         [HttpPost]
         public async Task<IActionResult> MarkAsPaid(int id)
         {

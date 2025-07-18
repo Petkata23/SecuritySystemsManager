@@ -2,6 +2,8 @@
 @using SecuritySystemsManager.Shared
 @{
     ViewData["Title"] = "Invoices";
+    var userRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+    var isClient = userRole == "Client";
 }
 
 @section Styles {
@@ -16,11 +18,14 @@
             </h1>
             <p class="text-muted">Manage and track all system invoices</p>
         </div>
-        <div>
-            <a asp-action="Create" class="btn btn-primary">
-                <i class="bi bi-plus-circle me-2"></i>Create New Invoice
-            </a>
-        </div>
+        @if (!isClient)
+        {
+            <div>
+                <a asp-action="Create" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-2"></i>Create New Invoice
+                </a>
+            </div>
+        }
     </div>
 
     <div class="row mb-4">
@@ -89,12 +94,15 @@
                                 <a asp-action="Details" asp-route-id="@invoice.Id" class="btn btn-sm btn-outline-primary">
                                     <i class="bi bi-eye"></i>
                                 </a>
-                                <a asp-action="Edit" asp-route-id="@invoice.Id" class="btn btn-sm btn-outline-secondary">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
-                                <a asp-action="Delete" asp-route-id="@invoice.Id" class="btn btn-sm btn-outline-danger">
-                                    <i class="bi bi-trash"></i>
-                                </a>
+                                @if (!isClient)
+                                {
+                                    <a asp-action="Edit" asp-route-id="@invoice.Id" class="btn btn-sm btn-outline-secondary">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@invoice.Id" class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                }
                             </div>
                         </div>
                     </div>
@@ -106,9 +114,12 @@
                     <i class="bi bi-receipt text-muted" style="font-size: 3rem;"></i>
                     <h4 class="mt-3">No Invoices Found</h4>
                     <p class="text-muted">There are no invoices in the system yet.</p>
-                    <a asp-action="Create" class="btn btn-primary mt-2">
-                        <i class="bi bi-plus-circle me-2"></i>Create First Invoice
-                    </a>
+                    @if (!isClient)
+                    {
+                        <a asp-action="Create" class="btn btn-primary mt-2">
+                            <i class="bi bi-plus-circle me-2"></i>Create First Invoice
+                        </a>
+                    }
                 </div>
             }
         </div>
