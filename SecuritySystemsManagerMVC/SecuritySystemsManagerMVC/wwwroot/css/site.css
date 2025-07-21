@@ -135,7 +135,6 @@ main.main-content {
 .navbar-brand {
     display: flex;
     align-items: center;
-    margin-left: -120px;
 }
 
 .logo-icon {
@@ -2244,3 +2243,70 @@ body.modal-open {
         margin: 0.5rem;
     }
 }
+
+/* Container improvements for better responsive design */
+.navbar .container,
+.top-bar .container,
+.main-content .container,
+.page-title-section .container {
+    max-width: 1400px;
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
+@media (max-width: 768px) {
+    .navbar .container,
+    .top-bar .container,
+    .main-content .container,
+    .page-title-section .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .navbar .container,
+    .top-bar .container,
+    .main-content .container,
+    .page-title-section .container {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+}
+
+/* Ensure all sections are properly aligned */
+.top-bar,
+.main-header,
+.page-title-section {
+    width: 100%;
+}
+
+.top-bar > .container,
+.main-header .navbar > .container,
+.page-title-section > .container {
+    width: 100%;
+    max-width: 1400px;
+}
+
+.container,
+.home-container {
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+    max-width: 1400px;
+}
+@media (max-width: 768px) {
+    .container,
+    .home-container {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+}
+@media (max-width: 576px) {
+    .container,
+    .home-container {
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+    }
+}
+
+

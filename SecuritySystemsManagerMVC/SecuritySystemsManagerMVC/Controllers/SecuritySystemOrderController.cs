@@ -48,7 +48,6 @@ namespace SecuritySystemsManagerMVC.Controllers
         {
             var editVM = await PrePopulateVMAsync(new SecuritySystemOrderEditVm());
             
-            // Устанавливаем дату по умолчанию на сегодня + 3 дня
             editVM.RequestedDate = DateTime.Now.AddDays(3);
             
             if (User.IsInRole("Client"))
@@ -73,7 +72,6 @@ namespace SecuritySystemsManagerMVC.Controllers
                 if (int.TryParse(userIdStr, out int userId))
                 {
                     editVM.ClientId = userId;
-                    // Автоматически устанавливаем статус Pending для клиентов
                     editVM.Status = OrderStatus.Pending;
                 }
             }

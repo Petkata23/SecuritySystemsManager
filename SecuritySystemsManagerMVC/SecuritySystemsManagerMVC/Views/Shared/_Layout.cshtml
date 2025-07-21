@@ -45,12 +45,200 @@
                 margin: 8px 0;
             }
         }
+
+        /* Improved responsive navbar */
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            color: var(--secondary-color);
+            margin-right: 10px;
+        }
+
+        .logo-text {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.5rem;
+            color: var(--light-color);
+            white-space: nowrap;
+        }
+
+        /* Responsive logo adjustments */
+        @@media (max-width: 1200px) {
+            .logo-text {
+                font-size: 1.3rem;
+            }
+            .logo-icon {
+                font-size: 1.8rem;
+            }
+        }
+
+        @@media (max-width: 992px) {
+            .logo-text {
+                font-size: 1.2rem;
+            }
+            .logo-icon {
+                font-size: 1.6rem;
+                margin-right: 8px;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .logo-text {
+                font-size: 1.1rem;
+            }
+            .logo-icon {
+                font-size: 1.4rem;
+                margin-right: 6px;
+            }
+        }
+
+        @@media (max-width: 576px) {
+            .logo-text {
+                font-size: 1rem;
+                max-width: 150px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .logo-icon {
+                font-size: 1.2rem;
+                margin-right: 4px;
+            }
+        }
+
+        /* Improved navbar navigation */
+        .navbar-nav .nav-link {
+            color: var(--text-color);
+            font-weight: 500;
+            padding: 0.7rem 1rem;
+            margin: 0 4px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+        }
+
+        @@media (max-width: 1200px) {
+            .navbar-nav .nav-link {
+                padding: 0.6rem 0.8rem;
+                margin: 0 2px;
+            }
+        }
+
+        @@media (max-width: 992px) {
+            .navbar-nav .nav-link {
+                padding: 0.5rem 0.75rem;
+                margin: 0;
+            }
+        }
+
+        /* Right navigation improvements */
+        .navbar-nav.right-nav {
+            display: flex;
+            align-items: center;
+            margin-left: auto;
+        }
+
+        .nav-divider-vertical {
+            height: 24px;
+            width: 1px;
+            background-color: rgba(255, 255, 255, 0.1);
+            margin: 0 15px;
+            align-self: center;
+        }
+
+        @@media (max-width: 992px) {
+            .nav-divider-vertical {
+                display: none;
+            }
+        }
+
+        /* Container improvements for better spacing */
+        .navbar .container {
+            max-width: 1400px;
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+
+        @@media (max-width: 1400px) {
+            .navbar .container {
+                max-width: 100%;
+            }
+        }
+
+        /* Top bar improvements */
+        .top-bar .container {
+            max-width: 1400px;
+        }
+
+        @@media (max-width: 1400px) {
+            .top-bar .container {
+                max-width: 100%;
+            }
+        }
+
+        /* Page title section improvements */
+        .page-title-section .container {
+            max-width: 1400px;
+        }
+
+        @@media (max-width: 1400px) {
+            .page-title-section .container {
+                max-width: 100%;
+            }
+        }
+
+        /* Align all sections with consistent padding */
+        .top-bar .container,
+        .navbar .container,
+        .page-title-section .container {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+
+        @@media (max-width: 768px) {
+            .top-bar .container,
+            .navbar .container,
+            .page-title-section .container {
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+        }
+
+        @@media (max-width: 576px) {
+            .top-bar .container,
+            .navbar .container,
+            .page-title-section .container {
+                padding-left: 8px;
+                padding-right: 8px;
+            }
+        }
+
+        /* Ensure all sections are properly aligned */
+        .top-bar,
+        .main-header,
+        .page-title-section {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .top-bar > .container,
+        .main-header .navbar > .container,
+        .page-title-section > .container {
+            width: 100%;
+            max-width: 1400px;
+        }
     </style>
 </head>
 <body class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "home-page" : "")">
     <!-- Top Bar -->
     <div class="top-bar d-none d-md-block">
-        <div class="container">
+        <div class="home-container">
             <div class="row">
                 <div class="col-md-8">
                     <ul class="list-inline top-bar-info mb-0">
@@ -73,8 +261,8 @@
     <!-- Main Header -->
     <header class="main-header">
         <nav class="navbar navbar-expand-lg">
-            <div class="container">
-                <a class="navbar-brand" href="/">
+            <div class="home-container">
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">
                     <i class="bi bi-shield-lock logo-icon"></i>
                     <span class="logo-text">Security Systems Hristovi</span>
                 </a>
@@ -83,14 +271,16 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav me-auto">
-                        <!-- Main navigation group -->
                         <li class="nav-item">
                             <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")" asp-controller="Home" asp-action="Index"><i class="bi bi-house-door me-2"></i>Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Privacy" ? "active" : "")" asp-controller="Home" asp-action="Privacy"><i class="bi bi-shield-lock me-2"></i>Privacy</a>
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Privacy" ? "active" : "")" asp-controller="Home" asp-action="Privacy"><i class="bi bi-shield-check me-2"></i>Privacy</a>
                         </li>
-                        
+                    </ul>
+
+                    <ul class="navbar-nav">
+
                         <!-- Separator between navigation groups -->
                         <li class="d-none d-lg-block">
                             <div class="nav-separator"></div>
@@ -98,7 +288,7 @@
                         <li class="d-lg-none">
                             <hr class="dropdown-divider nav-separator">
                         </li>
-                        
+
                         <!-- Authenticated user navigation group -->
                         @if (User.Identity.IsAuthenticated)
                         {
@@ -143,25 +333,32 @@
                             </li>
                         }
                     </ul>
-                    
-                    <!-- Right side navigation items -->
-                    <div class="navbar-nav right-nav">
+
+
+                    <ul class="navbar-nav ms-auto">
+
+                        <!-- Separator between navigation groups -->
+                        <li class="d-none d-lg-block">
+                            <div class="nav-separator"></div>
+                        </li>
+                        <li class="d-lg-none">
+                            <hr class="dropdown-divider nav-separator">
+                        </li>
+
                         @if (User.Identity.IsAuthenticated)
                         {
-                            <!-- Notifications -->
-                            @await Html.PartialAsync("_NotificationsPartial")
-                            
-                            <div class="nav-divider-vertical d-none d-lg-block"></div>
-                            
-                            <!-- User Profile -->
-                            @await Html.PartialAsync("_UserProfilePartial")
+                            <li class="nav-item dropdown notification-dropdown">
+                                @await Html.PartialAsync("_NotificationsPartial")
+                            </li>
+                            <li class="nav-item dropdown profile-dropdown">
+                                @await Html.PartialAsync("_UserProfilePartial")
+                            </li>
                         }
                         else
                         {
-                            <!-- Login/Register buttons -->
-                            @await Html.PartialAsync("_UserProfilePartial")
+                            @await Html.PartialAsync("_LoginPartial")
                         }
-                    </div>
+                    </ul>
                 </div>
             </div>
         </nav>
@@ -171,7 +368,7 @@
     @if (ViewContext.RouteData.Values["controller"]?.ToString() != "Home" || ViewContext.RouteData.Values["action"]?.ToString() != "Index")
     {
         <div class="page-title-section">
-            <div class="container">
+            <div class="home-container">
                 <h1 class="page-title">@ViewBag.Title</h1>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
