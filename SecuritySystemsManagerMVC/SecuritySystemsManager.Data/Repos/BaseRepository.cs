@@ -57,6 +57,12 @@ namespace SecuritySystemsManager.Data.Repos
             return MapToModel(entity);
         }
 
+        public virtual async Task<TModel?> GetByIdIfExistsAsync(int id)
+        {
+            var entity = await _dbSet.FirstOrDefaultAsync(e => e.Id == id);
+            return entity != null ? MapToModel(entity) : null;
+        }
+
         public async Task CreateAsync(TModel model)
         {
             if (model == null)

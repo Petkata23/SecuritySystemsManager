@@ -150,6 +150,64 @@ namespace SecuritySystemsManager.Data.Migrations
                     b.ToTable("OrderTechnicians", (string)null);
                 });
 
+            modelBuilder.Entity("SecuritySystemsManager.Data.Entities.ChatMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AttachmentName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AttachmentUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsFromSupport")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ReadAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("RecipientId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RecipientName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SenderId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SenderName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RecipientId");
+
+                    b.HasIndex("SenderId");
+
+                    b.ToTable("ChatMessages");
+                });
+
             modelBuilder.Entity("SecuritySystemsManager.Data.Entities.DropboxToken", b =>
                 {
                     b.Property<int>("Id")
@@ -628,7 +686,7 @@ namespace SecuritySystemsManager.Data.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "fd703b30-5d13-415b-bab1-bc9f520ca291",
+                            ConcurrencyStamp = "5991f022-7502-4e74-908d-ca62242f52b6",
                             CreatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@securitysystems.com",
                             EmailConfirmed = true,
@@ -637,10 +695,10 @@ namespace SecuritySystemsManager.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@SECURITYSYSTEMS.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEEIKVltBYk8WJKFsmab3cmp3YmXVeM+o1ZFLNz8b1hC9r0UFPYo5qub6zC0Kfc3KRw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEK/jaEzh/dvs7JvJznMnkBdNqHj0+lwZBZXMx+XufD3em6wCpe0Ay+YQfPOiloyekA==",
                             PhoneNumberConfirmed = false,
                             RoleId = 1,
-                            SecurityStamp = "8ec0a4b3-9a12-44d3-b650-7092a5b0d670",
+                            SecurityStamp = "d9109424-e85a-476e-8e62-d0b3170300df",
                             TwoFactorEnabled = false,
                             UpdatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserName = "admin"
@@ -711,6 +769,24 @@ namespace SecuritySystemsManager.Data.Migrations
                         .HasForeignKey("TechniciansId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("SecuritySystemsManager.Data.Entities.ChatMessage", b =>
+                {
+                    b.HasOne("SecuritySystemsManager.Data.Entities.User", "Recipient")
+                        .WithMany()
+                        .HasForeignKey("RecipientId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("SecuritySystemsManager.Data.Entities.User", "Sender")
+                        .WithMany()
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Recipient");
+
+                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("SecuritySystemsManager.Data.Entities.InstalledDevice", b =>

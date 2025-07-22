@@ -91,6 +91,17 @@ namespace SecuritySystemsManagerMVC
             CreateMap<Notification, NotificationDto>().ReverseMap();
             CreateMap<NotificationDto, NotificationDetailsVm>().ReverseMap();
             CreateMap<NotificationDto, NotificationEditVm>().ReverseMap();
+
+            CreateMap<ChatMessage, ChatMessageDto>()
+                .ForMember(dest => dest.SenderName, opt => opt.MapFrom(src => 
+                    src.Sender != null ? src.Sender.UserName : src.SenderName))
+                .ForMember(dest => dest.RecipientName, opt => opt.MapFrom(src => 
+                    src.Recipient != null ? src.Recipient.UserName : src.RecipientName))
+                .ReverseMap()
+                .ForMember(dest => dest.Sender, opt => opt.Ignore())
+                .ForMember(dest => dest.Recipient, opt => opt.Ignore());
+                
+            CreateMap<ChatConversationDto, ChatConversationDto>().ReverseMap();
         }
     }
 }
