@@ -1,0 +1,1187 @@
+@using System.Security.Claims
+@using SecuritySystemsManagerMVC.ViewModels.Chat
+@model ChatAdminPanelVm
+@{
+    ViewData["Title"] = "Чат поддръжка";
+}
+
+<div class="stats-container">
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="bi bi-chat-dots-fill"></i>
+        </div>
+        <div class="stat-info">
+            <h3 id="activeChatsCount">@Model.ActiveChats?.Count() ?? 0</h3>
+            <p>Активни чатове</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="bi bi-bell-fill"></i>
+        </div>
+        <div class="stat-info">
+            <h3 id="unreadCount">@Model.ActiveChats?.Count(c => c.HasUnreadMessages) ?? 0</h3>
+            <p>Непрочетени</p>
+        </div>
+    </div>
+</div>
+
+<div class="chat-admin-container">
+    <div class="chat-sidebar">
+        <div class="sidebar-header">
+            <h5 class="mb-0">Активни чатове</h5>
+            <div class="sidebar-actions">
+                <button class="btn btn-icon" id="refreshChats" title="Обнови">
+                    <i class="bi bi-arrow-clockwise"></i>
+                </button>
+            </div>
+        </div>
+        <div class="chat-list" id="chatList">
+            @foreach (var chat in Model.ActiveChats ?? Enumerable.Empty<ChatUserVm>())
+            {
+                <div class="chat-list-item @(Model.CurrentChat?.UserId == chat.UserId ? "active" : "")"
+                     data-user-id="@chat.UserId">
+                    <div class="chat-list-item-content">
+                        @if (chat.HasUnreadMessages)
+                        {
+                            <span class="unread-indicator"></span>
+                        }
+                        <div class="chat-list-item-header">
+                            <h6 class="chat-username">@chat.Username</h6>
+                            <small class="chat-time">@chat.LastMessageTime.ToLocalTime().ToString("HH:mm")</small>
+                        </div>
+                        <p class="chat-last-message">@chat.LastMessage</p>
+                        <div class="chat-item-footer">
+                            <small class="chat-user-role">@chat.UserRole</small>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="chat-main">
+        @if (Model.CurrentChat != null)
+        {
+            <div class="chat-header">
+                <div class="current-chat-info">
+                    <div>
+                        <h5>@Model.CurrentChat.Username</h5>
+                        <small class="text-muted">@Model.CurrentChat.UserRole</small>
+                    </div>
+                    <div class="chat-actions">
+                        <button class="btn btn-icon" id="markAsRead" title="Маркирай като прочетено">
+                            <i class="fas fa-check-double"></i>
+                        </button>
+                        <button class="btn btn-icon" id="showUserInfo" title="Информация">
+                            <i class="fas fa-info-circle"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-messages" id="adminChatMessages">
+                @foreach (var message in Model.Messages ?? Enumerable.Empty<ChatMessageVm>())
+                {
+                    <div class="message @(message.IsFromSupport ? "sent" : "received")">
+                        <div class="message-content">@message.Message</div>
+                        <div class="message-info">
+                            <span class="sender">@message.SenderName</span>
+                            <span class="time">@message.Timestamp.ToLocalTime().ToString("HH:mm")</span>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="chat-input">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="adminMessageInput"
+                           placeholder="Въведете съобщение...">
+                    <button class="btn btn-primary" id="adminSendMessage">
+                        <i class="bi bi-send-fill"></i>
+                    </button>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="no-chat-selected">
+                <div class="empty-state">
+                    <i class="bi bi-chat-dots"></i>
+                    <h5>Изберете чат от списъка</h5>
+                    <p>Изберете потребител от списъка вляво, за да започнете разговор</p>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="info-panel" id="userInfoPanel" style="display: none;">
+        <div class="info-panel-header">
+            <h5>Информация за потребителя</h5>
+            <button class="btn btn-icon" id="closeInfoPanel">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <div class="info-panel-content">
+            <div class="user-stats">
+                <div class="stat-item">
+                    <i class="bi bi-clock-fill"></i>
+                    <div>
+                        <label>Първо съобщение</label>
+                        <span id="firstMessageDate">-</span>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <i class="bi bi-chat-left-text-fill"></i>
+                    <div>
+                        <label>Общо съобщения</label>
+                        <span id="totalMessages">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Dark Theme Variables */
+    :root {
+        --dark-bg-primary: #1a1a2e;
+        --dark-bg-secondary: #16213e;
+        --dark-bg-tertiary: #0f3460;
+        --dark-text-primary: #e94560;
+        --dark-text-secondary: #ffffff;
+        --dark-border-color: #16213e;
+        --dark-accent-color: #e94560;
+        --dark-hover-color: #1e3a8a;
+    }
+
+    body {
+        background-color: var(--dark-bg-primary);
+        color: var(--dark-text-secondary);
+    }
+
+    /* Статистика */
+    .stats-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+        padding: 0 1rem;
+    }
+
+    .stat-card {
+        background: var(--dark-bg-secondary);
+        border-radius: 12px;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        transition: transform 0.2s ease;
+        border: 1px solid var(--dark-border-color);
+    }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--dark-accent-color);
+        }
+
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+
+    .stat-card:nth-child(1) .stat-icon {
+        background: rgba(233, 69, 96, 0.1);
+        color: var(--dark-accent-color);
+    }
+
+    .stat-card:nth-child(2) .stat-icon {
+        background: rgba(255, 193, 7, 0.1);
+        color: #ffc107;
+    }
+
+    .stat-card:nth-child(3) .stat-icon {
+        background: rgba(220, 53, 69, 0.1);
+        color: #dc3545;
+    }
+
+    .stat-info h3 {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--dark-text-secondary);
+    }
+
+    .stat-info p {
+        margin: 0;
+        color: #adb5bd;
+        font-size: 0.875rem;
+    }
+
+    /* Обновяваме съществуващите стилове */
+    .chat-admin-container {
+        position: relative;
+        margin-top: 1rem;
+    }
+
+    .btn-icon {
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--dark-border-color);
+        background: var(--dark-bg-tertiary);
+        color: var(--dark-text-secondary);
+        transition: all 0.2s ease;
+    }
+
+        .btn-icon:hover {
+            background: var(--dark-hover-color);
+            color: var(--dark-accent-color);
+            border-color: var(--dark-accent-color);
+        }
+
+    .chat-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .chat-item-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 0.5rem;
+    }
+
+    .info-panel {
+        position: absolute;
+        right: 0;
+        top: 0;
+        height: 100%;
+        width: 300px;
+        background: var(--dark-bg-secondary);
+        border-left: 1px solid var(--dark-border-color);
+        box-shadow: -2px 0 8px rgba(0,0,0,0.2);
+        z-index: 1000;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+    }
+
+        .info-panel.active {
+            transform: translateX(0);
+        }
+
+    .info-panel-header {
+        padding: 1.25rem;
+        border-bottom: 1px solid var(--dark-border-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: var(--dark-text-secondary);
+    }
+
+    .info-panel-content {
+        padding: 1.25rem;
+    }
+
+    .user-stats {
+        display: grid;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        background: var(--dark-bg-tertiary);
+        border-radius: 8px;
+    }
+
+        .stat-item i {
+            font-size: 1.25rem;
+            color: var(--dark-accent-color);
+        }
+
+        .stat-item label {
+            display: block;
+            font-size: 0.75rem;
+            color: #adb5bd;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-item span {
+            font-weight: 600;
+            color: var(--dark-text-secondary);
+        }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem 1rem;
+    }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: #495057;
+            margin-bottom: 1rem;
+        }
+
+    /* Запазваме съществуващите стилове */
+    .chat-admin-container {
+        display: flex;
+        height: 800px;
+        max-height: 80vh;
+        margin: 2rem auto;
+        background: var(--dark-bg-secondary);
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        overflow: hidden;
+        max-width: 1400px;
+    }
+
+    .chat-sidebar {
+        width: 320px;
+        border-right: 1px solid var(--dark-border-color);
+        display: flex;
+        flex-direction: column;
+        background: var(--dark-bg-secondary);
+    }
+
+    .sidebar-header {
+        padding: 1.25rem;
+        border-bottom: 1px solid var(--dark-border-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: var(--dark-bg-secondary);
+        color: var(--dark-text-secondary);
+    }
+
+    .chat-list {
+        flex: 1;
+        overflow-y: auto;
+        padding: 0.5rem;
+    }
+
+    .chat-list-item {
+        cursor: pointer;
+        display: block;
+        padding: 1rem;
+        border-radius: 8px;
+        text-decoration: none;
+        color: inherit;
+        transition: all 0.3s ease;
+        margin-bottom: 0.5rem;
+        border-left: 3px solid transparent;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .chat-list-item:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--dark-hover-color);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .chat-list-item:hover:before {
+            transform: translateX(0);
+        }
+
+        .chat-list-item.active {
+            background-color: var(--dark-bg-tertiary);
+            border-left: 3px solid var(--dark-accent-color);
+        }
+
+            .chat-list-item.active:before {
+                transform: translateX(0);
+            }
+
+    .chat-list-item-content {
+        position: relative;
+    }
+
+    .chat-list-item-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.25rem;
+    }
+
+    .chat-username {
+        margin: 0;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--dark-text-secondary);
+    }
+
+    .chat-time {
+        color: #adb5bd;
+        font-size: 0.75rem;
+    }
+
+    .chat-last-message {
+        margin: 0;
+        font-size: 0.85rem;
+        color: #adb5bd;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height: 1.4;
+    }
+
+    .chat-user-role {
+        display: inline-block;
+        color: #adb5bd;
+        font-size: 0.75rem;
+        margin-top: 0.25rem;
+        background: var(--dark-bg-tertiary);
+        padding: 0.25rem 0.5rem;
+        border-radius: 12px;
+    }
+
+    .chat-main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        background: var(--dark-bg-primary);
+        min-width: 0;
+        transition: opacity 0.3s ease;
+    }
+
+        .chat-main.loading {
+            opacity: 0.6;
+        }
+
+    .chat-header {
+        padding: 1.25rem;
+        border-bottom: 1px solid var(--dark-border-color);
+        background: var(--dark-bg-secondary);
+    }
+
+    .current-chat-info h5,
+    .no-chat-selected h5 {
+        margin: 0;
+        color: var(--dark-text-secondary);
+    }
+
+    .chat-messages {
+        flex: 1;
+        padding: 1.5rem;
+        overflow-y: auto;
+        background: var(--dark-bg-primary);
+    }
+
+    .message {
+        margin-bottom: 1rem;
+        max-width: 70%;
+        opacity: 0;
+        animation: slideIn 0.3s ease forwards;
+    }
+
+    @@keyframes slideIn {
+        from
+
+    {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    }
+
+    .message.sent {
+        margin-left: auto;
+    }
+
+    .message.received {
+        margin-right: auto;
+    }
+
+    .message-content {
+        padding: 0.75rem 1rem;
+        border-radius: 16px;
+        margin-bottom: 0.25rem;
+        line-height: 1.5;
+        font-size: 0.95rem;
+    }
+
+    .message.sent .message-content {
+        background-color: var(--dark-accent-color);
+        color: white;
+        border-bottom-right-radius: 4px;
+    }
+
+    .message.received .message-content {
+        background-color: var(--dark-bg-tertiary);
+        color: var(--dark-text-secondary);
+        border-bottom-left-radius: 4px;
+    }
+
+    .message-info {
+        font-size: 0.75rem;
+        color: #adb5bd;
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+    }
+
+    .chat-input {
+        padding: 1.25rem;
+        border-top: 1px solid var(--dark-border-color);
+        background: var(--dark-bg-secondary);
+    }
+
+        .chat-input .input-group {
+            background: var(--dark-bg-primary);
+            border-radius: 12px;
+            padding: 0.5rem;
+        }
+
+        .chat-input input {
+            border: none;
+            background: transparent;
+            padding: 0.5rem 1rem;
+            font-size: 0.95rem;
+            color: var(--dark-text-secondary);
+        }
+
+            .chat-input input:focus {
+                box-shadow: none;
+            }
+
+        .chat-input button {
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            transition: all 0.2s ease;
+            background-color: var(--dark-accent-color);
+            border-color: var(--dark-accent-color);
+        }
+
+            .chat-input button:hover {
+                transform: translateY(-1px);
+                background-color: #d63384;
+            }
+
+    .unread-indicator {
+        width: 8px;
+        height: 8px;
+        background-color: #dc3545;
+        border-radius: 50%;
+        display: inline-block;
+        position: absolute;
+        top: 50%;
+        left: -1rem;
+        transform: translateY(-50%);
+    }
+
+    /* Custom Scrollbar */
+    .chat-messages::-webkit-scrollbar,
+    .chat-list::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .chat-messages::-webkit-scrollbar-track,
+    .chat-list::-webkit-scrollbar-track {
+        background: var(--dark-bg-tertiary);
+    }
+
+    .chat-messages::-webkit-scrollbar-thumb,
+    .chat-list::-webkit-scrollbar-thumb {
+        background: #495057;
+        border-radius: 3px;
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 1200px) {
+        .chat-admin-container
+
+    {
+        margin: 1rem;
+        height: calc(100vh - 2rem);
+        max-height: none;
+    }
+
+    }
+
+    @@media (max-width: 768px) {
+        .chat-admin-container
+
+    {
+        flex-direction: column;
+        margin: 0;
+        height: 100vh;
+        border-radius: 0;
+    }
+
+    .chat-sidebar {
+        width: 100%;
+        height: 40vh;
+    }
+
+    .chat-main {
+        height: 60vh;
+    }
+
+    }
+
+    /* Анимация за нови съобщения */
+    @@keyframes slideIn {
+        from
+
+    {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    }
+
+    /* Подобрен стил за бутоните */
+    .btn-icon {
+        transition: all 0.3s ease;
+    }
+
+        .btn-icon:active {
+            transform: scale(0.95);
+        }
+
+        .btn-icon.loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+    /* Подобрен стил за refresh иконата */
+    .fa-sync-alt {
+        transition: transform 0.5s ease;
+    }
+
+        .fa-sync-alt.spinning {
+            transform: rotate(180deg);
+        }
+
+    .error-message {
+        text-align: center;
+        padding: 2rem;
+        color: #dc3545;
+    }
+
+        .error-message i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .error-message p {
+            margin-bottom: 1rem;
+        }
+
+        .error-message button {
+            padding: 0.5rem 1rem;
+        }
+
+            .error-message button i {
+                font-size: 1rem;
+                margin-right: 0.5rem;
+            }
+
+    /* Подобрен стил за активен чат */
+    .chat-list-item:hover {
+        transform: translateX(3px);
+    }
+
+    .chat-list-item.active:hover {
+        transform: none;
+    }
+
+    .no-chat-selected {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        color: #adb5bd;
+        padding: 2rem;
+    }
+
+        .no-chat-selected i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: #495057;
+        }
+
+        .no-chat-selected h5 {
+            margin-bottom: 0.5rem;
+        }
+
+        .no-chat-selected p {
+            text-align: center;
+            max-width: 300px;
+        }
+
+    .d-none {
+        display: none !important;
+    }
+</style>
+
+@section Scripts {
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+<script>
+        // Utility functions
+        // Функция за форматиране на времето
+        function formatTime(timestamp) {
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diffInHours = (now - date) / (1000 * 60 * 60);
+            
+            if (diffInHours < 24) {
+                return date.toLocaleTimeString('bg-BG', { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+            } else {
+                return date.toLocaleDateString('bg-BG', { 
+                    day: '2-digit',
+                    month: '2-digit',
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+            }
+        }
+
+        // Функция за escape на HTML
+        function escapeHtml(text) {
+            if (text === null || text === undefined) {
+                return '';
+            }
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const chatMessages = document.getElementById('adminChatMessages');
+            const messageInput = document.getElementById('adminMessageInput');
+            const sendButton = document.getElementById('adminSendMessage');
+            const chatMain = document.querySelector('.chat-main');
+            const userInfoPanel = document.getElementById('userInfoPanel');
+            const closeInfoPanelBtn = document.getElementById('closeInfoPanel');
+            let currentUserId = @(Model.CurrentChat?.UserId != null ? Model.CurrentChat.UserId.ToString() : "null");
+
+            // Добавяме event listener за затваряне на информационния панел
+            closeInfoPanelBtn?.addEventListener('click', () => {
+                userInfoPanel.classList.remove('active');
+                setTimeout(() => userInfoPanel.style.display = 'none', 300);
+            });
+
+            // Функция за прикачване на event listeners към чат елементите
+            function attachChatItemListeners() {
+                document.querySelectorAll('.chat-list-item').forEach(item => {
+                    item.addEventListener('click', handleChatItemClick);
+                });
+            }
+
+            // Функция за обработка на клик върху чат
+            function handleChatItemClick(e) {
+                e.preventDefault();
+                const userId = this.dataset.userId;
+                if (userId) {
+                    // Визуална индикация за избрания чат
+                    document.querySelectorAll('.chat-list-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    // Зареждане на чата
+                    loadChat(parseInt(userId));
+                }
+            }
+
+            // Подобрена функция за обновяване на списъка с чатове
+            async function updateChatList() {
+                try {
+                    const response = await fetch('/Chat/GetActiveChats');
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    
+                    const chats = await response.json();
+                    const chatList = document.getElementById('chatList');
+                    
+                    // Запазваме текущия активен чат
+                    const activeUserId = document.querySelector('.chat-list-item.active')?.dataset.userId;
+                    
+                    chatList.innerHTML = chats.map(chat => `
+                        <div class="chat-list-item ${chat.userId === parseInt(activeUserId) ? 'active' : ''}"
+                             data-user-id="${chat.userId}">
+                            <div class="chat-list-item-content">
+                                ${chat.hasUnreadMessages ? '<span class="unread-indicator"></span>' : ''}
+                                <div class="chat-list-item-header">
+                                    <h6 class="chat-username">${escapeHtml(chat.username)}</h6>
+                                    <small class="chat-time">${formatTime(chat.lastMessageTime)}</small>
+                                </div>
+                                <p class="chat-last-message">${escapeHtml(chat.lastMessage)}</p>
+                                <div class="chat-item-footer">
+                                    <small class="chat-user-role">${escapeHtml(chat.userRole)}</small>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+
+                    // Прикачваме event listeners към новите елементи
+                    attachChatItemListeners();
+
+                    // Обновяваме статистиката
+                    updateStatistics();
+                    
+                } catch (error) {
+                    console.error('Error updating chat list:', error);
+                }
+            }
+
+            // Подобрена функция за обновяване на статистиката
+            function updateStatistics() {
+                // Обновяваме броя непрочетени съобщения
+                const unreadCount = document.querySelectorAll('.unread-indicator').length;
+                document.getElementById('unreadCount').textContent = unreadCount;
+                
+                // Обновяваме броя активни чатове
+                const activeChatsCount = document.querySelectorAll('.chat-list-item').length;
+                document.getElementById('activeChatsCount').textContent = activeChatsCount;
+            }
+
+            // SignalR connection setup
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("/chatHub")
+                .withAutomaticReconnect()
+                .build();
+
+            // SignalR event handlers
+            connection.on("ReceiveMessage", (message) => {
+                if (!message || !message.message) return;
+
+                console.log("Admin received message:", message);
+
+                // Check if this message is for the current chat
+                const currentChatUserId = parseInt(currentUserId);
+                const isForCurrentChat = message.senderId === currentChatUserId || 
+                                       message.recipientId === currentChatUserId ||
+                                       (!message.recipientId && !currentChatUserId); // General support messages
+
+                if (isForCurrentChat) {
+                    // Don't add support messages from current user as they are already added locally
+                    const currentUserIdInt = @User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                    if (message.isFromSupport && message.senderId === parseInt(currentUserIdInt)) {
+                        console.log('Skipping support message from current user as it was already added locally');
+                        return;
+                    }
+
+                    const newMessage = {
+                        message: message.message,
+                        isFromSupport: message.isFromSupport,
+                        senderName: message.isFromSupport ? message.senderName : message.senderName,
+                        timestamp: message.timestamp || new Date().toISOString()
+                    };
+                    
+                    appendMessage(newMessage);
+                }
+
+                // Update chat list to show new messages
+                updateChatList();
+            });
+
+            // Start connection
+            connection.start()
+                .then(() => {
+                    console.log('Connected to SignalR');
+                    updateChatList();
+                    setInterval(updateChatList, 30000);
+                })
+                .catch(err => console.error('Error connecting to SignalR:', err));
+
+            // Първоначално прикачване на event listeners
+            attachChatItemListeners();
+
+            // Scroll to bottom on load
+            if (chatMessages) {
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            // Функция за зареждане на чат
+            async function loadChat(userId) {
+                if (!userId) return;
+
+                const chatMain = document.querySelector('.chat-main');
+                if (!chatMain) {
+                    console.error('Chat main container not found');
+                    return;
+                }
+
+                // Първо обновяваме структурата на чата ако е нужно
+                if (!chatMain.querySelector('.chat-messages')) {
+                    chatMain.innerHTML = `
+                        <div class="chat-header"></div>
+                        <div class="chat-messages" id="adminChatMessages"></div>
+                        <div class="chat-input">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="adminMessageInput" placeholder="Въведете съобщение...">
+                                <button class="btn btn-primary" id="adminSendMessage">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+
+                    // Прикачваме event listeners за изпращане на съобщения
+                    const newMessageInput = document.getElementById('adminMessageInput');
+                    const newSendButton = document.getElementById('adminSendMessage');
+
+                    newMessageInput?.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault();
+                            sendMessage();
+                        }
+                    });
+
+                    newSendButton?.addEventListener('click', sendMessage);
+                }
+
+                const chatMessages = document.getElementById('adminChatMessages');
+                const messageInput = document.getElementById('adminMessageInput');
+                const sendButton = document.getElementById('adminSendMessage');
+
+                if (!chatMessages || !messageInput || !sendButton) {
+                    console.error('Required chat elements not found');
+                    return;
+                }
+
+                // Показваме loading състояние
+                chatMain.classList.add('loading');
+                messageInput.disabled = true;
+                sendButton.disabled = true;
+
+                try {
+                    const response = await fetch(`/Chat/GetChatMessages/${userId}`);
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({}));
+                        throw new Error(errorData.error || 'Грешка при зареждане на чата');
+                    }
+                    
+                    const data = await response.json();
+                    
+                    // Обновяваме UI за чата
+                    const chatHeader = chatMain.querySelector('.chat-header');
+                    if (chatHeader && data.user) {
+                        chatHeader.innerHTML = `
+                            <div class="current-chat-info">
+                                <div>
+                                    <h5>${escapeHtml(data.user.username)}</h5>
+                                    <small class="text-muted">${escapeHtml(data.user.role)}</small>
+                                </div>
+                                <div class="chat-actions">
+                                    <button class="btn btn-icon" id="markAsRead" title="Маркирай като прочетено">
+                                        <i class="fas fa-check-double"></i>
+                                    </button>
+                                    <button class="btn btn-icon" id="showUserInfo" title="Информация">
+                                        <i class="fas fa-info-circle"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    // Обновяваме съобщенията
+                    chatMessages.innerHTML = data.messages.map(message => `
+                        <div class="message ${message.isFromSupport ? 'sent' : 'received'}">
+                            <div class="message-content">${escapeHtml(message.message)}</div>
+                            <div class="message-info">
+                                <span class="sender">${escapeHtml(message.senderName)}</span>
+                                <span class="time">${formatTime(message.timestamp)}</span>
+                            </div>
+                        </div>
+                    `).join('');
+
+                    // Скролваме до последното съобщение
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                    
+                    // Обновяваме currentUserId
+                    currentUserId = userId;
+                    
+                    // Активираме input полето
+                    messageInput.disabled = false;
+                    sendButton.disabled = false;
+                    messageInput.focus();
+
+                    // Прикачваме event listeners за новите бутони
+                    document.getElementById('markAsRead')?.addEventListener('click', handleMarkAsRead);
+                    document.getElementById('showUserInfo')?.addEventListener('click', handleShowUserInfo);
+                    
+                } catch (error) {
+                    console.error('Error loading chat:', error);
+                    if (chatMessages) {
+                        chatMessages.innerHTML = `
+                            <div class="error-message">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <p>${error.message}</p>
+                                <button class="btn btn-sm btn-primary" onclick="loadChat(${userId})">
+                                    <i class="fas fa-sync-alt"></i> Опитай отново
+                                </button>
+                            </div>
+                        `;
+                    }
+                } finally {
+                    chatMain.classList.remove('loading');
+                }
+            }
+
+            // Функция за добавяне на съобщение към чата
+            function appendMessage(message) {
+                const chatMessages = document.getElementById('adminChatMessages');
+                if (!chatMessages) {
+                    console.error('Chat messages container not found');
+                    return;
+                }
+
+                // Check if message already exists to avoid duplicates
+                const existingMessages = chatMessages.querySelectorAll('.message');
+                const messageExists = Array.from(existingMessages).some(msg => {
+                    const content = msg.querySelector('.message-content')?.textContent;
+                    const time = msg.querySelector('.time')?.textContent;
+                    return content === message.message && time === formatTime(message.timestamp);
+                });
+
+                if (messageExists) {
+                    console.log('Message already exists, skipping...');
+                    return;
+                }
+
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${message.isFromSupport ? 'sent' : 'received'}`;
+                messageDiv.innerHTML = `
+                    <div class="message-content">${escapeHtml(message.message)}</div>
+                    <div class="message-info">
+                        <span class="sender">${escapeHtml(message.senderName)}</span>
+                        <span class="time">${formatTime(message.timestamp)}</span>
+                    </div>
+                `;
+                
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                
+                // Обновяваме последното съобщение в списъка с чатове
+                const chatItem = document.querySelector(`.chat-list-item[data-user-id="${currentUserId}"]`);
+                if (chatItem) {
+                    const lastMessageElement = chatItem.querySelector('.chat-last-message');
+                    if (lastMessageElement) {
+                        lastMessageElement.textContent = message.message;
+                    }
+                    
+                    const timeElement = chatItem.querySelector('.chat-time');
+                    if (timeElement) {
+                        timeElement.textContent = formatTime(message.timestamp);
+                    }
+                }
+            }
+
+            // Функция за изпращане на съобщение
+            async function sendMessage() {
+                const messageInput = document.getElementById('adminMessageInput');
+                const sendButton = document.getElementById('adminSendMessage');
+                const chatMessages = document.getElementById('adminChatMessages');
+
+                if (!messageInput || !sendButton || !currentUserId || !messageInput.value.trim() || !chatMessages) {
+                    console.error('Required elements not found or invalid input');
+                    return;
+                }
+
+                try {
+                    const message = messageInput.value.trim();
+                    
+                    // Clear input field immediately
+                    messageInput.value = '';
+                    
+                    // Add message locally for better UX
+                    const newMessage = {
+                        message: message,
+                        isFromSupport: true,
+                        senderName: 'Поддръжка',
+                        timestamp: new Date().toISOString()
+                    };
+                    
+                    appendMessage(newMessage);
+                    
+                    // Send via SignalR
+                    await connection.invoke("SendSupportMessage", currentUserId, message);
+                    
+                } catch (error) {
+                    console.error('Error sending message:', error);
+                    alert('Грешка при изпращане на съобщението. Моля, опитайте отново.');
+                }
+            }
+
+            // Функция за маркиране като прочетено
+            async function handleMarkAsRead() {
+                if (!currentUserId) return;
+
+                try {
+                    const response = await fetch(`/Chat/MarkAllAsRead/${currentUserId}`, { method: 'POST' });
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    
+                    // Обновяваме UI
+                    document.querySelectorAll('.unread-indicator').forEach(indicator => {
+                        indicator.remove();
+                    });
+                    
+                    // Обновяваме статистиката
+                    updateStatistics();
+                } catch (err) {
+                    console.error('Error marking messages as read:', err);
+                }
+            }
+
+            // Функция за показване на информация за потребителя
+            async function handleShowUserInfo() {
+                if (!currentUserId) return;
+                
+                const userInfoPanel = document.getElementById('userInfoPanel');
+                userInfoPanel.style.display = 'block';
+                setTimeout(() => userInfoPanel.classList.add('active'), 10);
+                loadUserInfo(currentUserId);
+            }
+
+            function loadUserInfo(userId) {
+                if (!userId) return;
+
+                fetch(`/Chat/GetUserInfo/${userId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('firstMessageDate').textContent = 
+                            data.firstMessageDate ? new Date(data.firstMessageDate).toLocaleString('bg-BG') : '-';
+                        document.getElementById('totalMessages').textContent = data.totalMessages;
+                    })
+                    .catch(err => console.error('Error loading user info:', err));
+            }
+    });
+</script> 
+} 

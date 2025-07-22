@@ -563,7 +563,7 @@
 }
 
 .bg-primary {
-    background-color: #2b5876 !important;
+    /* background-color: #2b5876 !important; */
     color: #ffffff !important;
 }
 
@@ -771,6 +771,4 @@
     .pagination .page-item:not(.active):not(:first-child):not(:last-child) {
         display: none;
     }
-
-
 }

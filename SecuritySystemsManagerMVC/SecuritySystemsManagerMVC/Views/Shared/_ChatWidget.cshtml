@@ -1,0 +1,560 @@
+@{
+    var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+    var currentUserName = User.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value;
+    var currentUserIdInt = 0;
+    int.TryParse(currentUserId, out currentUserIdInt);
+}
+
+<!-- Chat Widget Button -->
+<div id="chatWidget" class="chat-widget">
+    <div class="chat-widget-button" id="chatWidgetButton">
+        <i class="bi bi-chat-dots"></i>
+        <span class="chat-notification-badge" id="chatNotificationBadge" style="display: none;">0</span>
+    </div>
+    
+    <!-- Chat Widget Panel -->
+    <div class="chat-widget-panel" id="chatWidgetPanel" style="display: none;">
+        <div class="chat-widget-header">
+            <h6 class="mb-0">
+                <i class="bi bi-headset"></i> Съпорт чат
+            </h6>
+            <button type="button" class="btn-close" id="closeChatWidget">
+                <i class="bi bi-x"></i>
+            </button>
+        </div>
+        
+        <div class="chat-widget-body">
+            <div id="chatWidgetContent">
+                <div class="text-center p-3" id="welcomeMessage">
+                    <i class="bi bi-chat-dots text-muted" style="font-size: 2rem;"></i>
+                    <p class="text-muted mt-2">Добре дошли в съпорт чата!</p>
+                    <p class="text-muted small">Нашият екип е тук, за да ви помогне.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chat-widget-footer">
+            <div class="input-group">
+                <input type="text" class="form-control" id="chatWidgetInput" placeholder="Въведете съобщение...">
+                <button class="btn btn-primary" type="button" id="chatWidgetSendBtn">
+                    <i class="bi bi-send"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .chat-widget {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1050;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .chat-widget-button {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .chat-widget-button:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 16px rgba(0, 123, 255, 0.4);
+    }
+
+    .chat-notification-badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background-color: #dc3545;
+        color: white;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+
+    .chat-widget-panel {
+        position: absolute;
+        bottom: 80px;
+        right: 0;
+        width: 350px;
+        height: 500px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .chat-widget-header {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        color: white;
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .chat-widget-header h6 {
+        margin: 0;
+        font-weight: 600;
+    }
+
+    .chat-widget-header .btn-close {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        padding: 0;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: background-color 0.2s ease;
+    }
+
+    .chat-widget-header .btn-close:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .chat-widget-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 0;
+    }
+
+    .chat-widget-footer {
+        padding: 15px;
+        border-top: 1px solid #e9ecef;
+        background: white;
+    }
+
+    .chat-widget-footer .input-group {
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    .chat-widget-footer input {
+        border: 1px solid #dee2e6;
+        border-right: none;
+        padding: 8px 15px;
+    }
+
+    .chat-widget-footer .btn {
+        border-radius: 0 20px 20px 0;
+        padding: 8px 15px;
+        border: 1px solid #007bff;
+    }
+
+    /* Chat messages styling */
+    .chat-message {
+        margin: 10px;
+        display: flex;
+    }
+
+    .chat-message-own {
+        justify-content: flex-end;
+    }
+
+    .chat-message-other {
+        justify-content: flex-start;
+    }
+
+    .chat-message-content {
+        max-width: 80%;
+        padding: 8px 12px;
+        border-radius: 15px;
+        font-size: 14px;
+    }
+
+    .chat-message-own .chat-message-content {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .chat-message-other .chat-message-content {
+        background-color: #f8f9fa;
+        border: 1px solid #e9ecef;
+    }
+
+    .chat-message-time {
+        font-size: 11px;
+        color: #6c757d;
+        margin-top: 2px;
+        text-align: center;
+    }
+
+    .chat-message-own .chat-message-time {
+        text-align: right;
+    }
+
+    .chat-message-other .chat-message-time {
+        text-align: left;
+    }
+
+    /* Animation for panel */
+    .chat-widget-panel {
+        animation: slideInUp 0.3s ease-out;
+    }
+
+    @@keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Responsive */
+    @@media (max-width: 576px) {
+        .chat-widget-panel {
+            width: calc(100vw - 40px);
+            right: -10px;
+        }
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        let chatConnection;
+        let isChatOpen = false;
+        let chatHistory = [];
+
+        // Initialize SignalR connection
+        function initializeChatConnection() {
+            chatConnection = new signalR.HubConnectionBuilder()
+                .withUrl("/chatHub")
+                .withAutomaticReconnect()
+                .build();
+
+            chatConnection.on("ReceiveMessage", function (message) {
+                console.log("Received message:", message);
+                
+                // Hide welcome message if it exists
+                $('#welcomeMessage').hide();
+                
+                appendChatMessage(message);
+                if (!isChatOpen) {
+                    updateNotificationBadge();
+                }
+            });
+
+            chatConnection.on("MessageSent", function (message) {
+                console.log("Message sent confirmation:", message);
+                // Don't append here as it will be received via ReceiveMessage
+            });
+
+            chatConnection.on("Error", function (error) {
+                console.error("Chat error:", error);
+            });
+
+            chatConnection.start().catch(function (err) {
+                console.error("Chat connection error:", err.toString());
+            });
+        }
+
+        // Toggle chat widget
+        $('#chatWidgetButton').click(function () {
+            console.log('Chat button clicked!');
+            if (isChatOpen) {
+                closeChatWidget();
+            } else {
+                openChatWidget();
+            }
+        });
+
+        $('#closeChatWidget').click(function () {
+            closeChatWidget();
+        });
+
+        function openChatWidget() {
+            console.log('Opening chat widget...');
+            $('#chatWidgetPanel').show();
+            isChatOpen = true;
+            $('#chatWidgetButton').addClass('active');
+            
+            // Initialize connection if not already done
+            if (!chatConnection) {
+                initializeChatConnection();
+            }
+            
+            // Load chat history
+            loadChatHistory();
+            
+            // Mark messages as read and clear notification badge
+            markMessagesAsRead();
+        }
+
+        function closeChatWidget() {
+            $('#chatWidgetPanel').hide();
+            isChatOpen = false;
+            $('#chatWidgetButton').removeClass('active');
+        }
+
+        // Send message
+        $('#chatWidgetSendBtn').click(function () {
+            sendChatMessage();
+        });
+
+        $('#chatWidgetInput').keypress(function (e) {
+            if (e.which === 13) {
+                e.preventDefault();
+                sendChatMessage();
+            }
+        });
+
+        function sendChatMessage() {
+            const message = $('#chatWidgetInput').val().trim();
+            if (!message) return;
+
+            console.log('Sending message:', message);
+
+            // Add message to local history immediately for better UX
+            const tempMessage = {
+                message: message,
+                senderId: @currentUserIdInt,
+                timestamp: new Date().toISOString(),
+                isFromCurrentUser: true
+            };
+            
+            chatHistory.push(tempMessage);
+            saveChatHistory();
+            
+            // Display message immediately
+            const messageHtml = `
+                <div class="chat-message chat-message-own">
+                    <div class="chat-message-content">
+                        ${escapeHtml(message)}
+                    </div>
+                    <div class="chat-message-time">
+                        ${formatTime(tempMessage.timestamp)}
+                    </div>
+                </div>
+            `;
+            $('#chatWidgetContent').append(messageHtml);
+            scrollChatToBottom();
+
+            // Clear input immediately
+            $('#chatWidgetInput').val('');
+
+            // Send message via SignalR
+            if (chatConnection) {
+                console.log('Chat connection exists, invoking SendUserMessage...');
+                chatConnection.invoke("SendUserMessage", message).catch(function (err) {
+                    console.error("Send message error:", err.toString());
+                    alert('Грешка при изпращане на съобщението. Моля, опитайте отново.');
+                });
+            } else {
+                console.error('Chat connection not available');
+                alert('Няма връзка с чат сървъра. Моля, опитайте отново.');
+            }
+        }
+
+        function appendChatMessage(message) {
+            const isFromCurrentUser = message.senderId === @currentUserIdInt;
+            
+            // Don't add messages from current user as they are already added locally
+            if (isFromCurrentUser) {
+                console.log('Skipping message from current user as it was already added locally');
+                return;
+            }
+            
+            const messageClass = isFromCurrentUser ? 'chat-message-own' : 'chat-message-other';
+            
+            // Check if message already exists in history to avoid duplicates
+            const messageExists = chatHistory.some(msg => 
+                msg.message === message.message && 
+                msg.senderId === message.senderId && 
+                Math.abs(new Date(msg.timestamp) - new Date(message.timestamp)) < 1000 // Within 1 second
+            );
+            
+            if (messageExists) {
+                console.log('Message already exists, skipping...');
+                return;
+            }
+            
+            // Add message to history
+            chatHistory.push({
+                message: message.message,
+                senderId: message.senderId,
+                timestamp: message.timestamp || new Date().toISOString(),
+                isFromCurrentUser: isFromCurrentUser
+            });
+            
+            // Save to localStorage
+            saveChatHistory();
+            
+            const messageHtml = `
+                <div class="chat-message ${messageClass}">
+                    <div class="chat-message-content">
+                        ${escapeHtml(message.message)}
+                    </div>
+                    <div class="chat-message-time">
+                        ${formatTime(message.timestamp || new Date().toISOString())}
+                    </div>
+                </div>
+            `;
+
+            $('#chatWidgetContent').append(messageHtml);
+            scrollChatToBottom();
+        }
+
+        function scrollChatToBottom() {
+            const container = $('.chat-widget-body');
+            container.scrollTop(container[0].scrollHeight);
+        }
+
+        function updateNotificationBadge() {
+            if (!isChatOpen) {
+                $.get('/Chat/GetUnreadCount', function (data) {
+                    if (data.count > 0) {
+                        $('#chatNotificationBadge').text(data.count).show();
+                    } else {
+                        $('#chatNotificationBadge').hide();
+                    }
+                });
+            }
+        }
+
+        function loadChatHistory() {
+            const savedHistory = localStorage.getItem('chatHistory_@currentUserIdInt');
+            if (savedHistory) {
+                try {
+                    chatHistory = JSON.parse(savedHistory);
+                    displayChatHistory();
+                } catch (e) {
+                    console.error('Error loading chat history:', e);
+                    chatHistory = [];
+                }
+            }
+            
+            // Load existing messages from server if no local history
+            if (chatHistory.length === 0) {
+                loadExistingMessages();
+            }
+        }
+
+        function loadExistingMessages() {
+            $.get('/Chat/GetRecentMessages', { count: 20 })
+                .done(function(messages) {
+                    if (messages && messages.length > 0) {
+                        messages.forEach(function(message) {
+                            chatHistory.push({
+                                message: message.message,
+                                senderId: message.senderId,
+                                timestamp: message.timestamp,
+                                isFromCurrentUser: message.senderId === @currentUserIdInt
+                            });
+                        });
+                        saveChatHistory();
+                        displayChatHistory();
+                    }
+                })
+                .fail(function(err) {
+                    console.error('Error loading existing messages:', err);
+                });
+        }
+
+        function saveChatHistory() {
+            // Keep only last 50 messages to avoid localStorage limits
+            if (chatHistory.length > 50) {
+                chatHistory = chatHistory.slice(-50);
+            }
+            localStorage.setItem('chatHistory_@currentUserIdInt', JSON.stringify(chatHistory));
+        }
+
+        function displayChatHistory() {
+            if (chatHistory.length === 0) {
+                $('#welcomeMessage').show();
+                return;
+            }
+
+            $('#welcomeMessage').hide();
+            $('#chatWidgetContent').empty();
+
+            chatHistory.forEach(function(msg) {
+                const messageClass = msg.isFromCurrentUser ? 'chat-message-own' : 'chat-message-other';
+                const messageHtml = `
+                    <div class="chat-message ${messageClass}">
+                        <div class="chat-message-content">
+                            ${escapeHtml(msg.message)}
+                        </div>
+                        <div class="chat-message-time">
+                            ${formatTime(msg.timestamp)}
+                        </div>
+                    </div>
+                `;
+                $('#chatWidgetContent').append(messageHtml);
+            });
+
+            scrollChatToBottom();
+        }
+
+        function markMessagesAsRead() {
+            // Mark all messages as read when chat is opened
+            $.post('/Chat/MarkAllAsRead', function(data) {
+                // Clear notification badge
+                $('#chatNotificationBadge').hide();
+                console.log('Messages marked as read');
+            }).fail(function(err) {
+                console.error('Error marking messages as read:', err);
+            });
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function formatTime(timestamp) {
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diffInHours = (now - date) / (1000 * 60 * 60);
+            
+            if (diffInHours < 24) {
+                return date.toLocaleTimeString('bg-BG', { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+            } else {
+                return date.toLocaleDateString('bg-BG', { 
+                    day: '2-digit',
+                    month: '2-digit',
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+            }
+        }
+
+        // Update notification badge on page load
+        updateNotificationBadge();
+
+        // Update notification badge every 30 seconds
+        setInterval(updateNotificationBadge, 30000);
+    });
+</script> 

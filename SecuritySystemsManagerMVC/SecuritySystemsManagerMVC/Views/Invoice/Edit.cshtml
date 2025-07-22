@@ -110,33 +110,4 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-
-    <script>
-        $(document).ready(function() {
-            // Format date for input
-            function formatDateForInput(dateString) {
-                const date = new Date(dateString);
-                return date.toISOString().split('T')[0];
-            }
-            
-            // Format the IssuedOn date if needed
-            if ($("#IssuedOn").val()) {
-                $("#IssuedOn").val(formatDateForInput($("#IssuedOn").val()));
-            }
-            
-            // Confirm before saving if amount is changed significantly
-            const originalAmount = parseFloat($("#TotalAmount").val());
-            
-            $("form").submit(function(e) {
-                const newAmount = parseFloat($("#TotalAmount").val());
-                const percentChange = Math.abs((newAmount - originalAmount) / originalAmount * 100);
-                
-                if (percentChange > 20) {
-                    if (!confirm("You're changing the invoice amount by more than 20%. Are you sure you want to continue?")) {
-                        e.preventDefault();
-                    }
-                }
-            });
-        });
-    </script>
 } 

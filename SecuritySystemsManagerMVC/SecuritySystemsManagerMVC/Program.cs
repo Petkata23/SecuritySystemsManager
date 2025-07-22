@@ -5,11 +5,14 @@ using SecuritySystemsManager.Data;
 using SecuritySystemsManager.Data.Entities;
 using SecuritySystemsManager.Data.Repos;
 using SecuritySystemsManager.Services;
+using SecuritySystemsManager.Shared.Repos.Contracts;
+using SecuritySystemsManager.Shared.Services.Contracts;
 using SecuritySystemsManager.Shared;
 using SecuritySystemsManager.Shared.Attributes;
 using SecuritySystemsManager.Shared.Extensions;
 using SecuritySystemsManager.Shared.Services.Contracts;
 using SecuritySystemsManagerMVC;
+using SecuritySystemsManagerMVC.Hubs;
 using System;
 using System.Text.Encodings.Web;
 using Microsoft.VisualBasic;
@@ -19,6 +22,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Add SignalR
+builder.Services.AddSignalR();
 
 // Add HttpClient for image proxy
 builder.Services.AddHttpClient();
@@ -48,6 +54,11 @@ builder.Services.AddSingleton<UrlEncoder>(UrlEncoder.Default);
 // Automatically bind services and repositories by convention
 builder.Services.AutoBind(typeof(LocationService).Assembly);
 builder.Services.AutoBind(typeof(LocationRepository).Assembly);
+builder.Services.AutoBind(typeof(ChatMessageRepository).Assembly);
+
+// Explicit registration for chat services
+builder.Services.AddScoped<IChatMessageRepository, ChatMessageRepository>();
+builder.Services.AddScoped<IChatMessageService, ChatMessageService>();
 
 // Configure DbContext with connection string
 builder.Services.AddDbContext<SecuritySystemsManagerDbContext>(options =>
@@ -125,5 +136,8 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapRazorPages();
+
+// Map SignalR Hub
+app.MapHub<ChatHub>("/chatHub");
 
 app.Run();

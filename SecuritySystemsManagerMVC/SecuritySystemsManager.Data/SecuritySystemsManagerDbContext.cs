@@ -25,6 +25,7 @@ namespace SecuritySystemsManager.Data
         public DbSet<Invoice> Invoices { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<DropboxToken> DropboxTokens { get; set; }
+        public DbSet<ChatMessage> ChatMessages { get; set; }
 
         public SecuritySystemsManagerDbContext() { }
 
@@ -160,6 +161,22 @@ namespace SecuritySystemsManager.Data
                 .WithMany()
                 .HasForeignKey(n => n.RecipientId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // 💬 ChatMessage <-> User (Sender) (N:1)
+            // При изтриване на потребител, неговите изпратени съобщения се запазват (Restrict)
+            modelBuilder.Entity<ChatMessage>()
+                .HasOne(m => m.Sender)
+                .WithMany()
+                .HasForeignKey(m => m.SenderId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // 💬 ChatMessage <-> User (Recipient) (N:1)
+            // При изтриване на потребител, неговите получени съобщения се запазват (Restrict)
+            modelBuilder.Entity<ChatMessage>()
+                .HasOne(m => m.Recipient)
+                .WithMany()
+                .HasForeignKey(m => m.RecipientId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             // ===== ДОПЪЛНИТЕЛНИ КОНФИГУРАЦИИ =====
 

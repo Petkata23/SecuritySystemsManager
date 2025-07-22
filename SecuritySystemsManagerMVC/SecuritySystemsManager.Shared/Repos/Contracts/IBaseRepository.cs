@@ -11,6 +11,7 @@ namespace SecuritySystemsManager.Shared.Repos.Contracts
     {
         Task<IEnumerable<TModel>> GetAllAsync();
         Task<TModel> GetByIdAsync(int id);
+        Task<TModel?> GetByIdIfExistsAsync(int id);
         Task CreateAsync(TModel model);
         Task UpdateAsync(TModel model);
         Task SaveAsync(TModel model);
