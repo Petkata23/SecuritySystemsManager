@@ -103,6 +103,42 @@ main.main-content {
     border-bottom: 1px solid var(--border-color);
 }
 
+/* Container responsive adjustments - wider layout */
+@media (min-width: 1400px) {
+    .container-fluid {
+        max-width: 1600px;
+        margin: 0 auto;
+    }
+}
+
+@media (min-width: 1200px) and (max-width: 1399px) {
+    .container-fluid {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+    .container-fluid {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+    .container-fluid {
+        max-width: 960px;
+        margin: 0 auto;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 767px) {
+    .container-fluid {
+        max-width: 720px;
+        margin: 0 auto;
+    }
+}
+
 .top-bar-info li {
     margin-right: 20px;
 }
@@ -135,7 +171,26 @@ main.main-content {
 .navbar-brand {
     display: flex;
     align-items: center;
-    margin-left: -120px;
+    margin-left: 0;
+}
+
+/* Responsive navbar-brand fixes for smaller screens */
+@media (max-width: 1200px) {
+    .navbar-brand {
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 992px) {
+    .navbar-brand {
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .navbar-brand {
+        margin-left: 0;
+    }
 }
 
 .logo-icon {
@@ -158,6 +213,15 @@ main.main-content {
     position: relative;
     display: flex;
     align-items: center;
+}
+
+/* Better spacing for spread out navigation */
+.navbar-nav.w-100.justify-content-between .nav-item {
+    margin: 0 4px;
+}
+
+.navbar-nav.w-100.justify-content-between .nav-link {
+    margin: 0 4px;
 }
 
     .navbar-nav .nav-link:hover,
@@ -988,28 +1052,10 @@ section {
         background-color: rgba(0, 0, 0, 0.1);
     }
 
-/* Container width adjustments for home page */
-.home-container {
-    max-width: 100%;
-    padding-left: 2rem;
-    padding-right: 2rem;
-}
-
+/* Container width adjustments for consistent layout */
 @media (min-width: 1400px) {
     .container, .container-lg, .container-xl, .container-xxl {
         max-width: 1320px;
-    }
-
-    .home-container {
-        max-width: 1400px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-}
-
-@media (min-width: 1600px) {
-    .home-container {
-        max-width: 1600px;
     }
 }
 
@@ -1569,18 +1615,7 @@ section {
     }
 }
 
-/* Full width sections */
-.full-width-section {
-    width: 100%;
-    max-width: 100%;
-    padding-left: 0;
-    padding-right: 0;
-    overflow: hidden;
-}
-
-    .full-width-section .container {
-        max-width: 1600px;
-    }
+/* Removed full-width-section styles - now using consistent container-fluid */
 
 /* Home page specific styles */
 .home-page {
@@ -1593,7 +1628,7 @@ section {
 }
 
     .home-main-content > .alert {
-        margin: 1rem 3rem;
+        margin: 1rem 0;
     }
 
 /* Make sure the main content area takes full width */
@@ -1773,6 +1808,30 @@ section {
     margin-left: auto;
     display: flex;
     align-items: center;
+}
+
+/* Navigation layout for spread out elements */
+.navbar-nav.w-100.justify-content-between {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar-nav.w-100.justify-content-between .nav-item:last-child {
+    margin-left: auto;
+}
+
+@media (max-width: 991.98px) {
+    .navbar-nav.w-100.justify-content-between {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .navbar-nav.w-100.justify-content-between .nav-item:last-child {
+        margin-left: 0;
+        margin-top: 1rem;
+    }
 }
 
 .navbar-nav .nav-item {
@@ -2242,5 +2301,38 @@ body.modal-open {
     /* Adjust modal sizes */
     .modal-dialog {
         margin: 0.5rem;
+    }
+}
+
+/* Inline styles for critical rendering */
+.profile-pic {
+    opacity: 0;
+    animation: fadeIn 0.3s ease forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* Navigation separator styles */
+.nav-separator {
+    height: 24px;
+    width: 1px;
+    background-color: rgba(0, 0, 0, 0.1);
+    margin: 0 15px;
+    align-self: center;
+}
+
+@media (max-width: 991.98px) {
+    .nav-separator {
+        height: 1px;
+        width: 100%;
+        margin: 8px 0;
     }
 }

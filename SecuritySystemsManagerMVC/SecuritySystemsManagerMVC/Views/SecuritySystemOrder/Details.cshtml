@@ -345,9 +345,12 @@
                             <p class="text-muted mb-3">No invoice has been generated yet</p>
                             @if (isAdminOrManager)
                             {
-                                <button class="btn btn-primary">
-                                    <i class="bi bi-plus-lg me-2"></i>Generate Invoice
-                                </button>
+                                <form asp-action="GenerateInvoice" method="post" style="display: inline;">
+                                    <input type="hidden" name="orderId" value="@Model.Id" />
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-plus-lg me-2"></i>Generate Invoice
+                                    </button>
+                                </form>
                             }
                         </div>
                     }

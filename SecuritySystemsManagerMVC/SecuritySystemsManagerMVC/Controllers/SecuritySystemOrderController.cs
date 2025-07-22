@@ -17,14 +17,17 @@ namespace SecuritySystemsManagerMVC.Controllers
         protected readonly IUserService _userService;
         protected readonly ILocationService _locationService;
         protected readonly INotificationService _notificationService;
+        protected readonly IInvoiceService _invoiceService;
 
         public SecuritySystemOrderController(IMapper mapper, ISecuritySystemOrderService service, 
-            IUserService userService, ILocationService locationService, INotificationService notificationService)
+            IUserService userService, ILocationService locationService, INotificationService notificationService,
+            IInvoiceService invoiceService)
             : base(service, mapper)
         {
             _userService = userService;
             _locationService = locationService;
             _notificationService = notificationService;
+            _invoiceService = invoiceService;
         }
 
         protected override async Task<SecuritySystemOrderEditVm> PrePopulateVMAsync(SecuritySystemOrderEditVm editVM)
@@ -201,6 +204,47 @@ namespace SecuritySystemsManagerMVC.Controllers
         public override async Task<IActionResult> Delete(int id)
         {
             return await base.Delete(id);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin,Manager")]
+        public async Task<IActionResult> GenerateInvoice(int orderId)
+        {
+            try
+            {
+                // Get the order
+                var order = await _service.GetByIdIfExistsAsync(orderId);
+                if (order == null)
+                {
+                    return NotFound("Order not found");
+                }
+
+                // Check if invoice already exists for this order
+                var allInvoices = await _invoiceService.GetAllAsync();
+                var existingInvoice = allInvoices.FirstOrDefault(i => i.SecuritySystemOrderId == orderId);
+                if (existingInvoice != null)
+                {
+                    return RedirectToAction("Details", "Invoice", new { id = existingInvoice.Id });
+                }
+
+                // Create new invoice
+                var invoiceDto = new InvoiceDto
+                {
+                    SecuritySystemOrderId = orderId,
+                    TotalAmount = 0, // Will be calculated based on services
+                    IsPaid = false,
+                    IssuedOn = DateTime.Now
+                };
+
+                await _invoiceService.SaveAsync(invoiceDto);
+                
+                return RedirectToAction("Edit", "Invoice", new { id = invoiceDto.Id });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                return RedirectToAction("Details", new { id = orderId });
+            }
         }
 
         [HttpGet]

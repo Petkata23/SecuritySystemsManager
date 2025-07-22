@@ -8,5 +8,8 @@ namespace SecuritySystemsManager.Shared.Services.Contracts
     public interface ILocationService : IBaseCrudService<LocationDto, ILocationRepository>
     {
         Task<IEnumerable<object>> GetLocationsWithOrdersAsync();
+        Task<IEnumerable<object>> GetLocationsWithOrdersForUserAsync(int userId);
+        Task<IEnumerable<LocationDto>> GetLocationsForUserAsync(int userId, int pageSize = 10, int pageNumber = 1);
+        Task<IEnumerable<object>> GetLocationsWithOrdersForCurrentUserAsync(int userId, bool isAdminOrManager);
     }
 } 

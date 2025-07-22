@@ -17,41 +17,12 @@
     <link rel="stylesheet" href="~/css/tables-mobile.css" asp-append-version="true" />
     <link rel="icon" type="image/svg+xml" href="~/img/favicon.svg">
     @await RenderSectionAsync("Styles", required: false)
-    <style>
-        /* Inline styles for critical rendering */
-        .profile-pic {
-            opacity: 0;
-            animation: fadeIn 0.3s ease forwards;
-        }
-        
-        @@keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        /* Navigation separator styles */
-        .nav-separator {
-            height: 24px;
-            width: 1px;
-            background-color: rgba(0, 0, 0, 0.1);
-            margin: 0 15px;
-            align-self: center;
-        }
-
-        @@media (max-width: 991.98px) {
-            .nav-separator {
-                height: 1px;
-                width: 100%;
-                margin: 8px 0;
-            }
-        }
-    </style>
 </head>
 <body class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "home-page" : "")">
     <!-- Top Bar -->
     <div class="top-bar d-none d-md-block">
-        <div class="container">
-            <div class="row">
+        <div class="container-fluid">
+            <div class="row align-items-center">
                 <div class="col-md-8">
                     <ul class="list-inline top-bar-info mb-0">
                         <li class="list-inline-item"><i class="bi bi-envelope"></i> info@securityhristovi.com</li>
@@ -73,7 +44,7 @@
     <!-- Main Header -->
     <header class="main-header">
         <nav class="navbar navbar-expand-lg">
-            <div class="container">
+            <div class="container-fluid">
                 <a class="navbar-brand" href="/">
                     <i class="bi bi-shield-lock logo-icon"></i>
                     <span class="logo-text">Security Systems Hristovi</span>
@@ -82,7 +53,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav me-auto">
+                    <ul class="navbar-nav w-100 justify-content-between">
                         <!-- Main navigation group -->
                         <li class="nav-item">
                             <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")" asp-controller="Home" asp-action="Index"><i class="bi bi-house-door me-2"></i>Home</a>
@@ -102,67 +73,61 @@
                         <!-- Authenticated user navigation group -->
                         @if (User.Identity.IsAuthenticated)
                         {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="SecuritySystemOrder" asp-action="List">
-                                    <i class="bi bi-cart me-2"></i>Orders
+                            <!-- Business Operations Dropdown Menu -->
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle @(ViewContext.RouteData.Values["controller"]?.ToString() == "SecuritySystemOrder" || ViewContext.RouteData.Values["controller"]?.ToString() == "Invoice" || ViewContext.RouteData.Values["controller"]?.ToString() == "MaintenanceLog" ? "active" : "")" href="#" id="businessOperationsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-briefcase me-2"></i> Order Operations
                                 </a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Invoice" ? "active" : "")" asp-controller="Invoice" asp-action="List">
-                                    <i class="bi bi-receipt me-2"></i>Invoices
-                                </a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "MaintenanceLog" ? "active" : "")" asp-controller="MaintenanceLog" asp-action="List">
-                                    <i class="bi bi-tools me-2"></i>Maintenance
-                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="businessOperationsDropdown">
+                                    <li><a class="dropdown-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "SecuritySystemOrder" ? "active" : "")" asp-controller="SecuritySystemOrder" asp-action="List"><i class="bi bi-cart me-2"></i>Orders</a></li>
+                                    <li><a class="dropdown-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Invoice" ? "active" : "")" asp-controller="Invoice" asp-action="List"><i class="bi bi-receipt me-2"></i>Invoices</a></li>
+                                    <li><a class="dropdown-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "MaintenanceLog" ? "active" : "")" asp-controller="MaintenanceLog" asp-action="List"><i class="bi bi-tools me-2"></i>Maintenance</a></li>
+                                </ul>
                             </li>
                         }
-                        @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                        @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Location" asp-action="List"><i class="bi bi-geo-alt me-2"></i>Locations</a>
+                                <a class="nav-link" asp-controller="Location" asp-action="List"><i class="bi bi-geo-alt me-2"></i>My Locations</a>
                             </li>
                         }
                         @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
                         {
                             <!-- Administration Dropdown Menu -->
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="administrationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <a class="nav-link dropdown-toggle @(ViewContext.RouteData.Values["controller"]?.ToString() == "User" || ViewContext.RouteData.Values["controller"]?.ToString() == "Role" || ViewContext.RouteData.Values["controller"]?.ToString() == "Chat" ? "active" : "")" href="#" id="administrationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="bi bi-gear me-2"></i>Administration
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="administrationDropdown">
-                                    <li><a class="dropdown-item" asp-controller="User" asp-action="List"><i class="bi bi-people me-2"></i>Users</a></li>
+                                    <li><a class="dropdown-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "User" ? "active" : "")" asp-controller="User" asp-action="List"><i class="bi bi-people me-2"></i>Users</a></li>
                                     @if (User.IsInRole("Admin"))
                                     {
-                                        <li><a class="dropdown-item" asp-controller="Role" asp-action="List"><i class="bi bi-person-badge me-2"></i>Roles</a></li>
-                                        <li><a class="dropdown-item" asp-controller="Chat" asp-action="Admin"><i class="bi bi-chat-dots me-2"></i>Chat Administration</a></li>
+                                        <li><a class="dropdown-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Role" ? "active" : "")" asp-controller="Role" asp-action="List"><i class="bi bi-person-badge me-2"></i>Roles</a></li>
+                                        <li><a class="dropdown-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Chat" ? "active" : "")" asp-controller="Chat" asp-action="Admin"><i class="bi bi-chat-dots me-2"></i>Chat Administration</a></li>
                                     }
                                 </ul>
                             </li>
                         }
+                        
+                        <!-- Right side navigation items -->
+                        <li class="nav-item d-flex align-items-center">
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <!-- Notifications -->
+                                @await Html.PartialAsync("_NotificationsPartial")
+                                
+                                <div class="nav-divider-vertical d-none d-lg-block"></div>
+                                
+                                <!-- User Profile -->
+                                @await Html.PartialAsync("_UserProfilePartial")
+                            }
+                            else
+                            {
+                                <!-- Login/Register buttons -->
+                                @await Html.PartialAsync("_UserProfilePartial")
+                            }
+                        </li>
                     </ul>
-                    
-                    <!-- Right side navigation items -->
-                    <div class="navbar-nav right-nav">
-                        @if (User.Identity.IsAuthenticated)
-                        {
-                            <!-- Notifications -->
-                            @await Html.PartialAsync("_NotificationsPartial")
-                            
-                            <div class="nav-divider-vertical d-none d-lg-block"></div>
-                            
-                            <!-- User Profile -->
-                            @await Html.PartialAsync("_UserProfilePartial")
-                        }
-                        else
-                        {
-                            <!-- Login/Register buttons -->
-                            @await Html.PartialAsync("_UserProfilePartial")
-                        }
-                    </div>
                 </div>
             </div>
         </nav>
@@ -172,21 +137,25 @@
     @if (ViewContext.RouteData.Values["controller"]?.ToString() != "Home" || ViewContext.RouteData.Values["action"]?.ToString() != "Index")
     {
         <div class="page-title-section">
-            <div class="container">
-                <h1 class="page-title">@ViewBag.Title</h1>
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">@ViewBag.Title</li>
-                    </ol>
-                </nav>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <h1 class="page-title">@ViewBag.Title</h1>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">@ViewBag.Title</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
             </div>
         </div>
     }
 
     <!-- Main Content -->
     <main class="main-content @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "home-main-content" : "")">
-        <div class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "" : "container")">
+        <div class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "" : "container-fluid")">
             @if (TempData["Success"] != null)
             {
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -218,11 +187,15 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-bottom text-center">
-            <div class="container">
-                <div class="copyright">
-                    &copy; @DateTime.Now.Year <strong><span>Security Systems Hristovi</span></strong>. All Rights Reserved
-                    <div class="mt-2">
-                        <a asp-controller="Home" asp-action="Privacy" class="text-muted text-decoration-none">Privacy Policy</a>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="copyright">
+                            &copy; @DateTime.Now.Year <strong><span>Security Systems Hristovi</span></strong>. All Rights Reserved
+                            <div class="mt-2">
+                                <a asp-controller="Home" asp-action="Privacy" class="text-muted text-decoration-none">Privacy Policy</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

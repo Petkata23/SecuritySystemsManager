@@ -34,7 +34,9 @@ namespace SecuritySystemsManagerMVC
             CreateMap<RoleDto, RoleEditVm>().ReverseMap();
 
             CreateMap<Location, LocationDto>().ReverseMap();
-            CreateMap<LocationDto, LocationDetailsVm>().ReverseMap();
+            CreateMap<LocationDto, LocationDetailsVm>()
+                .ForMember(dest => dest.Orders, opt => opt.MapFrom(src => src.Orders));
+            CreateMap<LocationDetailsVm, LocationDto>();
             CreateMap<LocationDto, LocationEditVm>().ReverseMap();
 
             CreateMap<SecuritySystemOrder, SecuritySystemOrderDto>().ReverseMap();
