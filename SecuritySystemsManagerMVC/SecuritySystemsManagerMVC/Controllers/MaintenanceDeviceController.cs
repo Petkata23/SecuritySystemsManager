@@ -31,6 +31,7 @@ namespace SecuritySystemsManagerMVC.Controllers
         }
 
         // GET: MaintenanceDevice/Create
+        [Authorize(Roles = "Admin,Manager,Technician")]
         public override async Task<IActionResult> Create()
         {
             return View(await PrePopulateVMAsync(new MaintenanceDeviceEditVm()));
@@ -39,6 +40,7 @@ namespace SecuritySystemsManagerMVC.Controllers
         // GET: MaintenanceDevice/CreateForLog/5
         [HttpGet]
         [Route("MaintenanceDevice/CreateForLog/{logId}")]
+        [Authorize(Roles = "Admin,Manager,Technician")]
         public async Task<IActionResult> CreateForLog(int logId)
         {
             var log = await _maintenanceLogService.GetByIdIfExistsAsync(logId);
@@ -61,6 +63,7 @@ namespace SecuritySystemsManagerMVC.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("MaintenanceDevice/CreateForLog/{logId}")]
+        [Authorize(Roles = "Admin,Manager,Technician")]
         public async Task<IActionResult> CreateForLog(MaintenanceDeviceEditVm vm, int logId)
         {
             if (!ModelState.IsValid)
@@ -115,6 +118,7 @@ namespace SecuritySystemsManagerMVC.Controllers
 
         // GET: MaintenanceDevice/AddDeviceToMaintenance/5
         [HttpGet]
+        [Authorize(Roles = "Admin,Manager,Technician")]
         public async Task<IActionResult> AddDeviceToMaintenance(int deviceId)
         {
             try
@@ -142,6 +146,7 @@ namespace SecuritySystemsManagerMVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Manager,Technician")]
         public async Task<IActionResult> AddDeviceToMaintenance(MaintenanceDeviceEditVm vm, int deviceId)
         {
             if (!ModelState.IsValid)
@@ -236,6 +241,7 @@ namespace SecuritySystemsManagerMVC.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Manager,Technician")]
         public async Task<IActionResult> ToggleFixed(int id)
         {
             try
@@ -253,6 +259,7 @@ namespace SecuritySystemsManagerMVC.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Manager,Technician")]
         public async Task<IActionResult> MarkAllFixed(int logId)
         {
             try
@@ -267,6 +274,44 @@ namespace SecuritySystemsManagerMVC.Controllers
                 TempData["ErrorMessage"] = ex.Message;
                 return RedirectToAction("Index", "Home");
             }
+        }
+
+        // Override Create method to restrict access
+        [HttpPost]
+        [Authorize(Roles = "Admin,Manager,Technician")]
+        public override async Task<IActionResult> Create(MaintenanceDeviceEditVm editVM)
+        {
+            return await base.Create(editVM);
+        }
+
+        // Override Edit method to restrict access
+        [HttpGet]
+        [Authorize(Roles = "Admin,Manager,Technician")]
+        public override async Task<IActionResult> Edit(int? id)
+        {
+            return await base.Edit(id);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin,Manager,Technician")]
+        public override async Task<IActionResult> Edit(int id, MaintenanceDeviceEditVm editVM)
+        {
+            return await base.Edit(id, editVM);
+        }
+
+        // Override Delete method to restrict access
+        [HttpGet]
+        [Authorize(Roles = "Admin,Manager,Technician")]
+        public override async Task<IActionResult> Delete(int? id)
+        {
+            return await base.Delete(id);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin,Manager,Technician")]
+        public override async Task<IActionResult> Delete(int id)
+        {
+            return await base.Delete(id);
         }
     }
 } 

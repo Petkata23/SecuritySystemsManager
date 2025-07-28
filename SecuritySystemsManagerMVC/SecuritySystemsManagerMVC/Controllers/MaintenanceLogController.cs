@@ -43,6 +43,7 @@ namespace SecuritySystemsManagerMVC.Controllers
         // GET: MaintenanceLog/CreateForOrder/5
         [HttpGet]
         [Route("MaintenanceLog/CreateForOrder/{orderId}")]
+        [Authorize(Roles = "Admin,Manager,Technician")]
         public async Task<IActionResult> CreateForOrder(int orderId)
         {
             try
@@ -122,6 +123,51 @@ namespace SecuritySystemsManagerMVC.Controllers
             ViewBag.CurrentPage = pageNumber;
 
             return View(nameof(List), mappedModels);
+        }
+
+        // Override Create method to restrict access
+        [HttpGet]
+        [Authorize(Roles = "Admin,Manager,Technician")]
+        public override async Task<IActionResult> Create()
+        {
+            return await base.Create();
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin,Manager,Technician")]
+        public override async Task<IActionResult> Create(MaintenanceLogEditVm editVM)
+        {
+            return await base.Create(editVM);
+        }
+
+        // Override Edit method to restrict access
+        [HttpGet]
+        [Authorize(Roles = "Admin,Manager,Technician")]
+        public override async Task<IActionResult> Edit(int? id)
+        {
+            return await base.Edit(id);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin,Manager,Technician")]
+        public override async Task<IActionResult> Edit(int id, MaintenanceLogEditVm editVM)
+        {
+            return await base.Edit(id, editVM);
+        }
+
+        // Override Delete method to restrict access
+        [HttpGet]
+        [Authorize(Roles = "Admin,Manager,Technician")]
+        public override async Task<IActionResult> Delete(int? id)
+        {
+            return await base.Delete(id);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin,Manager,Technician")]
+        public override async Task<IActionResult> Delete(int id)
+        {
+            return await base.Delete(id);
         }
     }
 } 

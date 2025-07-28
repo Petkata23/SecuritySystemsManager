@@ -6,6 +6,7 @@
     bool isClient = User.IsInRole("Client");
     bool isAdminOrManager = User.IsInRole("Admin") || User.IsInRole("Manager");
     bool isTechnician = User.IsInRole("Technician");
+    bool canManageMaintenance = User.IsInRole("Admin") || User.IsInRole("Manager") || User.IsInRole("Technician");
 }
 
 @section Styles {
@@ -235,7 +236,7 @@
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Maintenance Logs</h5>
-                    @if (isAdminOrManager)
+                    @if (canManageMaintenance)
                     {
                         <a asp-controller="MaintenanceLog" asp-action="CreateForOrder" asp-route-orderId="@Model.Id" class="btn btn-sm btn-primary">
                             <i class="bi bi-plus-lg me-2"></i>Add Log
@@ -267,13 +268,13 @@
                                                     <a asp-controller="MaintenanceLog" asp-action="Details" asp-route-id="@log.Id" class="btn btn-sm btn-info">
                                                         <i class="bi bi-info-circle"></i>
                                                     </a>
-                                                    @if (isAdminOrManager)
+                                                    @if (canManageMaintenance)
                                                     {
                                                         <a asp-controller="MaintenanceLog" asp-action="Edit" asp-route-id="@log.Id" class="btn btn-sm btn-primary">
                                                             <i class="bi bi-pencil"></i>
                                                         </a>
                                                     }
-                                                    @if (isAdminOrManager)
+                                                    @if (canManageMaintenance)
                                                     {
                                                         <a asp-controller="MaintenanceLog" asp-action="Delete" asp-route-id="@log.Id" class="btn btn-sm btn-danger">
                                                             <i class="bi bi-trash"></i>
