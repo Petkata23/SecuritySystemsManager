@@ -43,20 +43,27 @@ namespace SecuritySystemsManagerMVC.Controllers
         [Authorize(Roles = "Admin,Manager,Technician")]
         public async Task<IActionResult> CreateForLog(int logId)
         {
-            var log = await _maintenanceLogService.GetByIdIfExistsAsync(logId);
-            if (log == null)
+            try
             {
-                return NotFound();
-            }
+                var log = await _maintenanceLogService.GetByIdIfExistsAsync(logId);
+                if (log == null)
+                {
+                    return RedirectToAction("Error404", "Error");
+                }
 
-            var vm = await PrePopulateVMAsync(new MaintenanceDeviceEditVm { MaintenanceLogId = logId });
-            
-            // Добавяне на информация за лога във ViewBag
-            ViewBag.LogId = logId;
-            ViewBag.LogDate = log.Date.ToShortDateString();
-            ViewBag.IsFromMaintenanceLog = true;
-            
-            return View("Create", vm);
+                var vm = await PrePopulateVMAsync(new MaintenanceDeviceEditVm { MaintenanceLogId = logId });
+                
+                // Добавяне на информация за лога във ViewBag
+                ViewBag.LogId = logId;
+                ViewBag.LogDate = log.Date.ToShortDateString();
+                ViewBag.IsFromMaintenanceLog = true;
+                
+                return View("Create", vm);
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error500", "Error");
+            }
         }
         
         // POST: MaintenanceDevice/CreateForLog

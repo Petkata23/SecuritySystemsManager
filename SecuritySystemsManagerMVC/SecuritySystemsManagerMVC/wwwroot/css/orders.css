@@ -412,4 +412,47 @@
 
 .technician-modal .modal-title i {
     margin-right: 0.5rem;
+}
+
+/* Timeline styles for order edit */
+.timeline {
+    position: relative;
+    padding-left: 30px;
+}
+
+.timeline:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 15px;
+    height: 100%;
+    width: 2px;
+    background: var(--bs-border-color);
+}
+
+.timeline-item {
+    position: relative;
+    padding-bottom: 25px;
+    opacity: 0.5;
+}
+
+.timeline-item.active {
+    opacity: 1;
+}
+
+.timeline-marker {
+    position: absolute;
+    left: -30px;
+    top: 0;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    border: 2px solid var(--bs-border-color);
+    background: var(--bs-body-bg);
+    z-index: 1;
+}
+
+.timeline-item.active .timeline-marker {
+    background: var(--bs-primary);
+    border-color: var(--bs-primary);
 } 

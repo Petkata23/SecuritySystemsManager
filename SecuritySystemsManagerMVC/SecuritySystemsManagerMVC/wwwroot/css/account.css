@@ -1,0 +1,10 @@
+.qr-container {
+    width: 230px;
+    height: 230px;
+}
+
+.secret-key {
+    font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 1.1em;
+    word-break: break-all;
+} 

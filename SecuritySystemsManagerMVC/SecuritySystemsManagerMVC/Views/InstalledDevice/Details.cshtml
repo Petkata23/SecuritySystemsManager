@@ -130,14 +130,7 @@
 </div>
 
 @section Scripts {
-    <script>
-        $(document).ready(function () {
-            // Add event listener for image load error
-            $('img').on('error', function() {
-                console.error('Image failed to load:', this.src);
-            });
-        });
-    </script>
+    <script src="~/js/installed-device-details.js" asp-append-version="true"></script>
 }
 
 @functions {

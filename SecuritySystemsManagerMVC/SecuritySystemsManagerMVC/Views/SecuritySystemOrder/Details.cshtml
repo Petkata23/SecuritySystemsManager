@@ -560,37 +560,7 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="~/js/locations.js"></script>
     <script src="~/js/locations-details.js"></script>
-    <script>
-        $(document).ready(function() {
-            // Custom modal functionality
-            var $customModal = $('#customModal');
-            var $customModalOverlay = $('#customModalOverlay');
-            var $openCustomModalBtn = $('#openCustomModal');
-            var $closeCustomModalBtn = $('#closeCustomModal');
-            var $cancelCustomModalBtn = $('#cancelCustomModal');
-            
-            // Open modal
-            $openCustomModalBtn.on('click', function() {
-                $customModal.addClass('show');
-            });
-            
-            // Close modal
-            function closeCustomModal() {
-                $customModal.removeClass('show');
-            }
-            
-            $closeCustomModalBtn.on('click', closeCustomModal);
-            $cancelCustomModalBtn.on('click', closeCustomModal);
-            $customModalOverlay.on('click', closeCustomModal);
-            
-            // Close modal on ESC key
-            $(document).on('keydown', function(e) {
-                if (e.key === 'Escape' && $customModal.hasClass('show')) {
-                    closeCustomModal();
-                }
-            });
-        });
-    </script>
+    <script src="~/js/order-details-modal.js" asp-append-version="true"></script>
 }
 
 @functions {

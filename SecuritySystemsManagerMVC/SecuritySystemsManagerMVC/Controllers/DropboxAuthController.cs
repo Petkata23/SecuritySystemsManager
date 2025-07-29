@@ -54,13 +54,12 @@ namespace SecuritySystemsManagerMVC.Controllers
         [HttpGet]
         public async Task<IActionResult> Callback(string code)
         {
-            if (string.IsNullOrEmpty(code))
-            {
-                return BadRequest("Authorization code is missing");
-            }
-
             try
             {
+                if (string.IsNullOrEmpty(code))
+                {
+                    return BadRequest("Authorization code is missing");
+                }
                 var appKey = _configuration["Dropbox:AppKey"];
                 var appSecret = _configuration["Dropbox:AppSecret"];
                 var redirectUri = Url.Action("Callback", "DropboxAuth", null, Request.Scheme, Request.Host.Value);
@@ -111,7 +110,7 @@ namespace SecuritySystemsManagerMVC.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest($"Error: {ex.Message}");
+                return RedirectToAction("Error500", "Error");
             }
         }
 

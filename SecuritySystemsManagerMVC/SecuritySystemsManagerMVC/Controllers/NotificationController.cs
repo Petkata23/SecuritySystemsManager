@@ -26,14 +26,21 @@ namespace SecuritySystemsManagerMVC.Controllers
         [Authorize]
         public async Task<IActionResult> Index()
         {
-            string userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (int.TryParse(userIdStr, out int userId))
+            try
             {
-                var notifications = await _notificationService.GetNotificationsForUserAsync(userId);
-                return View(notifications);
+                string userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (int.TryParse(userIdStr, out int userId))
+                {
+                    var notifications = await _notificationService.GetNotificationsForUserAsync(userId);
+                    return View(notifications);
+                }
+                
+                return View(Enumerable.Empty<NotificationDto>());
             }
-            
-            return View(Enumerable.Empty<NotificationDto>());
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error500", "Error");
+            }
         }
 
         [HttpPost]

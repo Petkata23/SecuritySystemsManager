@@ -21,25 +21,32 @@ namespace SecuritySystemsManagerMVC.Controllers
         [HttpGet]
         public override async Task<IActionResult> List(int pageSize = 10, int pageNumber = 1)
         {
-            ViewBag.Title = "My Locations";
-            
-            // Get current user ID
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId) || !int.TryParse(userId, out int userIdInt))
+            try
             {
-                return RedirectToAction("Login", "Auth");
+                ViewBag.Title = "My Locations";
+                
+                // Get current user ID
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userId) || !int.TryParse(userId, out int userIdInt))
+                {
+                    return RedirectToAction("Login", "Auth");
+                }
+                
+                // Check if user is admin or manager - they can see all locations
+                if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                {
+                    return await base.List(pageSize, pageNumber);
+                }
+                
+                // For regular users, get only their locations
+                var userLocations = await _service.GetLocationsForUserAsync(userIdInt, pageSize, pageNumber);
+                var locationViewModels = _mapper.Map<IEnumerable<LocationDetailsVm>>(userLocations);
+                return View("List", locationViewModels);
             }
-            
-            // Check if user is admin or manager - they can see all locations
-            if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+            catch (Exception ex)
             {
-                return await base.List(pageSize, pageNumber);
+                return RedirectToAction("Error500", "Error");
             }
-            
-            // For regular users, get only their locations
-            var userLocations = await _service.GetLocationsForUserAsync(userIdInt, pageSize, pageNumber);
-            var locationViewModels = _mapper.Map<IEnumerable<LocationDetailsVm>>(userLocations);
-            return View("List", locationViewModels);
         }
 
         [HttpGet]

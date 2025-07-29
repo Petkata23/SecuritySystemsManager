@@ -154,10 +154,12 @@ namespace SecuritySystemsManagerMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterVm model, string returnUrl = null)
         {
-            ViewData["ReturnUrl"] = returnUrl;
-            
-            if (ModelState.IsValid)
+            try
             {
+                ViewData["ReturnUrl"] = returnUrl;
+                
+                if (ModelState.IsValid)
+                {
                 var user = new User
                 {
                     UserName = model.Username,
@@ -206,6 +208,12 @@ namespace SecuritySystemsManagerMVC.Controllers
             }
 
             return View(model);
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, "Възникна грешка при регистрацията. Моля, опитайте отново.");
+                return View(model);
+            }
         }
 
         [HttpGet]

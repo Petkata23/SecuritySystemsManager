@@ -68,14 +68,21 @@ namespace SecuritySystemsManagerMVC.Controllers
         [HttpGet]
         public override async Task<IActionResult> Details(int id)
         {
-            var invoice = await ((IInvoiceService)_service).GetInvoiceWithDetailsAsync(id);
-            if (invoice == null)
+            try
             {
-                return NotFound();
-            }
+                var invoice = await ((IInvoiceService)_service).GetInvoiceWithDetailsAsync(id);
+                if (invoice == null)
+                {
+                    return RedirectToAction("Error404", "Error");
+                }
 
-            var mappedModel = _mapper.Map<InvoiceDetailsVm>(invoice);
-            return View(mappedModel);
+                var mappedModel = _mapper.Map<InvoiceDetailsVm>(invoice);
+                return View(mappedModel);
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error500", "Error");
+            }
         }
 
         [HttpGet]

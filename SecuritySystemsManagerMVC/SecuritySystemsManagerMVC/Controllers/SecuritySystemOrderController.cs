@@ -83,9 +83,11 @@ namespace SecuritySystemsManagerMVC.Controllers
 
         public override async Task<IActionResult> Details(int id)
         {
-            var order = await _service.GetByIdIfExistsAsync(id);
-            if (order == null)
-                return NotFound();
+            try
+            {
+                var order = await _service.GetByIdIfExistsAsync(id);
+                if (order == null)
+                    return RedirectToAction("Error404", "Error");
 
             // Only get available technicians for admins and managers
             if (User.IsInRole("Admin") || User.IsInRole("Manager"))
@@ -122,6 +124,11 @@ namespace SecuritySystemsManagerMVC.Controllers
             }
             
             return result;
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error500", "Error");
+            }
         }
 
         [HttpPost]

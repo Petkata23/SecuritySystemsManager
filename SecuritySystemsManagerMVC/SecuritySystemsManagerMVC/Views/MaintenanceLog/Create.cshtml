@@ -107,20 +107,5 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     
-    <script>
-        $(document).ready(function() {
-            // Set current date as default
-            const today = new Date().toISOString().split('T')[0];
-            $("#Date").val(today);
-            
-            // Form validation styling enhancement
-            $("form").on("submit", function() {
-                $(this).find(".form-control, .form-select").each(function() {
-                    if ($(this).hasClass("input-validation-error")) {
-                        $(this).parent().addClass("has-error");
-                    }
-                });
-            });
-        });
-    </script>
+    <script src="~/js/maintenance-log-create.js" asp-append-version="true"></script>
 } 

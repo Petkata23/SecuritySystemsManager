@@ -164,15 +164,5 @@
 </div>
 
 @section Scripts {
-    <script>
-        $(document).ready(function() {
-            // Search functionality
-            $("#invoiceSearch").on("keyup", function() {
-                var value = $(this).val().toLowerCase();
-                $(".invoice-list-item").filter(function() {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-                });
-            });
-        });
-    </script>
+    <script src="~/js/invoice-list.js" asp-append-version="true"></script>
 } 

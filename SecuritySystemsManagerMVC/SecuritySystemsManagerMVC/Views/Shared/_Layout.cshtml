@@ -15,6 +15,11 @@
     <link rel="stylesheet" href="~/css/navbar-mobile.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/forms-mobile.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/tables-mobile.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/chat-widget.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/chat.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/chat-admin.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/account.css" asp-append-version="true" />
     <link rel="icon" type="image/svg+xml" href="~/img/favicon.svg">
     @await RenderSectionAsync("Styles", required: false)
 </head>
@@ -205,10 +210,34 @@
     <!-- Back to top button -->
     <a href="#" class="back-to-top"><i class="bi bi-arrow-up"></i></a>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/lib/microsoft-signalr/dist/browser/signalr.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+            <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="~/lib/microsoft-signalr/dist/browser/signalr.min.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        <script src="~/js/chat-widget.js" asp-append-version="true"></script>
+        <script src="~/js/chat-index.js" asp-append-version="true"></script>
+        <script src="~/js/chat-conversation.js" asp-append-version="true"></script>
+        <script src="~/js/chat-admin.js" asp-append-version="true"></script>
+        <script src="~/js/account-enable-authenticator.js" asp-append-version="true"></script>
+        <script src="~/js/location-list-ui.js" asp-append-version="true"></script>
+        <script src="~/js/order-details-modal.js" asp-append-version="true"></script>
+        <script src="~/js/user-list.js" asp-append-version="true"></script>
+        <script src="~/js/role-list.js" asp-append-version="true"></script>
+        <script src="~/js/notification-index.js" asp-append-version="true"></script>
+        <script src="~/js/maintenance-log-list.js" asp-append-version="true"></script>
+        <script src="~/js/invoice-list.js" asp-append-version="true"></script>
+        <script src="~/js/order-list.js" asp-append-version="true"></script>
+        <script src="~/js/order-delete.js" asp-append-version="true"></script>
+        <script src="~/js/order-create.js" asp-append-version="true"></script>
+        <script src="~/js/maintenance-log-details.js" asp-append-version="true"></script>
+        <script src="~/js/maintenance-log-edit.js" asp-append-version="true"></script>
+        <script src="~/js/maintenance-log-create.js" asp-append-version="true"></script>
+        <script src="~/js/installed-device-details.js" asp-append-version="true"></script>
+        <script src="~/js/invoice-details.js" asp-append-version="true"></script>
+        <script src="~/js/invoice-delete.js" asp-append-version="true"></script>
+        <script src="~/js/invoice-create.js" asp-append-version="true"></script>
+        <script src="~/js/dropbox-auth-callback.js" asp-append-version="true"></script>
+        <script src="~/js/dropbox-auth-index.js" asp-append-version="true"></script>
     
     <!-- Chat Widget -->
     @if (User.Identity.IsAuthenticated)

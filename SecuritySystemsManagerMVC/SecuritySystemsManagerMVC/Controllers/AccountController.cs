@@ -35,62 +35,78 @@ namespace SecuritySystemsManagerMVC.Controllers
 
         public async Task<IActionResult> MyProfile()
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            try
             {
-                return NotFound();
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return RedirectToAction("Error404", "Error");
+                }
+
+                var model = new UserProfileViewModel
+                {
+                    Username = user.UserName,
+                    Email = user.Email,
+                    PhoneNumber = user.PhoneNumber,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    ProfileImage = user.ProfileImage,
+                    TwoFactorEnabled = await _userManager.GetTwoFactorEnabledAsync(user),
+                    HasAuthenticator = await _userManager.GetAuthenticatorKeyAsync(user) != null,
+                    RecoveryCodesLeft = await _userManager.CountRecoveryCodesAsync(user),
+                };
+
+                return View(model);
             }
-
-            var model = new UserProfileViewModel
+            catch (Exception ex)
             {
-                Username = user.UserName,
-                Email = user.Email,
-                PhoneNumber = user.PhoneNumber,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                ProfileImage = user.ProfileImage,
-                TwoFactorEnabled = await _userManager.GetTwoFactorEnabledAsync(user),
-                HasAuthenticator = await _userManager.GetAuthenticatorKeyAsync(user) != null,
-                RecoveryCodesLeft = await _userManager.CountRecoveryCodesAsync(user),
-            };
-
-            return View(model);
+                return RedirectToAction("Error500", "Error");
+            }
         }
 
         public async Task<IActionResult> EditProfile()
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            try
             {
-                return NotFound();
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return RedirectToAction("Error404", "Error");
+                }
+
+                var model = new EditProfileViewModel
+                {
+                    Username = user.UserName,
+                    Email = user.Email,
+                    PhoneNumber = user.PhoneNumber,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName
+                };
+
+                return View(model);
             }
-
-            var model = new EditProfileViewModel
+            catch (Exception ex)
             {
-                Username = user.UserName,
-                Email = user.Email,
-                PhoneNumber = user.PhoneNumber,
-                FirstName = user.FirstName,
-                LastName = user.LastName
-            };
-
-            return View(model);
+                return RedirectToAction("Error500", "Error");
+            }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditProfile(EditProfileViewModel model)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return View(model);
-            }
+                if (!ModelState.IsValid)
+                {
+                    return View(model);
+                }
 
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return NotFound();
-            }
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return RedirectToAction("Error404", "Error");
+                }
 
             var email = await _userManager.GetEmailAsync(user);
             if (model.Email != email)
@@ -147,6 +163,12 @@ namespace SecuritySystemsManagerMVC.Controllers
             await _signInManager.RefreshSignInAsync(user);
             TempData["Success"] = "Your profile has been updated successfully.";
             return RedirectToAction(nameof(MyProfile));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, "Възникна грешка при обновяването на профила. Моля, опитайте отново.");
+                return View(model);
+            }
         }
 
         public async Task<IActionResult> ChangePassword()

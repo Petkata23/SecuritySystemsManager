@@ -30,8 +30,10 @@ namespace SecuritySystemsManagerMVC.Controllers
         [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> AdminPanel(int? userId = null)
         {
-            var messages = await _chatMessageService.GetAllAsync();
-            var allUsers = await _userService.GetAllAsync();
+            try
+            {
+                var messages = await _chatMessageService.GetAllAsync();
+                var allUsers = await _userService.GetAllAsync();
 
             var activeChats = messages
                 .Where(m => !m.IsFromSupport) // Exclude support messages
@@ -106,6 +108,11 @@ namespace SecuritySystemsManagerMVC.Controllers
             };
 
             return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error500", "Error");
+            }
         }
 
         [Authorize(Roles = "Admin,Manager")]

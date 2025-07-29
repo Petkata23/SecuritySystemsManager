@@ -41,19 +41,26 @@ namespace SecuritySystemsManagerMVC.Controllers
         
         public override async Task<IActionResult> Details(int id)
         {
-            var device = await _service.GetByIdIfExistsAsync(id);
-            if (device == null)
-                return NotFound();
-                
-            var detailsVM = _mapper.Map<InstalledDeviceDetailsVm>(device);
-            
-            // Pass the order ID to the view for navigation
-            if (device.SecuritySystemOrderId > 0)
+            try
             {
-                ViewBag.OrderId = device.SecuritySystemOrderId;
+                var device = await _service.GetByIdIfExistsAsync(id);
+                if (device == null)
+                    return RedirectToAction("Error404", "Error");
+                    
+                var detailsVM = _mapper.Map<InstalledDeviceDetailsVm>(device);
+                
+                // Pass the order ID to the view for navigation
+                if (device.SecuritySystemOrderId > 0)
+                {
+                    ViewBag.OrderId = device.SecuritySystemOrderId;
+                }
+                
+                return View(detailsVM);
             }
-            
-            return View(detailsVM);
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error500", "Error");
+            }
         }
         
         [HttpPost]

@@ -77,17 +77,24 @@ namespace SecuritySystemsManagerMVC.Controllers
         [HttpGet]
         public override async Task<IActionResult> Details(int id)
         {
-            var model = await this._service.GetByIdIfExistsAsync(id);
-            if (model == default)
+            try
             {
-                return BadRequest(SecuritySystemsManager.Shared.Constants.InvalidId);
+                var model = await this._service.GetByIdIfExistsAsync(id);
+                if (model == default)
+                {
+                    return RedirectToAction("Error404", "Error");
+                }
+                
+                // Set the order ID in ViewBag for the link back to the order
+                ViewBag.OrderId = model.SecuritySystemOrderId;
+                
+                var mappedModel = _mapper.Map<MaintenanceLogDetailsVm>(model);
+                return View(mappedModel);
             }
-            
-            // Set the order ID in ViewBag for the link back to the order
-            ViewBag.OrderId = model.SecuritySystemOrderId;
-            
-            var mappedModel = _mapper.Map<MaintenanceLogDetailsVm>(model);
-            return View(mappedModel);
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error500", "Error");
+            }
         }
 
         [HttpGet]
