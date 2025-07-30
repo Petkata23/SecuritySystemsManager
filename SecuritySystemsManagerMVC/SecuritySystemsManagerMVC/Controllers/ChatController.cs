@@ -141,7 +141,7 @@ namespace SecuritySystemsManagerMVC.Controllers
                         return new
                         {
                             userId = g.Key,
-                            userName = user.Username,
+                            username = user.Username,
                             userRole = user.Role?.Name ?? "User",
                             lastMessage = userMessages
                                 .OrderByDescending(m => m.Timestamp)

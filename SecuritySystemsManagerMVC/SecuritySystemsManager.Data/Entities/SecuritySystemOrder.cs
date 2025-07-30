@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
 namespace SecuritySystemsManager.Data.Entities
 {
@@ -16,8 +17,17 @@ namespace SecuritySystemsManager.Data.Entities
             MaintenanceLogs = new List<MaintenanceLog>();
         }
 
+        [Required]
+        [StringLength(100, MinimumLength = 5, ErrorMessage = "Title must be between 5 and 100 characters")]
         public string Title { get; set; }
+        
+        [Required]
+        [StringLength(1000, MinimumLength = 10, ErrorMessage = "Description must be between 10 and 1000 characters")]
         public string Description { get; set; }
+        
+        [Required]
+        [StringLength(20, MinimumLength = 8, ErrorMessage = "Phone number must be between 8 and 20 characters")]
+        [Phone(ErrorMessage = "Invalid phone number format")]
         public string PhoneNumber { get; set; }
 
         public int ClientId { get; set; }

@@ -1,7 +1,7 @@
 /* Privacy Page Styles */
 .privacy-section {
     padding: 40px 0;
-    background-color: var(--body-bg);
+    /* background-color: var(--body-bg); */
 }
 
 .privacy-container {
@@ -16,17 +16,17 @@
     position: relative;
 }
 
-.privacy-header::after {
-    content: '';
-    position: absolute;
-    bottom: -15px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80px;
-    height: 4px;
-    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-    border-radius: 2px;
-}
+    .privacy-header::after {
+        content: '';
+        position: absolute;
+        bottom: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        border-radius: 2px;
+    }
 
 .privacy-card {
     background-color: var(--card-bg);
@@ -38,69 +38,69 @@
     transition: all 0.3s ease;
 }
 
-.privacy-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-}
+    .privacy-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
 
-.privacy-card h2 {
-    color: var(--primary-color);
-    font-size: 1.5rem;
-    margin-bottom: 20px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid var(--border-color);
-    position: relative;
-}
+    .privacy-card h2 {
+        color: var(--primary-color);
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid var(--border-color);
+        position: relative;
+    }
 
-.privacy-card h2::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: -1px;
-    width: 50px;
-    height: 3px;
-    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-}
+        .privacy-card h2::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -1px;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
 
-.privacy-card p {
-    color: var(--text-color);
-    line-height: 1.6;
-    margin-bottom: 15px;
-}
+    .privacy-card p {
+        color: var(--text-color);
+        line-height: 1.6;
+        margin-bottom: 15px;
+    }
 
-.privacy-card ul {
-    padding-left: 20px;
-    margin-bottom: 20px;
-}
+    .privacy-card ul {
+        padding-left: 20px;
+        margin-bottom: 20px;
+    }
 
-.privacy-card li {
-    margin-bottom: 10px;
-    position: relative;
-    padding-left: 15px;
-}
+    .privacy-card li {
+        margin-bottom: 10px;
+        position: relative;
+        padding-left: 15px;
+    }
 
-.privacy-card li::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 10px;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background-color: var(--primary-color);
-}
+        .privacy-card li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 10px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+        }
 
-.privacy-card .highlight {
-    background-color: rgba(var(--primary-rgb), 0.1);
-    padding: 15px 20px;
-    border-radius: 8px;
-    border-left: 4px solid var(--primary-color);
-    margin: 20px 0;
-}
+    .privacy-card .highlight {
+        background-color: rgba(var(--primary-rgb), 0.1);
+        padding: 15px 20px;
+        border-radius: 8px;
+        border-left: 4px solid var(--primary-color);
+        margin: 20px 0;
+    }
 
-.privacy-card .highlight p {
-    margin-bottom: 0;
-}
+        .privacy-card .highlight p {
+            margin-bottom: 0;
+        }
 
 .privacy-footer {
     text-align: center;
@@ -120,18 +120,18 @@
     border: 1px solid var(--border-color);
 }
 
-.privacy-contact h3 {
-    margin-bottom: 20px;
-    color: var(--primary-color);
-}
+    .privacy-contact h3 {
+        margin-bottom: 20px;
+        color: var(--primary-color);
+    }
 
-.privacy-contact p {
-    margin-bottom: 20px;
-}
+    .privacy-contact p {
+        margin-bottom: 20px;
+    }
 
-.privacy-contact .btn {
-    padding: 10px 25px;
-}
+    .privacy-contact .btn {
+        padding: 10px 25px;
+    }
 
 .privacy-icon {
     font-size: 2.5rem;
@@ -154,8 +154,8 @@
     .privacy-card {
         padding: 20px;
     }
-    
+
     .privacy-header {
         margin-bottom: 30px;
     }
-} 
+}

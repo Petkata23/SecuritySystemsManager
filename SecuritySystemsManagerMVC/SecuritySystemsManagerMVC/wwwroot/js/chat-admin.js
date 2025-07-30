@@ -55,13 +55,15 @@ document.addEventListener('DOMContentLoaded', function () {
     // Функция за обработка на клик върху чат
     function handleChatItemClick(e) {
         e.preventDefault();
-        const userId = this.dataset.userId;
+        const userId = e.currentTarget.dataset.userId;
+        console.log('Chat item clicked, userId:', userId);
+        
         if (userId) {
             // Визуална индикация за избрания чат
             document.querySelectorAll('.chat-list-item').forEach(item => {
                 item.classList.remove('active');
             });
-            this.classList.add('active');
+            e.currentTarget.classList.add('active');
             
             // Зареждане на чата
             loadChat(parseInt(userId));
@@ -171,6 +173,27 @@ document.addEventListener('DOMContentLoaded', function () {
     // Първоначално прикачване на event listeners
     attachChatItemListeners();
 
+    // Refresh button functionality
+    const refreshButton = document.getElementById('refreshChats');
+    if (refreshButton) {
+        refreshButton.addEventListener('click', async () => {
+            const icon = refreshButton.querySelector('i');
+            if (icon) {
+                icon.classList.add('spinning');
+            }
+            
+            try {
+                await updateChatList();
+            } finally {
+                if (icon) {
+                    setTimeout(() => {
+                        icon.classList.remove('spinning');
+                    }, 500);
+                }
+            }
+        });
+    }
+
     // Scroll to bottom on load
     if (chatMessages) {
         chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -178,7 +201,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Функция за зареждане на чат
     async function loadChat(userId) {
-        if (!userId) return;
+        console.log('Loading chat for userId:', userId);
+        if (!userId) {
+            console.warn('No userId provided');
+            return;
+        }
 
         const chatMain = document.querySelector('.chat-main');
         if (!chatMain) {
@@ -195,7 +222,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <div class="input-group">
                         <input type="text" class="form-control" id="adminMessageInput" placeholder="Въведете съобщение...">
                         <button class="btn btn-primary" id="adminSendMessage">
-                            <i class="fas fa-paper-plane"></i>
+                            <i class="bi bi-send"></i>
                         </button>
                     </div>
                 </div>
@@ -249,10 +276,10 @@ document.addEventListener('DOMContentLoaded', function () {
                         </div>
                         <div class="chat-actions">
                             <button class="btn btn-icon" id="markAsRead" title="Маркирай като прочетено">
-                                <i class="fas fa-check-double"></i>
+                                <i class="bi bi-check2-all"></i>
                             </button>
                             <button class="btn btn-icon" id="showUserInfo" title="Информация">
-                                <i class="fas fa-info-circle"></i>
+                                <i class="bi bi-info-circle"></i>
                             </button>
                         </div>
                     </div>
@@ -290,10 +317,10 @@ document.addEventListener('DOMContentLoaded', function () {
             if (chatMessages) {
                 chatMessages.innerHTML = `
                     <div class="error-message">
-                        <i class="fas fa-exclamation-circle"></i>
+                        <i class="bi bi-exclamation-circle"></i>
                         <p>${error.message}</p>
                         <button class="btn btn-sm btn-primary" onclick="loadChat(${userId})">
-                            <i class="fas fa-sync-alt"></i> Опитай отново
+                            <i class="bi bi-arrow-clockwise"></i> Опитай отново
                         </button>
                     </div>
                 `;

@@ -2,9 +2,36 @@ $(document).ready(function () {
     let chatConnection;
     let isChatOpen = false;
     let chatHistory = [];
+    
+    // Get current user ID from the page
+    let currentUserIdInt = 0;
+    try {
+        // Try to get from data attribute if available
+        const userIdElement = document.querySelector('[data-user-id]');
+        if (userIdElement) {
+            currentUserIdInt = parseInt(userIdElement.getAttribute('data-user-id')) || 0;
+        }
+    } catch (e) {
+        console.warn('Could not get current user ID:', e);
+    }
+    
+    console.log('Current user ID:', currentUserIdInt);
+    
+    // Check if SignalR is available on page load
+    if (typeof signalR === 'undefined') {
+        console.warn('SignalR library not loaded. Chat real-time functionality will be limited.');
+    } else {
+        console.log('SignalR library loaded successfully.');
+    }
 
     // Initialize SignalR connection
     function initializeChatConnection() {
+        // Check if SignalR is available
+        if (typeof signalR === 'undefined') {
+            console.warn('SignalR is not available. Chat functionality will be limited.');
+            return;
+        }
+        
         chatConnection = new signalR.HubConnectionBuilder()
             .withUrl("/chatHub")
             .withAutomaticReconnect()
@@ -55,11 +82,6 @@ $(document).ready(function () {
         $('#chatWidgetPanel').show();
         isChatOpen = true;
         $('#chatWidgetButton').addClass('active');
-        
-        // Initialize connection if not already done
-        if (!chatConnection) {
-            initializeChatConnection();
-        }
         
         // Load chat history
         loadChatHistory();
@@ -121,19 +143,26 @@ $(document).ready(function () {
         $('#chatWidgetInput').val('');
 
         // Send message via SignalR
-        if (chatConnection) {
+        if (chatConnection && typeof signalR !== 'undefined') {
             console.log('Chat connection exists, invoking SendUserMessage...');
             chatConnection.invoke("SendUserMessage", message).catch(function (err) {
                 console.error("Send message error:", err.toString());
                 alert('Грешка при изпращане на съобщението. Моля, опитайте отново.');
             });
         } else {
-            console.error('Chat connection not available');
-            alert('Няма връзка с чат сървъра. Моля, опитайте отново.');
+            console.warn('Chat connection not available - SignalR may not be loaded');
+            // Still show the message locally for better UX
+            console.log('Message saved locally only');
         }
     }
 
     function appendChatMessage(message) {
+        // Check if SignalR is available before processing messages
+        if (typeof signalR === 'undefined') {
+            console.warn('SignalR not available, skipping message processing');
+            return;
+        }
+        
         const isFromCurrentUser = message.senderId === currentUserIdInt;
         
         // Don't add messages from current user as they are already added locally
@@ -211,17 +240,20 @@ $(document).ready(function () {
             }
         }
         
-        // Load existing messages from server if no local history
-        if (chatHistory.length === 0) {
-            loadExistingMessages();
-        }
+        // Always load existing messages from server to ensure we have the latest
+        loadExistingMessages();
     }
 
     function loadExistingMessages() {
         $.get('/Chat/GetRecentMessages', { count: 20 })
-            .done(function(messages) {
-                if (messages && messages.length > 0) {
-                    messages.forEach(function(message) {
+            .done(function(response) {
+                console.log('Loaded existing messages:', response);
+                if (response && Array.isArray(response) && response.length > 0) {
+                    // Clear existing history and load from server
+                    chatHistory = [];
+                    // Sort messages by timestamp (oldest first) so newest appear at bottom
+                    const sortedMessages = response.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+                    sortedMessages.forEach(function(message) {
                         chatHistory.push({
                             message: message.message,
                             senderId: message.senderId,
@@ -231,6 +263,8 @@ $(document).ready(function () {
                     });
                     saveChatHistory();
                     displayChatHistory();
+                } else {
+                    console.log('No existing messages found or invalid response format');
                 }
             })
             .fail(function(err) {
@@ -310,6 +344,9 @@ $(document).ready(function () {
         }
     }
 
+    // Initialize SignalR connection on page load
+    initializeChatConnection();
+    
     // Update notification badge on page load
     updateNotificationBadge();
 

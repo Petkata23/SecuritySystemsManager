@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 
 namespace SecuritySystemsManager.Data.Entities
@@ -17,8 +18,15 @@ namespace SecuritySystemsManager.Data.Entities
 
         // Запазваме само полетата, които не са част от IdentityUser
         // IdentityUser вече има Username, Email, PasswordHash и други
+        [Required]
+        [StringLength(50, MinimumLength = 2, ErrorMessage = "First name must be between 2 and 50 characters")]
         public string FirstName { get; set; }
+        
+        [Required]
+        [StringLength(50, MinimumLength = 2, ErrorMessage = "Last name must be between 2 and 50 characters")]
         public string LastName { get; set; }
+        
+        [StringLength(500, ErrorMessage = "Profile image URL cannot be longer than 500 characters")]
         public string? ProfileImage { get; set; }
         
         // Имплементация на IBaseEntity

@@ -14,9 +14,6 @@ namespace SecuritySystemsManager.Data
 {
     public class SecuritySystemsManagerDbContext : IdentityDbContext<User, Role, int>
     {
-        // Статична дата за seed данните
-        private static readonly DateTime _seedDate = new DateTime(2023, 1, 1);
-
         public DbSet<Location> Locations { get; set; }
         public DbSet<SecuritySystemOrder> Orders { get; set; }
         public DbSet<InstalledDevice> InstalledDevices { get; set; }
@@ -188,50 +185,7 @@ namespace SecuritySystemsManager.Data
             // ✅ Уникален Username - вече се управлява от Identity
 
             // ===== SEED ДАННИ =====
-
-            // 🌱 Сийдване на роли
-            foreach (var roleType in Enum.GetValues(typeof(RoleType)).Cast<RoleType>())
-            {
-                modelBuilder.Entity<Role>().HasData(new Role
-                {
-                    Id = (int)roleType,
-                    Name = roleType.ToString(),
-                    NormalizedName = roleType.ToString().ToUpper(),
-                    RoleType = roleType,
-                    CreatedAt = _seedDate,
-                    UpdatedAt = _seedDate
-                });
-            }
-
-            // 🌱 Сийдване на потребител с роля Administrator
-            var adminUser = new User
-            {
-                Id = 1,
-                UserName = "admin",
-                NormalizedUserName = "ADMIN",
-                FirstName = "Admin",
-                LastName = "User",
-                Email = "admin@securitysystems.com",
-                NormalizedEmail = "ADMIN@SECURITYSYSTEMS.COM",
-                EmailConfirmed = true,
-                SecurityStamp = Guid.NewGuid().ToString(),
-                RoleId = (int)RoleType.Admin,
-                CreatedAt = _seedDate,
-                UpdatedAt = _seedDate
-            };
-            
-            // Хеширане на паролата с Identity
-            var passwordHasher = new PasswordHasher<User>();
-            adminUser.PasswordHash = passwordHasher.HashPassword(adminUser, "string");
-            
-            modelBuilder.Entity<User>().HasData(adminUser);
-            
-            // Добавяне на админ потребителя към админ ролята
-            modelBuilder.Entity<IdentityUserRole<int>>().HasData(new IdentityUserRole<int>
-            {
-                RoleId = (int)RoleType.Admin,
-                UserId = 1
-            });
+            DataSeeder.SeedData(modelBuilder);
         }
     }
 }

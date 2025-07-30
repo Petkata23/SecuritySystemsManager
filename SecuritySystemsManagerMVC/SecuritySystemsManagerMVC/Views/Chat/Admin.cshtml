@@ -5,10 +5,15 @@
     ViewData["Title"] = "Чат поддръжка";
 }
 
+@section Styles {
+    <link rel="stylesheet" href="~/css/chat.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/chat-admin.css" asp-append-version="true" />
+}
+
 <div class="stats-container">
     <div class="stat-card">
         <div class="stat-icon">
-            <i class="bi bi-chat-dots-fill"></i>
+            <i class="bi bi-chat-dots"></i>
         </div>
         <div class="stat-info">
             <h3 id="activeChatsCount">@Model.ActiveChats?.Count() ?? 0</h3>
@@ -17,7 +22,7 @@
     </div>
     <div class="stat-card">
         <div class="stat-icon">
-            <i class="bi bi-bell-fill"></i>
+            <i class="bi bi-bell"></i>
         </div>
         <div class="stat-info">
             <h3 id="unreadCount">@Model.ActiveChats?.Count(c => c.HasUnreadMessages) ?? 0</h3>
@@ -69,14 +74,14 @@
                         <h5>@Model.CurrentChat.Username</h5>
                         <small class="text-muted">@Model.CurrentChat.UserRole</small>
                     </div>
-                    <div class="chat-actions">
-                        <button class="btn btn-icon" id="markAsRead" title="Маркирай като прочетено">
-                            <i class="fas fa-check-double"></i>
-                        </button>
-                        <button class="btn btn-icon" id="showUserInfo" title="Информация">
-                            <i class="fas fa-info-circle"></i>
-                        </button>
-                    </div>
+                                            <div class="chat-actions">
+                            <button class="btn btn-icon" id="markAsRead" title="Маркирай като прочетено">
+                                <i class="bi bi-check2-all"></i>
+                            </button>
+                            <button class="btn btn-icon" id="showUserInfo" title="Информация">
+                                <i class="bi bi-info-circle"></i>
+                            </button>
+                        </div>
                 </div>
             </div>
 
@@ -98,7 +103,7 @@
                     <input type="text" class="form-control" id="adminMessageInput"
                            placeholder="Въведете съобщение...">
                     <button class="btn btn-primary" id="adminSendMessage">
-                        <i class="bi bi-send-fill"></i>
+                        <i class="bi bi-send"></i>
                     </button>
                 </div>
             </div>
@@ -119,20 +124,20 @@
         <div class="info-panel-header">
             <h5>Информация за потребителя</h5>
             <button class="btn btn-icon" id="closeInfoPanel">
-                <i class="bi bi-x-lg"></i>
+                <i class="bi bi-x"></i>
             </button>
         </div>
         <div class="info-panel-content">
             <div class="user-stats">
                 <div class="stat-item">
-                    <i class="bi bi-clock-fill"></i>
+                    <i class="bi bi-clock"></i>
                     <div>
                         <label>Първо съобщение</label>
                         <span id="firstMessageDate">-</span>
                     </div>
                 </div>
                 <div class="stat-item">
-                    <i class="bi bi-chat-left-text-fill"></i>
+                    <i class="bi bi-chat-left-text"></i>
                     <div>
                         <label>Общо съобщения</label>
                         <span id="totalMessages">0</span>
@@ -144,6 +149,10 @@
 </div>
 
 @section Scripts {
-    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+    <script>
+        // Define current chat user ID
+        const currentChatUserId = @(Model.CurrentChat?.UserId ?? 0);
+        const currentAdminUserId = @User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? 0;
+    </script>
     <script src="~/js/chat-admin.js" asp-append-version="true"></script> 
 } 

@@ -70,7 +70,7 @@ namespace SecuritySystemsManagerMVC.Controllers
         {
             try
             {
-                var invoice = await ((IInvoiceService)_service).GetInvoiceWithDetailsAsync(id);
+                var invoice = await _service.GetInvoiceWithDetailsAsync(id);
                 if (invoice == null)
                 {
                     return RedirectToAction("Error404", "Error");
@@ -168,7 +168,7 @@ namespace SecuritySystemsManagerMVC.Controllers
         {
             try
             {
-                await ((IInvoiceService)_service).MarkAsPaidAsync(id);
+                await _service.MarkAsPaidAsync(id);
                 return RedirectToAction(nameof(Details), new { id });
             }
             catch (ArgumentException)
@@ -182,7 +182,7 @@ namespace SecuritySystemsManagerMVC.Controllers
         {
             try
             {
-                await ((IInvoiceService)_service).MarkAsUnpaidAsync(id);
+                await _service.MarkAsUnpaidAsync(id);
                 return RedirectToAction(nameof(Details), new { id });
             }
             catch (ArgumentException)

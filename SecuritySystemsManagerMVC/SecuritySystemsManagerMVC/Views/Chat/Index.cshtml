@@ -3,6 +3,10 @@
     ViewData["Title"] = "Чат";
 }
 
+@section Styles {
+    <link rel="stylesheet" href="~/css/chat.css" asp-append-version="true" />
+}
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-4">
@@ -92,6 +96,5 @@
 
 
 @section Scripts {
-    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
     <script src="~/js/chat-index.js" asp-append-version="true"></script>
 } 

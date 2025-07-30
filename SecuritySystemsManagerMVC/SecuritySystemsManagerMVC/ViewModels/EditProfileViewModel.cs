@@ -15,6 +15,7 @@ namespace SecuritySystemsManagerMVC.ViewModels
         [Display(Name = "Email")]
         public string Email { get; set; }
         
+        [Required(AllowEmptyStrings = true)]
         [Phone(ErrorMessage = "Invalid phone number")]
         [Display(Name = "Phone Number")]
         public string PhoneNumber { get; set; }
