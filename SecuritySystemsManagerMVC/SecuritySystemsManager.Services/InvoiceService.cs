@@ -121,5 +121,32 @@ namespace SecuritySystemsManager.Services
 
             return invoice;
         }
+
+        public async Task<InvoiceDto> GenerateInvoiceFromOrderAsync(int orderId, decimal totalAmount = 0)
+        {
+            // Check if invoice already exists for this order
+            var existingInvoice = await _invoiceRepository.GetInvoiceByOrderIdAsync(orderId);
+            if (existingInvoice != null)
+            {
+                throw new InvalidOperationException($"Invoice already exists for order {orderId}");
+            }
+
+            // Create new invoice
+            var invoice = new InvoiceDto
+            {
+                SecuritySystemOrderId = orderId,
+                IssuedOn = DateTime.UtcNow,
+                TotalAmount = totalAmount,
+                IsPaid = false,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            // Save the invoice
+            await _repository.SaveAsync(invoice);
+            
+            // Get the saved invoice with the generated ID
+            return await _invoiceRepository.GetInvoiceByOrderIdAsync(orderId);
+        }
     }
 } 

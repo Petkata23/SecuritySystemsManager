@@ -9,5 +9,6 @@ namespace SecuritySystemsManager.Shared.Repos.Contracts
         Task<IEnumerable<InvoiceDto>> GetInvoicesByTechnicianIdAsync(int technicianId, int pageSize, int pageNumber);
         Task<int> GetInvoicesCountByClientIdAsync(int clientId);
         Task<int> GetInvoicesCountByTechnicianIdAsync(int technicianId);
+        Task<InvoiceDto> GetInvoiceByOrderIdAsync(int orderId);
     }
 } 

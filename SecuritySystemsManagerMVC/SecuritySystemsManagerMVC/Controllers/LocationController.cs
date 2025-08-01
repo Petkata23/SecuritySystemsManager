@@ -128,15 +128,59 @@ namespace SecuritySystemsManagerMVC.Controllers
         [HttpGet]
         public async Task<JsonResult> GetAllLocations()
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId) || !int.TryParse(userId, out int userIdInt))
+            try
             {
-                return Json(new List<object>());
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userId) || !int.TryParse(userId, out int userIdInt))
+                {
+                    return Json(new List<object>());
+                }
+                
+                var isAdminOrManager = User.IsInRole("Admin") || User.IsInRole("Manager");
+                var locationsWithOrders = await _service.GetLocationsWithOrdersForCurrentUserAsync(userIdInt, isAdminOrManager);
+                return Json(locationsWithOrders);
             }
-            
-            var isAdminOrManager = User.IsInRole("Admin") || User.IsInRole("Manager");
-            var locationsWithOrders = await _service.GetLocationsWithOrdersForCurrentUserAsync(userIdInt, isAdminOrManager);
-            return Json(locationsWithOrders);
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> CreateLocationAjax([FromBody] LocationEditVm locationData)
+        {
+            try
+            {
+                if (!User.IsInRole("Admin") && !User.IsInRole("Manager"))
+                {
+                    return Json(new { success = false, message = "Access denied" });
+                }
+
+                // Map ViewModel to DTO
+                var locationDto = new LocationDto
+                {
+                    Name = locationData.Name,
+                    Address = locationData.Address,
+                    Latitude = locationData.Latitude,
+                    Longitude = locationData.Longitude,
+                    Description = locationData.Description
+                };
+
+                // Call service method
+                var result = await _service.CreateLocationAjaxAsync(locationDto);
+
+                return Json(new 
+                { 
+                    success = result.success, 
+                    locationId = result.locationId,
+                    locationName = result.locationName,
+                    message = result.message
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
         }
     }
 } 

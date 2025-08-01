@@ -82,5 +82,14 @@ namespace SecuritySystemsManager.Data.Repos
                 .Where(i => i.SecuritySystemOrder.Technicians.Any(t => t.Id == technicianId))
                 .CountAsync();
         }
+
+        public async Task<InvoiceDto> GetInvoiceByOrderIdAsync(int orderId)
+        {
+            var invoice = await _dbContext.Invoices
+                .Include(i => i.SecuritySystemOrder)
+                .FirstOrDefaultAsync(i => i.SecuritySystemOrderId == orderId);
+
+            return invoice != null ? _mapper.Map<InvoiceDto>(invoice) : null;
+        }
     }
 } 

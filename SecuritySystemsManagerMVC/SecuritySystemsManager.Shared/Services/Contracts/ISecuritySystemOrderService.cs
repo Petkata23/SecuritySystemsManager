@@ -11,5 +11,6 @@ namespace SecuritySystemsManager.Shared.Services.Contracts
         // Methods for filtering orders based on user role
         Task<IEnumerable<SecuritySystemOrderDto>> GetOrdersByUserRoleAsync(int userId, string userRole, int pageSize, int pageNumber);
         Task<int> GetOrdersCountByUserRoleAsync(int userId, string userRole);
+        Task<SecuritySystemOrderDto> GetOrderWithAllDetailsAsync(int orderId);
     }
 } 

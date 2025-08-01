@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace SecuritySystemsManager.Services
 {
@@ -130,8 +131,60 @@ namespace SecuritySystemsManager.Services
             {
                 return await GetLocationsWithOrdersAsync();
             }
-            
-            return await GetLocationsWithOrdersForUserAsync(userId);
+            else
+            {
+                return await GetLocationsWithOrdersForUserAsync(userId);
+            }
+        }
+
+        public async Task<(bool success, int? locationId, string locationName, string message)> CreateLocationAjaxAsync(LocationDto locationDto)
+        {
+            try
+            {
+                // Validate required fields
+                if (string.IsNullOrWhiteSpace(locationDto.Name))
+                {
+                    return (false, null, null, "Location name is required");
+                }
+
+                if (string.IsNullOrWhiteSpace(locationDto.Address))
+                {
+                    return (false, null, null, "Address is required");
+                }
+
+                // Validate coordinates
+                if (string.IsNullOrWhiteSpace(locationDto.Latitude) || string.IsNullOrWhiteSpace(locationDto.Longitude))
+                {
+                    return (false, null, null, "Please select a location on the map");
+                }
+
+                // Set timestamps
+                locationDto.CreatedAt = DateTime.UtcNow;
+                locationDto.UpdatedAt = DateTime.UtcNow;
+
+                // Save the location
+                await SaveAsync(locationDto);
+
+                // Get the saved location to return the ID
+                var savedLocation = await _repository.GetAllAsync();
+                var createdLocation = savedLocation
+                    .Where(l => l.Name == locationDto.Name && l.Address == locationDto.Address)
+                    .OrderByDescending(l => l.CreatedAt)
+                    .FirstOrDefault();
+
+                if (createdLocation != null)
+                {
+                    return (true, createdLocation.Id, createdLocation.Name, "Location created successfully");
+                }
+                else
+                {
+                    return (false, null, null, "Failed to retrieve created location");
+                }
+            }
+            catch (Exception ex)
+            {
+                return (false, null, null, $"An error occurred: {ex.Message}");
+            }
         }
     }
 } 

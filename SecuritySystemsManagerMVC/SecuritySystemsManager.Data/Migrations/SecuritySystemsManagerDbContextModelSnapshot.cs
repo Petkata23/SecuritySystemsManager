@@ -113,6 +113,26 @@ namespace SecuritySystemsManager.Data.Migrations
                         {
                             UserId = 1,
                             RoleId = 1
+                        },
+                        new
+                        {
+                            UserId = 2,
+                            RoleId = 4
+                        },
+                        new
+                        {
+                            UserId = 3,
+                            RoleId = 4
+                        },
+                        new
+                        {
+                            UserId = 4,
+                            RoleId = 3
+                        },
+                        new
+                        {
+                            UserId = 5,
+                            RoleId = 3
                         });
                 });
 
@@ -159,10 +179,12 @@ namespace SecuritySystemsManager.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AttachmentName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("AttachmentUrl")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -175,7 +197,8 @@ namespace SecuritySystemsManager.Data.Migrations
 
                     b.Property<string>("Message")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
 
                     b.Property<DateTime?>("ReadAt")
                         .HasColumnType("datetime2");
@@ -184,14 +207,16 @@ namespace SecuritySystemsManager.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("RecipientName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("SenderId")
                         .HasColumnType("int");
 
                     b.Property<string>("SenderName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime2");
@@ -206,6 +231,52 @@ namespace SecuritySystemsManager.Data.Migrations
                     b.HasIndex("SenderId");
 
                     b.ToTable("ChatMessages");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsFromSupport = false,
+                            IsRead = true,
+                            Message = "Hello! I have a question about my security system installation.",
+                            ReadAt = new DateTime(2023, 1, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            RecipientId = 4,
+                            RecipientName = "Mike Johnson",
+                            SenderId = 2,
+                            SenderName = "John Doe",
+                            Timestamp = new DateTime(2023, 1, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UpdatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsFromSupport = true,
+                            IsRead = true,
+                            Message = "Hi John! I'd be happy to help you with any questions about your security system.",
+                            ReadAt = new DateTime(2023, 1, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            RecipientId = 2,
+                            RecipientName = "John Doe",
+                            SenderId = 4,
+                            SenderName = "Mike Johnson",
+                            Timestamp = new DateTime(2023, 1, 2, 0, 5, 0, 0, DateTimeKind.Unspecified),
+                            UpdatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsFromSupport = false,
+                            IsRead = false,
+                            Message = "When will the installation be completed?",
+                            RecipientId = 4,
+                            RecipientName = "Mike Johnson",
+                            SenderId = 2,
+                            SenderName = "John Doe",
+                            Timestamp = new DateTime(2023, 1, 2, 0, 10, 0, 0, DateTimeKind.Unspecified),
+                            UpdatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("SecuritySystemsManager.Data.Entities.DropboxToken", b =>
@@ -236,6 +307,17 @@ namespace SecuritySystemsManager.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("DropboxTokens");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AccessToken = "sl.u.AF483kOBybKknUScHzAGW89mmIAzptz3uaXYHFlHGPuHg_arYJjeKV7AbfqwUtaGAsg8xxi35Fzr8EPKwAz1ZqlIKx_98O1msKUamXdkafMDhVvT9pOEQVq0LQZBFF5AXoHROv7nm6CzuteTmjx7fYEUVUzI7Kut0anRUd3QbogaUUpBls2pFp2ayqjyNapP1hPcDlwlzc2VVZ1HLsRfMdk3SPLU3otruK2S5XsuH9FHua9tYaI2HE2kxZtQQ4ZXJZzjqGuHoxWoCgzf6x6xhPoSF930aDuYydkkGH0B-_fLP8nFDE88_IJ5xVlHr0F86-Bmxqe-RfLW6xtmrNUlg4Hq_vTFYDEoaiXvOG91HVi5AhJ2BXjEMT2zkpzoqVP1VNK1zeky-oYn6ktGMJSvd3QJxa9MyT_n0uxM65B2fvGTyYt8o6kHfSOCoLhBgZRJn5TcWjy5k4lK8pZbItmc_L1wJn-HGE0xUhXne2wOT6m4yz2ctorke2TevrbUWszls1Pj0xgjvkgxps9wOiqrd3mt0ItnmI0KBQyXyaJ2OhgrReDYiMcOHp9L8fpjbjITpXvhF4yThqPnU63xumQQhgdGG3U2xxTnuopHhsuQbOXai1P7LOWaDtfhAsKWqwV8UZkRQhYIvzrUIszos8fCr7ZC7EWAXqnIfaWnYs-eMmJVDpJHTmRhQvL4cqYy7C5-TrhdXBf2iyWiJ5-EZUJXsKr-1qOGoCwexsU91VtYdFtC0y_dcl3KtQ4LeZTpiyqEif97QB0mUYfSWYVAO4pCU_ScnbG5IdnwBwpF6o4xwIOenRpai-gd88UVmlgSq200ZlxcUu__dzuk5TVhuqsc21m4jAVVE9qweCiud0xT0qAJBvuS_Ztq3Vxhvm63v9JjLh1mOfrEzksd-S2qWnb7DJjnN6K11IwSPgTf7GRItFjItgeOSsnHi_RSyYgaKW_s0_Tn2T9WQL3CRLUGdKGO2efiFRhNVw9OPr1Givx5eFGmJOWt62HfM_ZnaM1XhBnwfT5EaLEWl8aMC0QaATvtmVdj-Q7Aq2m8QDsy0cMQCzIbu8yp7f2S2ndXW4nFOx4On-CBwGB2I1jKJPEnmLaLoDlhrnRwdgK07PGubvupN1M7N-inKa9LSvOSXnCFhjI_C-631rPck5QxKI1b5oKwlHVD9KopEhQYlcdNd7MHaTEsNrktl3wEP2xUAUycXAqJXY2AAW6oC89aCgnC_9ab9eSAiERnpk5sZtwoTshU_MpAtiGg12vGv7YftBvnhXEqNEaZhcD1r_j-ZWUQnKPaYBdi",
+                            CreatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ExpiryTime = new DateTime(2025, 8, 1, 2, 28, 28, 0, DateTimeKind.Unspecified),
+                            RefreshToken = "moaIvwyc8-UAAAAAAAAAAc6ZNtmMh1S0twz1gOImaWzk_b2p76GFqV-mB1Nm9U1s",
+                            UpdatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("SecuritySystemsManager.Data.Entities.InstalledDevice", b =>
@@ -248,7 +330,8 @@ namespace SecuritySystemsManager.Data.Migrations
 
                     b.Property<string>("Brand")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -257,7 +340,8 @@ namespace SecuritySystemsManager.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DeviceImage")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<int>("DeviceType")
                         .HasColumnType("int");
@@ -267,7 +351,8 @@ namespace SecuritySystemsManager.Data.Migrations
 
                     b.Property<string>("Model")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
@@ -285,6 +370,60 @@ namespace SecuritySystemsManager.Data.Migrations
                     b.HasIndex("SecuritySystemOrderId");
 
                     b.ToTable("InstalledDevices");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Brand = "Hikvision",
+                            CreatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateInstalled = new DateTime(2023, 1, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DeviceType = 0,
+                            InstalledById = 4,
+                            Model = "DS-2CD2142FWD-I",
+                            Quantity = 8,
+                            SecuritySystemOrderId = 1,
+                            UpdatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Brand = "Honeywell",
+                            CreatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateInstalled = new DateTime(2023, 1, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DeviceType = 2,
+                            InstalledById = 4,
+                            Model = "PRO3000",
+                            Quantity = 4,
+                            SecuritySystemOrderId = 1,
+                            UpdatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Brand = "Bosch",
+                            CreatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateInstalled = new DateTime(2023, 1, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DeviceType = 1,
+                            InstalledById = 5,
+                            Model = "Solution 16 Plus",
+                            Quantity = 1,
+                            SecuritySystemOrderId = 2,
+                            UpdatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Brand = "Yale",
+                            CreatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateInstalled = new DateTime(2023, 1, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DeviceType = 2,
+                            InstalledById = 5,
+                            Model = "YRD256",
+                            Quantity = 12,
+                            SecuritySystemOrderId = 2,
+                            UpdatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("SecuritySystemsManager.Data.Entities.Invoice", b =>
@@ -320,6 +459,28 @@ namespace SecuritySystemsManager.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("Invoices");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsPaid = false,
+                            IssuedOn = new DateTime(2023, 1, 16, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            SecuritySystemOrderId = 1,
+                            TotalAmount = 12500.00m,
+                            UpdatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsPaid = true,
+                            IssuedOn = new DateTime(2023, 1, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            SecuritySystemOrderId = 2,
+                            TotalAmount = 8500.00m,
+                            UpdatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("SecuritySystemsManager.Data.Entities.Location", b =>
@@ -332,25 +493,30 @@ namespace SecuritySystemsManager.Data.Migrations
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("Latitude")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("Longitude")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -358,6 +524,41 @@ namespace SecuritySystemsManager.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Locations");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Address = "123 Main Street, Sofia, Bulgaria",
+                            CreatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Modern office building in the heart of Sofia",
+                            Latitude = "42.6977",
+                            Longitude = "23.3219",
+                            Name = "Downtown Office Building",
+                            UpdatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Address = "456 Park Avenue, Sofia, Bulgaria",
+                            CreatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Luxury residential complex with 24/7 security",
+                            Latitude = "42.6500",
+                            Longitude = "23.3500",
+                            Name = "Residential Complex",
+                            UpdatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Address = "789 Business District, Sofia, Bulgaria",
+                            CreatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Large shopping mall with multiple entrances",
+                            Latitude = "42.6800",
+                            Longitude = "23.3200",
+                            Name = "Shopping Mall",
+                            UpdatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("SecuritySystemsManager.Data.Entities.MaintenanceDevice", b =>
@@ -381,7 +582,8 @@ namespace SecuritySystemsManager.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Notes")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -393,6 +595,28 @@ namespace SecuritySystemsManager.Data.Migrations
                     b.HasIndex("MaintenanceLogId");
 
                     b.ToTable("MaintenanceDevices");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            InstalledDeviceId = 1,
+                            IsFixed = true,
+                            MaintenanceLogId = 1,
+                            Notes = "CCTV cameras cleaned and tested",
+                            UpdatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            InstalledDeviceId = 4,
+                            IsFixed = true,
+                            MaintenanceLogId = 2,
+                            Notes = "Smart locks updated and batteries replaced",
+                            UpdatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("SecuritySystemsManager.Data.Entities.MaintenanceLog", b =>
@@ -411,7 +635,8 @@ namespace SecuritySystemsManager.Data.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
 
                     b.Property<bool>("Resolved")
                         .HasColumnType("bit");
@@ -432,6 +657,30 @@ namespace SecuritySystemsManager.Data.Migrations
                     b.HasIndex("TechnicianId");
 
                     b.ToTable("MaintenanceLogs");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Date = new DateTime(2023, 1, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Routine maintenance check of CCTV cameras. All cameras functioning properly. Cleaned camera lenses and checked recording system.",
+                            Resolved = true,
+                            SecuritySystemOrderId = 1,
+                            TechnicianId = 4,
+                            UpdatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Date = new DateTime(2023, 1, 26, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Smart lock battery replacement and firmware update. All locks now have latest security patches.",
+                            Resolved = true,
+                            SecuritySystemOrderId = 2,
+                            TechnicianId = 5,
+                            UpdatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("SecuritySystemsManager.Data.Entities.Notification", b =>
@@ -453,7 +702,8 @@ namespace SecuritySystemsManager.Data.Migrations
 
                     b.Property<string>("Message")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<int>("RecipientId")
                         .HasColumnType("int");
@@ -466,6 +716,38 @@ namespace SecuritySystemsManager.Data.Migrations
                     b.HasIndex("RecipientId");
 
                     b.ToTable("Notifications");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateSent = new DateTime(2023, 1, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsRead = true,
+                            Message = "Your security system installation has been completed successfully.",
+                            RecipientId = 2,
+                            UpdatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateSent = new DateTime(2023, 1, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsRead = false,
+                            Message = "Maintenance scheduled for your security system on next Monday.",
+                            RecipientId = 3,
+                            UpdatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateSent = new DateTime(2023, 1, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsRead = true,
+                            Message = "New order assigned: Mall Surveillance System installation.",
+                            RecipientId = 4,
+                            UpdatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("SecuritySystemsManager.Data.Entities.Role", b =>
@@ -561,14 +843,16 @@ namespace SecuritySystemsManager.Data.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<int?>("LocationId")
                         .HasColumnType("int");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<DateTime>("RequestedDate")
                         .HasColumnType("datetime2");
@@ -578,7 +862,8 @@ namespace SecuritySystemsManager.Data.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -590,6 +875,47 @@ namespace SecuritySystemsManager.Data.Migrations
                     b.HasIndex("LocationId");
 
                     b.ToTable("Orders");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ClientId = 2,
+                            CreatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Installation of comprehensive security system including CCTV cameras, access control, and alarm system for the downtown office building.",
+                            LocationId = 1,
+                            PhoneNumber = "+359888111111",
+                            RequestedDate = new DateTime(2023, 1, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 1,
+                            Title = "Complete Office Security System",
+                            UpdatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ClientId = 3,
+                            CreatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Upgrade existing security system with modern smart locks and motion sensors for the residential complex.",
+                            LocationId = 2,
+                            PhoneNumber = "+359888222222",
+                            RequestedDate = new DateTime(2023, 1, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 2,
+                            Title = "Residential Security Upgrade",
+                            UpdatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ClientId = 2,
+                            CreatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Installation of high-definition surveillance cameras throughout the shopping mall for enhanced security monitoring.",
+                            LocationId = 3,
+                            PhoneNumber = "+359888111111",
+                            RequestedDate = new DateTime(2023, 1, 16, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 0,
+                            Title = "Mall Surveillance System",
+                            UpdatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("SecuritySystemsManager.Data.Entities.User", b =>
@@ -619,11 +945,13 @@ namespace SecuritySystemsManager.Data.Migrations
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -649,7 +977,8 @@ namespace SecuritySystemsManager.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("ProfileImage")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<int?>("RoleId")
                         .HasColumnType("int");
@@ -686,7 +1015,7 @@ namespace SecuritySystemsManager.Data.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "5991f022-7502-4e74-908d-ca62242f52b6",
+                            ConcurrencyStamp = "90f238da-7e42-48ab-b3e5-9a6d314d3cb1",
                             CreatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@securitysystems.com",
                             EmailConfirmed = true,
@@ -695,13 +1024,102 @@ namespace SecuritySystemsManager.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@SECURITYSYSTEMS.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEK/jaEzh/dvs7JvJznMnkBdNqHj0+lwZBZXMx+XufD3em6wCpe0Ay+YQfPOiloyekA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEL9ff2YFZE218xLm8u3IFnACkHhi3cN7p2pVofcJ3rzrf2j0XSKsRsrx1MBvdAwqag==",
+                            PhoneNumber = "+359888123456",
                             PhoneNumberConfirmed = false,
                             RoleId = 1,
-                            SecurityStamp = "d9109424-e85a-476e-8e62-d0b3170300df",
+                            SecurityStamp = "ea93b497-8d26-4a66-b829-2d48846b556a",
                             TwoFactorEnabled = false,
                             UpdatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserName = "admin"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "0d4e76c3-5b1d-4002-a2c9-b5da24254a36",
+                            CreatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "john.doe@example.com",
+                            EmailConfirmed = true,
+                            FirstName = "John",
+                            LastName = "Doe",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "JOHN.DOE@EXAMPLE.COM",
+                            NormalizedUserName = "JOHN.DOE",
+                            PasswordHash = "AQAAAAIAAYagAAAAEEJ5ZshAICYvrsMdXUlIcPpaqXugV/P1J15a5644ypkn53cXfgiVkZ1Uxe9cCAd7jg==",
+                            PhoneNumber = "+359888111111",
+                            PhoneNumberConfirmed = false,
+                            RoleId = 4,
+                            SecurityStamp = "67095b16-29fb-4263-9d9e-f875d70a8626",
+                            TwoFactorEnabled = false,
+                            UpdatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserName = "john.doe"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "d9d11622-d755-4bf4-ba5a-bf7b407fc4c8",
+                            CreatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "jane.smith@example.com",
+                            EmailConfirmed = true,
+                            FirstName = "Jane",
+                            LastName = "Smith",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "JANE.SMITH@EXAMPLE.COM",
+                            NormalizedUserName = "JANE.SMITH",
+                            PasswordHash = "AQAAAAIAAYagAAAAEA4RtFt9b8A7Z3fQbCnic3dZ55dVnfkd8GIt3OiDdc/9l8SM4WAj4uzA/2Zi045/Og==",
+                            PhoneNumber = "+359888222222",
+                            PhoneNumberConfirmed = false,
+                            RoleId = 4,
+                            SecurityStamp = "ee9debcd-b701-460c-a799-06a9cf89569f",
+                            TwoFactorEnabled = false,
+                            UpdatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserName = "jane.smith"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "71e69229-190a-4207-a95d-cd6f365b7d7c",
+                            CreatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "mike.johnson@securitysystems.com",
+                            EmailConfirmed = true,
+                            FirstName = "Mike",
+                            LastName = "Johnson",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "MIKE.JOHNSON@SECURITYSYSTEMS.COM",
+                            NormalizedUserName = "TECH.MIKE",
+                            PasswordHash = "AQAAAAIAAYagAAAAENKw5e+CrMgyjnF521phCrunSbjFCkXdjgkb7LP5zHr9qGqEeaz/qDWejN5ZAbKDoA==",
+                            PhoneNumber = "+359888333333",
+                            PhoneNumberConfirmed = false,
+                            RoleId = 3,
+                            SecurityStamp = "6a520380-8889-45d8-abc5-a15f225b65df",
+                            TwoFactorEnabled = false,
+                            UpdatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserName = "tech.mike"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "17d1f4dc-c9c8-409c-8771-fa61faf385de",
+                            CreatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "sarah.wilson@securitysystems.com",
+                            EmailConfirmed = true,
+                            FirstName = "Sarah",
+                            LastName = "Wilson",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "SARAH.WILSON@SECURITYSYSTEMS.COM",
+                            NormalizedUserName = "TECH.SARAH",
+                            PasswordHash = "AQAAAAIAAYagAAAAEApo0wOuynscsIQoHei4gb8aWglXSjwlm51bGavnB4/1Km0DptmSXPO57sTUyJNsww==",
+                            PhoneNumber = "+359888444444",
+                            PhoneNumberConfirmed = false,
+                            RoleId = 3,
+                            SecurityStamp = "cd4a371f-ff04-4835-95c1-f30c40582901",
+                            TwoFactorEnabled = false,
+                            UpdatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserName = "tech.sarah"
                         });
                 });
 
@@ -811,7 +1229,7 @@ namespace SecuritySystemsManager.Data.Migrations
             modelBuilder.Entity("SecuritySystemsManager.Data.Entities.Invoice", b =>
                 {
                     b.HasOne("SecuritySystemsManager.Data.Entities.SecuritySystemOrder", "SecuritySystemOrder")
-                        .WithOne()
+                        .WithOne("Invoice")
                         .HasForeignKey("SecuritySystemsManager.Data.Entities.Invoice", "SecuritySystemOrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -918,6 +1336,9 @@ namespace SecuritySystemsManager.Data.Migrations
             modelBuilder.Entity("SecuritySystemsManager.Data.Entities.SecuritySystemOrder", b =>
                 {
                     b.Navigation("InstalledDevices");
+
+                    b.Navigation("Invoice")
+                        .IsRequired();
 
                     b.Navigation("MaintenanceLogs");
                 });

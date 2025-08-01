@@ -455,4 +455,481 @@
 .timeline-item.active .timeline-marker {
     background: var(--bs-primary);
     border-color: var(--bs-primary);
+}
+
+/* Quick Actions Styles */
+.quick-actions .list-group-item-action {
+    border: none;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    transition: all 0.2s ease-in-out;
+    padding: 1rem;
+}
+
+.quick-actions .list-group-item-action:hover {
+    background-color: #f8f9fa;
+    transform: translateX(5px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.quick-actions .list-group-item-action:hover .bi-arrow-right {
+    transform: translateX(3px);
+    transition: transform 0.2s ease-in-out;
+}
+
+.quick-actions .list-group-item-action i:first-child {
+    font-size: 1.2rem;
+    width: 24px;
+    text-align: center;
+}
+
+.quick-actions .list-group-item-action .bi-arrow-right {
+    color: #6c757d;
+    transition: transform 0.2s ease-in-out;
+}
+
+.quick-actions .list-group-item-action span {
+    font-weight: 500;
+    color: #495057;
+}
+
+/* Quick Actions Mobile Responsive */
+@media (max-width: 768px) {
+    .quick-actions .list-group-item-action {
+        padding: 0.75rem;
+    }
+    
+    .quick-actions .list-group-item-action:hover {
+        transform: translateX(3px);
+    }
+}
+
+/* Location Creation Modal Styles */
+#createLocationModal .modal-xl {
+    max-width: 1200px;
+}
+
+#createLocationModal .modal-header {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    border-bottom: none;
+}
+
+#createLocationModal .modal-title {
+    font-weight: 600;
+}
+
+#createLocationModal .modal-body {
+    background-color: #f8f9fa;
+}
+
+#createLocationModal .form-floating label {
+    color: #495057;
+    font-weight: 500;
+}
+
+#createLocationModal .form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+#createLocationModal .form-control[readonly] {
+    background-color: #e9ecef;
+    color: #6c757d;
+}
+
+#createLocationModal .alert-info {
+    background: linear-gradient(135deg, #d1ecf1, #bee5eb);
+    border: 1px solid #bee5eb;
+    border-radius: 8px;
+}
+
+#createLocationModal #map {
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+#createLocationModal .modal-footer {
+    border-top: 1px solid #dee2e6;
+    background-color: #f8f9fa;
+}
+
+#createLocationModal .btn-primary {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    border: none;
+    font-weight: 500;
+}
+
+#createLocationModal .btn-primary:hover {
+    background: linear-gradient(135deg, #0056b3, #004085);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+}
+
+#createLocationModal .btn-secondary {
+    background: linear-gradient(135deg, #6c757d, #545b62);
+    border: none;
+    font-weight: 500;
+}
+
+#createLocationModal .btn-secondary:hover {
+    background: linear-gradient(135deg, #545b62, #3d4449);
+    transform: translateY(-1px);
+}
+
+/* Location Creation Modal Mobile Responsive */
+@media (max-width: 768px) {
+    #createLocationModal .modal-xl {
+        max-width: 95%;
+        margin: 10px auto;
+    }
+    
+    #createLocationModal .modal-body .row {
+        flex-direction: column;
+    }
+    
+    #createLocationModal .col-md-5,
+    #createLocationModal .col-md-7 {
+        width: 100%;
+    }
+    
+    #createLocationModal #map {
+        height: 300px;
+        margin-top: 1rem;
+    }
+    
+    #createLocationModal .modal-footer {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    #createLocationModal .modal-footer .btn {
+        width: 100%;
+    }
+}
+
+/* Leaflet Map Styles for Location Creation Modal */
+#createLocationModal .custom-security-marker {
+    background: transparent;
+    border: none;
+}
+
+#createLocationModal .marker-pin {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 25px rgba(220, 53, 69, 0.6), 0 0 0 3px rgba(255, 255, 255, 0.8);
+    border: 5px solid white;
+    animation: bounce 0.8s ease infinite alternate;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    z-index: 1000;
+}
+
+#createLocationModal .marker-pin:hover {
+    transform: scale(1.2);
+    box-shadow: 0 12px 30px rgba(220, 53, 69, 0.8), 0 0 0 4px rgba(255, 255, 255, 0.9);
+    background: linear-gradient(135deg, #c82333, #a71e2a);
+}
+
+#createLocationModal .marker-pin::before {
+    content: '';
+    position: absolute;
+    top: -12px;
+    left: -12px;
+    right: -12px;
+    bottom: -12px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(220, 53, 69, 0.4), rgba(200, 35, 51, 0.4));
+    animation: pulse-ring 2s ease infinite;
+    z-index: -1;
+}
+
+@keyframes bounce {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes pulse-ring {
+    0% {
+        transform: scale(0.8);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1.4);
+        opacity: 0;
+    }
+}
+
+#createLocationModal .marker-pin i {
+    color: white;
+    font-size: 24px;
+    animation: pulse 2s ease infinite;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.9;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Leaflet Controls Styling */
+#createLocationModal .leaflet-control-zoom {
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+#createLocationModal .leaflet-control-zoom a {
+    background: white;
+    color: #495057;
+    border: none;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    width: 36px;
+    height: 36px;
+    line-height: 36px;
+    font-size: 18px;
+}
+
+#createLocationModal .leaflet-control-zoom a:hover {
+    background: #007bff;
+    color: white;
+    transform: scale(1.05);
+}
+
+#createLocationModal .leaflet-control-scale {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 4px 6px;
+    font-size: 11px;
+    color: #495057;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+#createLocationModal .leaflet-control-attribution {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    font-size: 10px;
+    color: #6c757d;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Map Container Styling */
+#createLocationModal #map {
+    border-radius: 12px;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+    border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+#createLocationModal #map:hover {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    border-color: #007bff;
+}
+
+/* Leaflet Popup Styling */
+#createLocationModal .leaflet-popup-content-wrapper {
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    border: 2px solid #007bff;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+}
+
+#createLocationModal .leaflet-popup-content {
+    margin: 12px 16px;
+    font-size: 14px;
+    color: #495057;
+    font-weight: 500;
+}
+
+#createLocationModal .leaflet-popup-tip {
+    background: #f8f9fa;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #007bff;
+}
+
+/* Modal Content Styling */
+#createLocationModal .modal-content {
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+#createLocationModal .modal-header {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    border-bottom: none;
+    padding: 1.5rem;
+}
+
+#createLocationModal .modal-title {
+    font-weight: 700;
+    font-size: 1.25rem;
+}
+
+#createLocationModal .form-control {
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    background-color: white;
+    border: 1px solid #dee2e6;
+    color: #495057;
+}
+
+#createLocationModal .form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    transform: translateY(-1px);
+    background-color: white;
+}
+
+#createLocationModal .form-control[readonly] {
+    background-color: #f8f9fa;
+    color: #495057;
+    font-weight: 600;
+    border: 1px solid #ced4da;
+}
+
+#createLocationModal .form-floating label {
+    color: #495057;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+#createLocationModal .form-floating > .form-control:focus ~ label,
+#createLocationModal .form-floating > .form-control:not(:placeholder-shown) ~ label {
+    color: #007bff;
+    font-weight: 700;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.9);
+}
+
+#createLocationModal .alert-primary {
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    border: 1px solid #90caf9;
+    border-radius: 8px;
+    color: #1565c0;
+}
+
+#createLocationModal .modal-footer {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-top: 1px solid #dee2e6;
+    padding: 1.5rem;
+}
+
+#createLocationModal .btn-primary {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease;
+}
+
+#createLocationModal .btn-primary:hover {
+    background: linear-gradient(135deg, #0056b3, #004085);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+}
+
+#createLocationModal .btn-outline-secondary {
+    border: 2px solid #6c757d;
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease;
+}
+
+#createLocationModal .btn-outline-secondary:hover {
+    background: #6c757d;
+    border-color: #6c757d;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+}
+
+/* Additional marker visibility improvements */
+#createLocationModal .custom-security-marker {
+    background: transparent;
+    border: none;
+    z-index: 1000 !important;
+}
+
+/* Make marker stand out more */
+#createLocationModal .marker-pin {
+    position: relative;
+    z-index: 1001;
+}
+
+/* Add a glow effect to the marker */
+#createLocationModal .marker-pin::after {
+    content: '';
+    position: absolute;
+    top: -15px;
+    left: -15px;
+    right: -15px;
+    bottom: -15px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(220, 53, 69, 0.2) 0%, transparent 70%);
+    animation: glow 3s ease-in-out infinite alternate;
+    z-index: -2;
+}
+
+@keyframes glow {
+    from {
+        opacity: 0.5;
+        transform: scale(1);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+}
+
+/* Improve form field contrast */
+#createLocationModal .form-control {
+    background-color: white !important;
+    color: #212529 !important;
+    border: 2px solid #dee2e6 !important;
+}
+
+#createLocationModal .form-control:focus {
+    background-color: white !important;
+    color: #212529 !important;
+    border-color: #007bff !important;
+}
+
+#createLocationModal .form-control[readonly] {
+    background-color: #f8f9fa !important;
+    color: #495057 !important;
+    font-weight: 600;
+    border: 2px solid #ced4da !important;
+}
+
+/* Make labels more visible */
+#createLocationModal .form-floating > label {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.9));
+    padding: 0 8px;
+    border-radius: 4px;
+    color: #495057 !important;
+    font-weight: 600 !important;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
 } 

@@ -121,5 +121,10 @@ namespace SecuritySystemsManager.Services
             Console.WriteLine("Unknown role - Returning 0");
             return 0;
         }
+
+        public async Task<SecuritySystemOrderDto> GetOrderWithAllDetailsAsync(int orderId)
+        {
+            return await _orderRepository.GetOrderWithAllDetailsAsync(orderId);
+        }
     }
 } 

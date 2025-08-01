@@ -162,4 +162,66 @@
     .custom-modal-footer button:first-child {
         margin-top: 0;
     }
+}
+
+/* Invoice Modal Specific Styles */
+#invoiceModal .custom-modal-container {
+    max-width: 700px;
+}
+
+#invoiceModal .custom-modal-header {
+    background: linear-gradient(135deg, #28a745, #20c997);
+}
+
+#invoiceModal .form-control-lg {
+    font-size: 1.1rem;
+    padding: 0.75rem 1rem;
+}
+
+#invoiceModal .device-cost {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.6rem;
+}
+
+#invoiceModal .table-sm th,
+#invoiceModal .table-sm td {
+    padding: 0.5rem;
+    vertical-align: middle;
+}
+
+#invoiceModal .device-total {
+    font-weight: 600;
+    color: #28a745;
+}
+
+#invoiceModal #totalAmount {
+    color: #28a745;
+    font-size: 1.5rem;
+}
+
+#invoiceModal .alert-info {
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    border: 1px solid #90caf9;
+    border-radius: 0.5rem;
+}
+
+/* Invoice Modal Mobile Responsive */
+@media (max-width: 768px) {
+    #invoiceModal .custom-modal-container {
+        max-width: 95%;
+    }
+    
+    #invoiceModal .table-responsive {
+        font-size: 0.8rem;
+    }
+    
+    #invoiceModal .table-sm th,
+    #invoiceModal .table-sm td {
+        padding: 0.3rem;
+    }
+    
+    #invoiceModal .form-control-lg {
+        font-size: 1rem;
+        padding: 0.6rem 0.8rem;
+    }
 } 

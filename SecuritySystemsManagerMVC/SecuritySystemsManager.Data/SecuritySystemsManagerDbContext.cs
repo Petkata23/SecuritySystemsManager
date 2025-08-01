@@ -147,7 +147,7 @@ namespace SecuritySystemsManager.Data
             // При изтриване на поръчка, фактурата се изтрива
             modelBuilder.Entity<Invoice>()
                 .HasOne(i => i.SecuritySystemOrder)
-                .WithOne()
+                .WithOne(o => o.Invoice)
                 .HasForeignKey<Invoice>(i => i.SecuritySystemOrderId)
                 .OnDelete(DeleteBehavior.Cascade);
 

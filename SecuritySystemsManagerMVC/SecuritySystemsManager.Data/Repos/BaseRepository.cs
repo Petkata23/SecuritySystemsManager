@@ -91,12 +91,12 @@ namespace SecuritySystemsManager.Data.Repos
 
             if (model.Id != 0)
             {
-                model.UpdatedAt = DateTime.UtcNow;
+                model.UpdatedAt = DateTime.Now;
             }
             else
             {
-                model.CreatedAt = DateTime.UtcNow;
-                model.UpdatedAt = DateTime.UtcNow;
+                model.CreatedAt = DateTime.Now;
+                model.UpdatedAt = DateTime.Now;
             }
 
             try

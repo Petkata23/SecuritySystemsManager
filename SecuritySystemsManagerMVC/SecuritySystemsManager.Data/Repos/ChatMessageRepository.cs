@@ -59,7 +59,7 @@ namespace SecuritySystemsManager.Data.Repos
             if (message != null)
             {
                 message.IsRead = true;
-                message.ReadAt = DateTime.UtcNow;
+                message.ReadAt = DateTime.Now;
                 await _context.SaveChangesAsync();
             }
         }
@@ -77,7 +77,7 @@ namespace SecuritySystemsManager.Data.Repos
             foreach (var message in messages)
             {
                 message.IsRead = true;
-                message.ReadAt = DateTime.UtcNow;
+                message.ReadAt = DateTime.Now;
             }
 
             await _context.SaveChangesAsync();

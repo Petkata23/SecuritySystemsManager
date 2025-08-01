@@ -467,9 +467,9 @@ namespace SecuritySystemsManager.Data
                 new DropboxToken
                 {
                     Id = 1,
-                    AccessToken = "sample_access_token_12345",
-                    RefreshToken = "sample_refresh_token_67890",
-                    ExpiryTime = _seedDate.AddYears(1),
+                    AccessToken = "sl.u.AF483kOBybKknUScHzAGW89mmIAzptz3uaXYHFlHGPuHg_arYJjeKV7AbfqwUtaGAsg8xxi35Fzr8EPKwAz1ZqlIKx_98O1msKUamXdkafMDhVvT9pOEQVq0LQZBFF5AXoHROv7nm6CzuteTmjx7fYEUVUzI7Kut0anRUd3QbogaUUpBls2pFp2ayqjyNapP1hPcDlwlzc2VVZ1HLsRfMdk3SPLU3otruK2S5XsuH9FHua9tYaI2HE2kxZtQQ4ZXJZzjqGuHoxWoCgzf6x6xhPoSF930aDuYydkkGH0B-_fLP8nFDE88_IJ5xVlHr0F86-Bmxqe-RfLW6xtmrNUlg4Hq_vTFYDEoaiXvOG91HVi5AhJ2BXjEMT2zkpzoqVP1VNK1zeky-oYn6ktGMJSvd3QJxa9MyT_n0uxM65B2fvGTyYt8o6kHfSOCoLhBgZRJn5TcWjy5k4lK8pZbItmc_L1wJn-HGE0xUhXne2wOT6m4yz2ctorke2TevrbUWszls1Pj0xgjvkgxps9wOiqrd3mt0ItnmI0KBQyXyaJ2OhgrReDYiMcOHp9L8fpjbjITpXvhF4yThqPnU63xumQQhgdGG3U2xxTnuopHhsuQbOXai1P7LOWaDtfhAsKWqwV8UZkRQhYIvzrUIszos8fCr7ZC7EWAXqnIfaWnYs-eMmJVDpJHTmRhQvL4cqYy7C5-TrhdXBf2iyWiJ5-EZUJXsKr-1qOGoCwexsU91VtYdFtC0y_dcl3KtQ4LeZTpiyqEif97QB0mUYfSWYVAO4pCU_ScnbG5IdnwBwpF6o4xwIOenRpai-gd88UVmlgSq200ZlxcUu__dzuk5TVhuqsc21m4jAVVE9qweCiud0xT0qAJBvuS_Ztq3Vxhvm63v9JjLh1mOfrEzksd-S2qWnb7DJjnN6K11IwSPgTf7GRItFjItgeOSsnHi_RSyYgaKW_s0_Tn2T9WQL3CRLUGdKGO2efiFRhNVw9OPr1Givx5eFGmJOWt62HfM_ZnaM1XhBnwfT5EaLEWl8aMC0QaATvtmVdj-Q7Aq2m8QDsy0cMQCzIbu8yp7f2S2ndXW4nFOx4On-CBwGB2I1jKJPEnmLaLoDlhrnRwdgK07PGubvupN1M7N-inKa9LSvOSXnCFhjI_C-631rPck5QxKI1b5oKwlHVD9KopEhQYlcdNd7MHaTEsNrktl3wEP2xUAUycXAqJXY2AAW6oC89aCgnC_9ab9eSAiERnpk5sZtwoTshU_MpAtiGg12vGv7YftBvnhXEqNEaZhcD1r_j-ZWUQnKPaYBdi",
+                    RefreshToken = "moaIvwyc8-UAAAAAAAAAAc6ZNtmMh1S0twz1gOImaWzk_b2p76GFqV-mB1Nm9U1s",
+                    ExpiryTime = new DateTime(2025, 8, 1, 2, 28, 28),
                     CreatedAt = _seedDate,
                     UpdatedAt = _seedDate
                 }

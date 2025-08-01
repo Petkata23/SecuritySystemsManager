@@ -42,5 +42,7 @@ namespace SecuritySystemsManager.Data.Entities
         public virtual ICollection<InstalledDevice> InstalledDevices { get; set; }
         public virtual ICollection<User> Technicians { get; set; }
         public virtual ICollection<MaintenanceLog> MaintenanceLogs { get; set; }
+        
+        public virtual Invoice Invoice { get; set; }
     }
 }

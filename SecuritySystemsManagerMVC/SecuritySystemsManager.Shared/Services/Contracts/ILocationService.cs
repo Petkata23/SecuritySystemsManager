@@ -11,5 +11,6 @@ namespace SecuritySystemsManager.Shared.Services.Contracts
         Task<IEnumerable<object>> GetLocationsWithOrdersForUserAsync(int userId);
         Task<IEnumerable<LocationDto>> GetLocationsForUserAsync(int userId, int pageSize = 10, int pageNumber = 1);
         Task<IEnumerable<object>> GetLocationsWithOrdersForCurrentUserAsync(int userId, bool isAdminOrManager);
+        Task<(bool success, int? locationId, string locationName, string message)> CreateLocationAjaxAsync(LocationDto locationDto);
     }
 } 

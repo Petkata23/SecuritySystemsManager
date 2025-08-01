@@ -13,5 +13,6 @@ namespace SecuritySystemsManager.Shared.Repos.Contracts
         Task<IEnumerable<SecuritySystemOrderDto>> GetOrdersByTechnicianIdAsync(int technicianId, int pageSize, int pageNumber);
         Task<int> GetOrdersCountByClientIdAsync(int clientId);
         Task<int> GetOrdersCountByTechnicianIdAsync(int technicianId);
+        Task<SecuritySystemOrderDto> GetOrderWithAllDetailsAsync(int orderId);
     }
 } 

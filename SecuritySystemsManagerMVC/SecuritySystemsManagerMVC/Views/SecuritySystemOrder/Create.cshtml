@@ -170,57 +170,84 @@
 {
     <!-- Create Location Modal -->
     <div class="modal fade" id="createLocationModal" tabindex="-1" aria-labelledby="createLocationModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="createLocationModalLabel">Add New Location</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-gradient-primary text-white border-0">
+                    <h5 class="modal-title" id="createLocationModalLabel">
+                        <i class="bi bi-geo-alt-fill me-2"></i>Add New Location
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <form id="locationForm">
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="text" class="form-control" id="locationName" placeholder="Location Name" required>
-                                    <label for="locationName">Location Name</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="text" class="form-control" id="locationAddress" placeholder="Address" required>
-                                    <label for="locationAddress">Address</label>
-                                </div>
+                <div class="modal-body p-0">
+                    <div class="row g-0">
+                        <div class="col-md-5">
+                            <div class="p-4 bg-light">
+                                <form id="locationForm">
+                                    <div class="mb-3">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" id="locationName" placeholder="Location Name" required>
+                                            <label for="locationName">
+                                                <i class="bi bi-building me-1"></i>Location Name
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" id="locationAddress" placeholder="Address" required>
+                                            <label for="locationAddress">
+                                                <i class="bi bi-geo-alt me-1"></i>Address
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row mb-3">
+                                        <div class="col-6">
+                                            <div class="form-floating">
+                                                <input type="text" class="form-control" id="locationLatitude" placeholder="Latitude" required readonly>
+                                                <label for="locationLatitude">
+                                                    <i class="bi bi-latitude me-1"></i>Latitude
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-floating">
+                                                <input type="text" class="form-control" id="locationLongitude" placeholder="Longitude" required readonly>
+                                                <label for="locationLongitude">
+                                                    <i class="bi bi-longitude me-1"></i>Longitude
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <div class="form-floating">
+                                            <textarea class="form-control" id="locationDescription" placeholder="Description" style="height: 100px"></textarea>
+                                            <label for="locationDescription">
+                                                <i class="bi bi-text-paragraph me-1"></i>Description
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="alert alert-primary border-0 shadow-sm">
+                                        <i class="bi bi-info-circle-fill me-2"></i>
+                                        <strong>Instructions:</strong> Click on the map to set the location coordinates and automatically fill the address. You can also drag the marker to adjust the position.
+                                    </div>
+                                </form>
                             </div>
                         </div>
-                        
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="text" class="form-control" id="locationLatitude" placeholder="Latitude" required>
-                                    <label for="locationLatitude">Latitude</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="text" class="form-control" id="locationLongitude" placeholder="Longitude" required>
-                                    <label for="locationLongitude">Longitude</label>
-                                </div>
-                            </div>
+                        <div class="col-md-7">
+                            <div id="map" style="height: 500px; width: 100%;"></div>
                         </div>
-                        
-                        <div class="mb-3">
-                            <div class="form-floating">
-                                <textarea class="form-control" id="locationDescription" placeholder="Description" style="height: 100px"></textarea>
-                                <label for="locationDescription">Description</label>
-                            </div>
-                        </div>
-                        
-                        <div id="map" style="height: 300px; width: 100%; border-radius: 8px; margin-bottom: 20px;"></div>
-                    </form>
+                    </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="saveLocationBtn">Save Location</button>
+                <div class="modal-footer bg-white border-0">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-lg me-2"></i>Cancel
+                    </button>
+                    <button type="button" class="btn btn-primary shadow-sm" id="saveLocationBtn">
+                        <i class="bi bi-save me-2"></i>Save Location
+                    </button>
                 </div>
             </div>
         </div>

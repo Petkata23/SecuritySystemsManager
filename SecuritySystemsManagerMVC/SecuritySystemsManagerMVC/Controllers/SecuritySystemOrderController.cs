@@ -2,6 +2,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.DependencyInjection;
 using SecuritySystemsManager.Shared;
 using SecuritySystemsManager.Shared.Dtos;
 using SecuritySystemsManager.Shared.Enums;
@@ -85,45 +86,38 @@ namespace SecuritySystemsManagerMVC.Controllers
         {
             try
             {
-                var order = await _service.GetByIdIfExistsAsync(id);
+                var order = await _service.GetOrderWithAllDetailsAsync(id);
                 if (order == null)
                     return RedirectToAction("Error404", "Error");
 
-            // Only get available technicians for admins and managers
-            if (User.IsInRole("Admin") || User.IsInRole("Manager"))
-            {
-                // Get all technicians (users with Technician role)
-                var allTechnicians = (await _userService.GetAllAsync())
-                    .Where(u => u.Role?.RoleType == RoleType.Technician)
-                    .ToList();
+                // Only get available technicians for admins and managers
+                if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                {
+                    // Get all technicians (users with Technician role)
+                    var allTechnicians = (await _userService.GetAllAsync())
+                        .Where(u => u.Role?.RoleType == RoleType.Technician)
+                        .ToList();
 
-                // Get technicians that are not already assigned to this order
-                var availableTechnicians = allTechnicians
-                    .Where(t => order.Technicians == null || !order.Technicians.Any(at => at.Id == t.Id))
-                    .ToList();
+                    // Get technicians that are not already assigned to this order
+                    var availableTechnicians = allTechnicians
+                        .Where(t => order.Technicians == null || !order.Technicians.Any(at => at.Id == t.Id))
+                        .ToList();
 
-                // Pass available technicians to the view
-                ViewBag.AvailableTechnicians = availableTechnicians;
+                    // Pass available technicians to the view
+                    ViewBag.AvailableTechnicians = availableTechnicians;
+                    
+                    // Pass authorization info to the view
+                    ViewBag.CanManageTechnicians = true;
+                }
+                else
+                {
+                    ViewBag.CanManageTechnicians = false;
+                }
+
+                // Map to view model
+                var viewModel = _mapper.Map<SecuritySystemOrderDetailsVm>(order);
                 
-                // Pass authorization info to the view
-                ViewBag.CanManageTechnicians = true;
-            }
-            else
-            {
-                ViewBag.CanManageTechnicians = false;
-            }
-
-            // Continue with the base implementation
-            var result = await base.Details(id);
-            
-            // Re-apply ViewBag values after base implementation
-            if (User.IsInRole("Admin") || User.IsInRole("Manager"))
-            {
-                ViewBag.AvailableTechnicians = ViewBag.AvailableTechnicians;
-                ViewBag.CanManageTechnicians = true;
-            }
-            
-            return result;
+                return View(viewModel);
             }
             catch (Exception ex)
             {
@@ -256,6 +250,53 @@ namespace SecuritySystemsManagerMVC.Controllers
             ViewBag.CurrentPage = pageNumber;
 
             return View(nameof(List), mappedModels);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin,Manager")]
+        public async Task<IActionResult> GenerateInvoice(int orderId, decimal laborCost)
+        {
+            try
+            {
+                // Get the invoice service from DI
+                var invoiceService = HttpContext.RequestServices.GetService<IInvoiceService>();
+                if (invoiceService == null)
+                {
+                    TempData["ErrorMessage"] = "Invoice service not available";
+                    return RedirectToAction(nameof(Details), new { id = orderId });
+                }
+
+                // Calculate total amount from form data
+                decimal totalAmount = laborCost;
+                
+                // Get device costs from form data
+                var formData = Request.Form.ToDictionary(x => x.Key, x => x.Value.ToString());
+                foreach (var item in formData)
+                {
+                    if (item.Key.StartsWith("deviceCosts[") && item.Key.EndsWith("]"))
+                    {
+                        if (decimal.TryParse(item.Value, out decimal deviceCost))
+                        {
+                            totalAmount += deviceCost;
+                        }
+                    }
+                }
+
+                // Generate the invoice with calculated amount
+                await invoiceService.GenerateInvoiceFromOrderAsync(orderId, totalAmount);
+                
+                TempData["SuccessMessage"] = $"Invoice generated successfully with total amount: ${totalAmount:F2}";
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error generating invoice: {ex.Message}";
+            }
+
+            return RedirectToAction(nameof(Details), new { id = orderId });
         }
     }
 } 

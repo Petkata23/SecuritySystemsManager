@@ -150,15 +150,27 @@ namespace SecuritySystemsManager.Data.Repos
         // Get total count of orders assigned to a technician
         public async Task<int> GetOrdersCountByTechnicianIdAsync(int technicianId)
         {
-            Console.WriteLine($"GetOrdersCountByTechnicianIdAsync - Technician ID: {technicianId}");
-            
-            var query = _context.Orders.Where(o => o.Technicians.Any(t => t.Id == technicianId));
-            Console.WriteLine($"SQL Query: {query.ToQueryString()}");
-            
-            var count = await query.CountAsync();
-            Console.WriteLine($"GetOrdersCountByTechnicianIdAsync - Found {count} orders");
-            
-            return count;
+            return await _context.Orders
+                .Where(o => o.Technicians.Any(t => t.Id == technicianId))
+                .CountAsync();
+        }
+
+        public async Task<SecuritySystemOrderDto> GetOrderWithAllDetailsAsync(int orderId)
+        {
+            var order = await _context.Orders
+                .Include(o => o.Client)
+                    .ThenInclude(c => c.Role)
+                .Include(o => o.Location)
+                .Include(o => o.Technicians)
+                .Include(o => o.InstalledDevices)
+                .Include(o => o.MaintenanceLogs)
+                .Include(o => o.Invoice)
+                .FirstOrDefaultAsync(o => o.Id == orderId);
+
+            if (order == null)
+                return null;
+
+            return _mapper.Map<SecuritySystemOrderDto>(order);
         }
     }
 } 

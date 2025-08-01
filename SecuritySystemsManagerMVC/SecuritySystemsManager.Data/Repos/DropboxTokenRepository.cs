@@ -44,7 +44,7 @@ namespace SecuritySystemsManager.Data.Repos
                 existingToken.AccessToken = accessToken;
                 existingToken.RefreshToken = refreshToken;
                 existingToken.ExpiryTime = expiryTime;
-                existingToken.UpdatedAt = DateTime.UtcNow;
+                existingToken.UpdatedAt = DateTime.Now;
             }
             else
             {
@@ -53,8 +53,8 @@ namespace SecuritySystemsManager.Data.Repos
                     AccessToken = accessToken,
                     RefreshToken = refreshToken,
                     ExpiryTime = expiryTime,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now
                 };
 
                 _dbContext.DropboxTokens.Add(newToken);

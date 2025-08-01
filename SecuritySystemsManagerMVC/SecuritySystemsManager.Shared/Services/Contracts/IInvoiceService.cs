@@ -10,5 +10,6 @@ namespace SecuritySystemsManager.Shared.Services.Contracts
         Task<InvoiceDto> GetInvoiceWithDetailsAsync(int id);
         Task<IEnumerable<InvoiceDto>> GetInvoicesByUserRoleAsync(int userId, string userRole, int pageSize, int pageNumber);
         Task<int> GetInvoicesCountByUserRoleAsync(int userId, string userRole);
+        Task<InvoiceDto> GenerateInvoiceFromOrderAsync(int orderId, decimal totalAmount = 0);
     }
 } 
