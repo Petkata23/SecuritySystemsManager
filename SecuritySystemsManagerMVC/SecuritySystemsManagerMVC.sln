@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecuritySystemsManager.Serv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecuritySystemsManager.Shared", "SecuritySystemsManager.Shared\SecuritySystemsManager.Shared.csproj", "{FFC5C1AF-CC39-45B9-8A0C-B737E73B773A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecuritySystemsManager.Tests", "SecuritySystemsManager.Tests\SecuritySystemsManager.Tests.csproj", "{4C4207E9-A2FA-48BA-8254-94FFB35C1BC6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{FFC5C1AF-CC39-45B9-8A0C-B737E73B773A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FFC5C1AF-CC39-45B9-8A0C-B737E73B773A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FFC5C1AF-CC39-45B9-8A0C-B737E73B773A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C4207E9-A2FA-48BA-8254-94FFB35C1BC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C4207E9-A2FA-48BA-8254-94FFB35C1BC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C4207E9-A2FA-48BA-8254-94FFB35C1BC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C4207E9-A2FA-48BA-8254-94FFB35C1BC6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

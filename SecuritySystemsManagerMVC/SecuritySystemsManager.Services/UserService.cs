@@ -55,6 +55,7 @@ namespace SecuritySystemsManager.Services
             {
                 var user = new User
                 {
+                    Id = userDto.Id, // Set the expected ID
                     UserName = userDto.Username,
                     Email = userDto.Email,
                     FirstName = userDto.FirstName,
@@ -163,13 +164,26 @@ namespace SecuritySystemsManager.Services
                 return null;
 
             // Use the file storage service to upload the file
-            return await _fileStorageService.UploadFileAsync(imageFile, "uploads/users");
+            return await _fileStorageService.UploadFileAsync(imageFile, "uploads/profiles");
         }
         
         public async Task<string> UploadProfileImageAsync(int userId, IFormFile profileImageFile)
         {
-            // This is just a wrapper around the existing method
-            return await UploadUserProfileImageAsync(profileImageFile);
+            // Upload the image first
+            var imagePath = await UploadUserProfileImageAsync(profileImageFile);
+            
+            if (!string.IsNullOrEmpty(imagePath))
+            {
+                // Get the user and update their profile image
+                var user = await _repository.GetByIdAsync(userId);
+                if (user != null)
+                {
+                    user.ProfileImage = imagePath;
+                    await _repository.SaveAsync(user);
+                }
+            }
+            
+            return imagePath;
         }
         
         public async Task<UserDto> CreateUserWithDetailsAsync(UserDto userDto, string password, IFormFile profileImageFile)

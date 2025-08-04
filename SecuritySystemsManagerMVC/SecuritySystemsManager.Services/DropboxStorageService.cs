@@ -24,7 +24,9 @@ namespace SecuritySystemsManager.Services
 
         public DropboxStorageService(IConfiguration configuration, DropboxTokenManager tokenManager)
         {
-            _tokenManager = tokenManager;
+            if (configuration == null)
+                throw new ArgumentNullException(nameof(configuration));
+            _tokenManager = tokenManager ?? throw new ArgumentNullException(nameof(tokenManager));
             _rootFolder = configuration["Dropbox:RootFolder"] ?? "SecuritySystemsManager";
         }
 

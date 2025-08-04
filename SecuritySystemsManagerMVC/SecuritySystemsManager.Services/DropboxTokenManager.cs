@@ -28,8 +28,8 @@ namespace SecuritySystemsManager.Services
             IConfiguration configuration,
             IServiceProvider serviceProvider)
         {
-            _configuration = configuration;
-            _serviceProvider = serviceProvider;
+            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
             _httpClient = new HttpClient();
             
             _appKey = _configuration["Dropbox:AppKey"];

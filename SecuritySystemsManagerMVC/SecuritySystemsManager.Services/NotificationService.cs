@@ -31,8 +31,8 @@ namespace SecuritySystemsManager.Services
         {
             var notification = await _notificationRepository.GetByIdAsync(notificationId);
             
-            // Verify the notification belongs to the user
-            if (notification != null && notification.RecipientId == userId)
+            // Verify the notification belongs to the user and is not already read
+            if (notification != null && notification.RecipientId == userId && !notification.IsRead)
             {
                 notification.IsRead = true;
                 await _notificationRepository.SaveAsync(notification);
