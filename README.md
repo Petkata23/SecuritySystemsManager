@@ -725,7 +725,7 @@ builder.Services.AutoBind(typeof(LocationRepository).Assembly);
    **To set up your own Dropbox app:**
    1. Go to [Dropbox Developer Console](https://www.dropbox.com/developers/apps)
    2. Create a new app with "Full Dropbox" access
-   3. Set the redirect URI to: `https://yourdomain.com/DropboxAuth/Callback`
+   3. Set the redirect URI to: `https://localhost:7004/DropboxAuth/Callback`
    4. Copy the App Key and App Secret to your configuration
    5. Navigate to `/DropboxAuth` in your application to authorize
 
@@ -741,7 +741,7 @@ builder.Services.AutoBind(typeof(LocationRepository).Assembly);
    ```
 
 6. **Access the Application**
-   - Navigate to `https://localhost:5001`
+   - Navigate to `https://localhost:7004`
    - Default admin credentials will be created during first run
 
 ### **Initial Setup**
