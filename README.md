@@ -910,7 +910,7 @@ This project is licensed under a **Custom License** - see the [LICENSE](LICENSE)
 
 - **GitHub Issues**: [Create an issue](https://github.com/Petkata23/SecuritySystemsManager/issues)
 - **Documentation**: [Wiki](https://github.com/Petkata23/SecuritySystemsManager/wiki)
-- **Email**: support@securitysystemsmanager.com
+- **Email**: nedhristov36@gmail.com
 
 ## 🔄 **Version History**
 
@@ -972,4 +972,4 @@ This project is licensed under a **Custom License** - see the [LICENSE](LICENSE)
 
 ---
 
-**Built with ❤️ using ASP.NET Core 8 and modern development practices**
+**Built by Petkata using ASP.NET Core 8 and modern development practices**
