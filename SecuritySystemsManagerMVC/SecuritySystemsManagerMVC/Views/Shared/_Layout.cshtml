@@ -5,7 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Security Systems Hristovi provides professional security solutions for homes and businesses across Bulgaria." />
     <meta http-equiv="Cache-control" content="public, max-age=31536000">
-    <title>@ViewData["Title"] - Security Systems Hristovi</title>
+    <title>@{
+        var controller = ViewContext.RouteData.Values["controller"]?.ToString();
+        var action = ViewContext.RouteData.Values["action"]?.ToString();
+        var title = ViewData["Title"]?.ToString();
+        
+        if (!string.IsNullOrEmpty(title))
+        {
+            if (controller == "Home" && action == "Index")
+            {
+                @title
+            }
+            else
+            {
+                var controllerName = controller?.Replace("Controller", "");
+                var actionName = action;
+                
+                if (actionName == "Index" || actionName == "List")
+                {
+                    @($"{controllerName} - {title}")
+                }
+                else
+                {
+                    @($"{actionName} {controllerName} - {title}")
+                }
+            }
+        }
+        else
+        {
+            @("Security Systems Hristovi")
+        }
+    } - Security Systems Hristovi</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -142,11 +172,48 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-12">
-                        <h1 class="page-title">@ViewBag.Title</h1>
+                        <h1 class="page-title">@ViewData["Title"]</h1>
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">@ViewBag.Title</li>
+                                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index"><i class="bi bi-house-door me-1"></i>Home</a></li>
+                                @{
+                                    var controller = ViewContext.RouteData.Values["controller"]?.ToString();
+                                    var action = ViewContext.RouteData.Values["action"]?.ToString();
+                                    
+                                    if (!string.IsNullOrEmpty(controller) && controller != "Home")
+                                    {
+                                        var controllerName = controller.Replace("Controller", "");
+                                        var controllerDisplayName = controllerName switch
+                                        {
+                                            "SecuritySystemOrder" => "Orders",
+                                            "MaintenanceLog" => "Maintenance",
+                                            "MaintenanceDevice" => "Maintenance Devices",
+                                            "InstalledDevice" => "Devices",
+                                            "User" => "Users",
+                                            "Role" => "Roles",
+                                            "Invoice" => "Invoices",
+                                            "Location" => "Locations",
+                                            "Chat" => "Chat",
+                                            "Notification" => "Notifications",
+                                            "Account" => "Account",
+                                            "Auth" => "Authentication",
+                                            "DropboxAuth" => "Dropbox",
+                                            _ => controllerName
+                                        };
+                                        
+                                        if (action == "Index" || action == "List")
+                                        {
+                                            <li class="breadcrumb-item active" aria-current="page">@controllerDisplayName</li>
+                                        }
+                                        else
+                                        {
+                                            <li class="breadcrumb-item">
+                                                <a asp-controller="@controller" asp-action="@(action == "Details" || action == "Edit" || action == "Delete" || action == "Create" ? "List" : "Index")">@controllerDisplayName</a>
+                                            </li>
+                                            <li class="breadcrumb-item active" aria-current="page">@ViewData["Title"]</li>
+                                        }
+                                    }
+                                }
                             </ol>
                         </nav>
                     </div>
