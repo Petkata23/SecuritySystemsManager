@@ -694,7 +694,7 @@ builder.Services.AutoBind(typeof(LocationRepository).Assembly);
 
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/yourusername/SecuritySystemsManager.git
+   git clone https://github.com/Petkata23/SecuritySystemsManager.git
    cd SecuritySystemsManager
    ```
 
@@ -899,32 +899,17 @@ COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "SecuritySystemsManagerMVC.dll"]
 ```
 
-## 🤝 **Contributing**
-
-### **Development Workflow**
-1. **Fork the repository**
-2. **Create feature branch** (`git checkout -b feature/AmazingFeature`)
-3. **Follow coding standards** and patterns
-4. **Write tests** for new functionality
-5. **Commit changes** (`git commit -m 'Add AmazingFeature'`)
-6. **Push to branch** (`git push origin feature/AmazingFeature`)
-7. **Open Pull Request**
-
-### **Code Standards**
-- **C# coding conventions** following Microsoft guidelines
-- **SOLID principles** for all service implementations
-- **Async/await pattern** for all I/O operations
-- **Comprehensive error handling** with logging
-- **Unit test coverage** for all business logic
 
 ## 📝 **License**
 
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+This project is licensed under a **Custom License** - see the [LICENSE](LICENSE) file for details.
+
+**Note**: This software is provided for educational and demonstration purposes only. All rights reserved.
 
 ## 📞 **Support & Contact**
 
-- **GitHub Issues**: [Create an issue](https://github.com/yourusername/SecuritySystemsManager/issues)
-- **Documentation**: [Wiki](https://github.com/yourusername/SecuritySystemsManager/wiki)
+- **GitHub Issues**: [Create an issue](https://github.com/Petkata23/SecuritySystemsManager/issues)
+- **Documentation**: [Wiki](https://github.com/Petkata23/SecuritySystemsManager/wiki)
 - **Email**: support@securitysystemsmanager.com
 
 ## 🔄 **Version History**
