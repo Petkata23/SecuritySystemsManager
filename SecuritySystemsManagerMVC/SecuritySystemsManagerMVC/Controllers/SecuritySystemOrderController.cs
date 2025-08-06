@@ -92,7 +92,10 @@ namespace SecuritySystemsManagerMVC.Controllers
                 if (order == null)
                     return RedirectToAction("Error404", "Error");
 
-                // Only get available technicians for admins and managers
+                // Set permissions for technician management
+                ViewBag.CanManageTechnicians = User.IsInRole("Admin") || User.IsInRole("Manager");
+
+                // Initialize AvailableTechnicians for all users to prevent runtime errors
                 if (User.IsInRole("Admin") || User.IsInRole("Manager"))
                 {
                     // Get all technicians (users with Technician role)
@@ -101,6 +104,11 @@ namespace SecuritySystemsManagerMVC.Controllers
                         .Select(u => new SelectListItem($"{u.FirstName} {u.LastName}", u.Id.ToString()));
 
                     ViewBag.AvailableTechnicians = allTechnicians;
+                }
+                else
+                {
+                    // Set empty collection for non-admin/manager users
+                    ViewBag.AvailableTechnicians = new List<SelectListItem>();
                 }
 
                 var mappedModel = _mapper.Map<SecuritySystemOrderDetailsVm>(order);
@@ -119,15 +127,15 @@ namespace SecuritySystemsManagerMVC.Controllers
             try
             {
                 await _service.AddTechnicianToOrderAsync(orderId, technicianId);
-                TempData["Success"] = "Technician added successfully to the order.";
+                TempData["SuccessMessage"] = "Technician added successfully to the order.";
             }
             catch (ArgumentException ex)
             {
-                TempData["Error"] = ex.Message;
+                TempData["ErrorMessage"] = ex.Message;
             }
             catch (Exception ex)
             {
-                TempData["Error"] = "An error occurred while adding the technician.";
+                TempData["ErrorMessage"] = "An error occurred while adding the technician.";
             }
 
             return RedirectToAction(nameof(Details), new { id = orderId });
@@ -140,15 +148,15 @@ namespace SecuritySystemsManagerMVC.Controllers
             try
             {
                 await _service.RemoveTechnicianFromOrderAsync(orderId, technicianId);
-                TempData["Success"] = "Technician removed successfully from the order.";
+                TempData["SuccessMessage"] = "Technician removed successfully from the order.";
             }
             catch (ArgumentException ex)
             {
-                TempData["Error"] = ex.Message;
+                TempData["ErrorMessage"] = ex.Message;
             }
             catch (Exception ex)
             {
-                TempData["Error"] = "An error occurred while removing the technician.";
+                TempData["ErrorMessage"] = "An error occurred while removing the technician.";
             }
 
             return RedirectToAction(nameof(Details), new { id = orderId });

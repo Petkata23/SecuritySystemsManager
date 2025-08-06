@@ -535,5 +535,10 @@ namespace SecuritySystemsManager.Services
                 _urlEncoder.Encode(email),
                 unformattedKey);
         }
+        
+        public async Task<IEnumerable<UserDto>> GetUsersGroupedByRoleAsync()
+        {
+            return await _repository.GetAllGroupedByRoleAsync();
+        }
     }
 } 

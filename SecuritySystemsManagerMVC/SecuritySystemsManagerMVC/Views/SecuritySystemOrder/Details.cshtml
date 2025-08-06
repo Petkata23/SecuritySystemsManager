@@ -561,7 +561,7 @@
                                             }
                                             else
                                             {
-                                                <div class="rounded-circle bg-info text-white d-flex align-items-center justify-content-center tech-initials">
+                                                <div class="rounded-circle text-white d-flex align-items-center justify-content-center tech-initials">
                                                     @(tech.FirstName?.Substring(0, 1))@(tech.LastName?.Substring(0, 1))
                                                 </div>
                                             }
@@ -618,13 +618,16 @@
                                             <label for="technicianId" class="form-label text-dark fw-bold mb-2">
                                                 <i class="bi bi-tools me-1"></i>Select Technician
                                             </label>
-                                            @if (ViewBag.AvailableTechnicians != null && ViewBag.AvailableTechnicians.Count > 0)
+                                            @{
+                                                var availableTechnicians = ViewBag.AvailableTechnicians as IEnumerable<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>;
+                                            }
+                                            @if (availableTechnicians != null && availableTechnicians.Any())
                                             {
                                                 <select name="technicianId" id="technicianId" class="form-select form-select-lg border-1 border-primary shadow-sm" required>
                                                     <option value="" disabled selected>-- Select Technician --</option>
-                                                    @foreach (var tech in ViewBag.AvailableTechnicians)
+                                                    @foreach (var tech in availableTechnicians)
                                                     {
-                                                        <option value="@tech.Id">@tech.FirstName @tech.LastName</option>
+                                                        <option value="@tech.Value">@tech.Text</option>
                                                     }
                                                 </select>
                                                 <div class="form-text mt-2">
@@ -648,7 +651,7 @@
                                     <button type="button" class="btn btn-outline-secondary" id="cancelCustomModal">
                                         <i class="bi bi-x-lg me-2"></i>Cancel
                                     </button>
-                                    @if (ViewBag.AvailableTechnicians != null && ViewBag.AvailableTechnicians.Count > 0)
+                                    @if (availableTechnicians != null && availableTechnicians.Any())
                                     {
                                         <button type="submit" class="btn btn-primary">
                                             <i class="bi bi-check-lg me-2"></i>Assign

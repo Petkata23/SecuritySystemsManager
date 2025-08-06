@@ -22,21 +22,16 @@ namespace SecuritySystemsManager.Services
 
         public async Task<IEnumerable<object>> GetLocationsWithOrdersAsync()
         {
-            // Get all locations
-            var locations = await GetAllAsync();
-            
-            // Get all orders
+            // Business logic: Get locations with orders for map display
+            var locations = await _repository.GetLocationsWithOrdersAsync();
             var orders = await _orderRepository.GetAllAsync();
             
-            // Create a list to store location data with orders
             var locationData = new List<object>();
             
             foreach (var location in locations)
             {
-                // Get orders for this location
                 var locationOrders = orders.Where(o => o.LocationId == location.Id).ToList();
                 
-                // Create a simplified object for the map
                 var locationInfo = new
                 {
                     id = location.Id,
@@ -61,48 +56,26 @@ namespace SecuritySystemsManager.Services
 
         public async Task<IEnumerable<LocationDto>> GetLocationsForUserAsync(int userId, int pageSize = 10, int pageNumber = 1)
         {
-            // Get locations that are associated with orders for this specific user
-            var userLocations = await _orderRepository.GetAllAsync();
-            var userLocationIds = userLocations
-                .Where(o => o.ClientId == userId && o.LocationId.HasValue)
-                .Select(o => o.LocationId.Value)
-                .Distinct()
-                .ToList();
-
-            // Get the actual location data for these IDs
-            var locations = await GetAllAsync();
-            var filteredLocations = locations
-                .Where(l => userLocationIds.Contains(l.Id))
+            // Business logic: Get user locations with pagination
+            var allUserLocations = await _repository.GetLocationsForUserAsync(userId);
+            return allUserLocations
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
-
-            return filteredLocations;
         }
 
         public async Task<IEnumerable<object>> GetLocationsWithOrdersForUserAsync(int userId)
         {
-            // Get locations that are associated with orders for this specific user
+            // Business logic: Get user locations with orders for map display
+            var userLocations = await _repository.GetLocationsForUserAsync(userId);
             var userOrders = await _orderRepository.GetAllAsync();
-            var userLocationIds = userOrders
-                .Where(o => o.ClientId == userId && o.LocationId.HasValue)
-                .Select(o => o.LocationId.Value)
-                .Distinct()
-                .ToList();
-
-            // Get the actual location data for these IDs
-            var locations = await GetAllAsync();
-            var userLocations = locations.Where(l => userLocationIds.Contains(l.Id)).ToList();
             
-            // Create a list to store location data with orders
             var locationData = new List<object>();
             
             foreach (var location in userLocations)
             {
-                // Get orders for this location that belong to this user
                 var locationOrders = userOrders.Where(o => o.LocationId == location.Id && o.ClientId == userId).ToList();
                 
-                // Create a simplified object for the map
                 var locationInfo = new
                 {
                     id = location.Id,
@@ -185,6 +158,53 @@ namespace SecuritySystemsManager.Services
             {
                 return (false, null, null, $"An error occurred: {ex.Message}");
             }
+        }
+
+        public async Task<IEnumerable<LocationDto>> GetLocationsForTechnicianAsync(int technicianId, int pageSize = 10, int pageNumber = 1)
+        {
+            // Business logic: Get technician locations with pagination
+            var allTechnicianLocations = await _repository.GetLocationsForTechnicianAsync(technicianId);
+            return allTechnicianLocations
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+        }
+
+        public async Task<IEnumerable<object>> GetLocationsWithOrdersForTechnicianAsync(int technicianId)
+        {
+            // Business logic: Get technician locations with orders for map display
+            var technicianLocations = await _repository.GetLocationsForTechnicianAsync(technicianId);
+            var technicianOrders = await _orderRepository.GetAllAsync();
+            var filteredTechnicianOrders = technicianOrders
+                .Where(o => o.Technicians != null && o.Technicians.Any(t => t.Id == technicianId))
+                .ToList();
+            
+            var locationData = new List<object>();
+            
+            foreach (var location in technicianLocations)
+            {
+                var locationOrders = filteredTechnicianOrders.Where(o => o.LocationId == location.Id).ToList();
+                
+                var locationInfo = new
+                {
+                    id = location.Id,
+                    name = location.Name,
+                    address = location.Address,
+                    latitude = location.Latitude,
+                    longitude = location.Longitude,
+                    orders = locationOrders.Select(o => new
+                    {
+                        id = o.Id,
+                        title = o.Title,
+                        status = o.Status.ToString(),
+                        requestedDate = o.RequestedDate
+                    }).ToList()
+                };
+                
+                locationData.Add(locationInfo);
+            }
+            
+            return locationData;
         }
     }
 } 

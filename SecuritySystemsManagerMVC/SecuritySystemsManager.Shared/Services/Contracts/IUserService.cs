@@ -27,5 +27,8 @@ namespace SecuritySystemsManager.Shared.Services.Contracts
         Task<(bool Success, List<string> Errors)> ResetAuthenticatorAsync(int userId);
         Task<string> FormatAuthenticatorKey(string unformattedKey);
         Task<string> GenerateQrCodeUriAsync(string email, string unformattedKey);
+        
+        // Business logic for user grouping and ordering
+        Task<IEnumerable<UserDto>> GetUsersGroupedByRoleAsync();
     }
 } 

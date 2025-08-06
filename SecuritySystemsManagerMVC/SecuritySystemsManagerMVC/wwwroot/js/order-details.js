@@ -15,59 +15,57 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     // Initialize the assign technician modal
-    var assignTechnicianModal = document.getElementById('assignTechnicianModal');
-    if (assignTechnicianModal) {
-        // Remove any existing event listeners to prevent duplicates
-        const clonedModal = assignTechnicianModal.cloneNode(true);
-        assignTechnicianModal.parentNode.replaceChild(clonedModal, assignTechnicianModal);
-        assignTechnicianModal = clonedModal;
-
-        // Create modal instance
-        var modal = new bootstrap.Modal(assignTechnicianModal, {
-            backdrop: 'static',
-            keyboard: true,
-            focus: true
-        });
-        
+    var customModal = document.getElementById('customModal');
+    if (customModal) {
         // Get the button that opens the modal
-        var assignTechnicianBtn = document.getElementById('assignTechnicianBtn');
-        if (assignTechnicianBtn) {
-            assignTechnicianBtn.addEventListener('click', function(event) {
+        var openCustomModalBtn = document.getElementById('openCustomModal');
+        if (openCustomModalBtn) {
+            openCustomModalBtn.addEventListener('click', function(event) {
                 event.preventDefault();
-                // Force cleanup before showing modal
-                document.body.classList.remove('modal-open');
-                removeExtraBackdrops();
-                
-                // Show modal after a short delay
-                setTimeout(() => {
-                    modal.show();
-                }, 50);
+                customModal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            });
+        }
+        
+        // Handle modal close
+        var closeCustomModalBtn = document.getElementById('closeCustomModal');
+        if (closeCustomModalBtn) {
+            closeCustomModalBtn.addEventListener('click', function(event) {
+                event.preventDefault();
+                customModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            });
+        }
+        
+        // Handle cancel button
+        var cancelCustomModalBtn = document.getElementById('cancelCustomModal');
+        if (cancelCustomModalBtn) {
+            cancelCustomModalBtn.addEventListener('click', function(event) {
+                event.preventDefault();
+                customModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            });
+        }
+        
+        // Handle overlay click to close modal
+        var customModalOverlay = document.getElementById('customModalOverlay');
+        if (customModalOverlay) {
+            customModalOverlay.addEventListener('click', function(event) {
+                if (event.target === customModalOverlay) {
+                    customModal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
             });
         }
         
         // Handle form submission
-        var technicianForm = assignTechnicianModal.querySelector('form');
+        var technicianForm = customModal.querySelector('form');
         if (technicianForm) {
             technicianForm.addEventListener('submit', function(event) {
                 // Form will submit normally
                 console.log('Form submitted');
             });
         }
-        
-        // Handle modal close
-        var closeButtons = assignTechnicianModal.querySelectorAll('[data-bs-dismiss="modal"]');
-        closeButtons.forEach(function(button) {
-            button.addEventListener('click', function(event) {
-                event.preventDefault();
-                modal.hide();
-            });
-        });
-
-        // Handle modal hidden event
-        assignTechnicianModal.addEventListener('hidden.bs.modal', function() {
-            document.body.classList.remove('modal-open');
-            removeExtraBackdrops();
-        });
     }
     
     // Handle technician removal confirmation

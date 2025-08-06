@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using SecuritySystemsManager.Data;
 using SecuritySystemsManager.Data.Entities;
 using SecuritySystemsManager.Shared.Repos.Contracts;
 using System;
@@ -16,12 +17,12 @@ namespace SecuritySystemsManager.Data.Repos
         where T : class, IBaseEntity
         where TModel : BaseDto
     {
-        protected readonly DbContext _context;
+        protected readonly SecuritySystemsManagerDbContext _context;
         protected readonly DbSet<T> _dbSet;
         protected readonly IMapper _mapper;
         private bool _disposedValue;
 
-        public BaseRepository(DbContext context, IMapper mapper)
+        public BaseRepository(SecuritySystemsManagerDbContext context, IMapper mapper)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _dbSet = _context.Set<T>();

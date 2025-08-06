@@ -38,10 +38,18 @@ namespace SecuritySystemsManagerMVC.Controllers
                     return await base.List(pageSize, pageNumber);
                 }
                 
-                // For regular users, get only their locations
+                // Check if user is technician - they can see locations where they are assigned
+                if (User.IsInRole("Technician"))
+                {
+                    var technicianLocations = await _service.GetLocationsForTechnicianAsync(userIdInt, pageSize, pageNumber);
+                    var technicianLocationViewModels = _mapper.Map<IEnumerable<LocationDetailsVm>>(technicianLocations);
+                    return View("List", technicianLocationViewModels);
+                }
+                
+                // For regular users (clients), get only their locations
                 var userLocations = await _service.GetLocationsForUserAsync(userIdInt, pageSize, pageNumber);
-                var locationViewModels = _mapper.Map<IEnumerable<LocationDetailsVm>>(userLocations);
-                return View("List", locationViewModels);
+                var userLocationViewModels = _mapper.Map<IEnumerable<LocationDetailsVm>>(userLocations);
+                return View("List", userLocationViewModels);
             }
             catch (Exception ex)
             {
@@ -50,25 +58,17 @@ namespace SecuritySystemsManagerMVC.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin,Manager")]
         public override async Task<IActionResult> Create()
         {
-            if (!User.IsInRole("Admin") && !User.IsInRole("Manager"))
-            {
-                return RedirectToAction("AccessDenied", "Auth");
-            }
-            
             ViewBag.Title = "Create Location";
             return await base.Create();
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin,Manager")]
         public override async Task<IActionResult> Edit(int? id)
         {
-            if (!User.IsInRole("Admin") && !User.IsInRole("Manager"))
-            {
-                return RedirectToAction("AccessDenied", "Auth");
-            }
-            
             ViewBag.Title = "Edit Location";
             return await base.Edit(id);
         }
@@ -81,47 +81,31 @@ namespace SecuritySystemsManagerMVC.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin,Manager")]
         public override async Task<IActionResult> Delete(int? id)
         {
-            if (!User.IsInRole("Admin") && !User.IsInRole("Manager"))
-            {
-                return RedirectToAction("AccessDenied", "Auth");
-            }
-            
             ViewBag.Title = "Delete Location";
             return await base.Delete(id);
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Manager")]
         public override async Task<IActionResult> Create(LocationEditVm editVM)
         {
-            if (!User.IsInRole("Admin") && !User.IsInRole("Manager"))
-            {
-                return RedirectToAction("AccessDenied", "Auth");
-            }
-            
             return await base.Create(editVM);
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Manager")]
         public override async Task<IActionResult> Edit(int id, LocationEditVm editVM)
         {
-            if (!User.IsInRole("Admin") && !User.IsInRole("Manager"))
-            {
-                return RedirectToAction("AccessDenied", "Auth");
-            }
-            
             return await base.Edit(id, editVM);
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Manager")]
         public override async Task<IActionResult> Delete(int id)
         {
-            if (!User.IsInRole("Admin") && !User.IsInRole("Manager"))
-            {
-                return RedirectToAction("AccessDenied", "Auth");
-            }
-            
             return await base.Delete(id);
         }
 
@@ -137,8 +121,23 @@ namespace SecuritySystemsManagerMVC.Controllers
                 }
                 
                 var isAdminOrManager = User.IsInRole("Admin") || User.IsInRole("Manager");
-                var locationsWithOrders = await _service.GetLocationsWithOrdersForCurrentUserAsync(userIdInt, isAdminOrManager);
-                return Json(locationsWithOrders);
+                var isTechnician = User.IsInRole("Technician");
+                
+                if (isAdminOrManager)
+                {
+                    var locationsWithOrders = await _service.GetLocationsWithOrdersForCurrentUserAsync(userIdInt, true);
+                    return Json(locationsWithOrders);
+                }
+                else if (isTechnician)
+                {
+                    var technicianLocationsWithOrders = await _service.GetLocationsWithOrdersForTechnicianAsync(userIdInt);
+                    return Json(technicianLocationsWithOrders);
+                }
+                else
+                {
+                    var locationsWithOrders = await _service.GetLocationsWithOrdersForCurrentUserAsync(userIdInt, false);
+                    return Json(locationsWithOrders);
+                }
             }
             catch (Exception ex)
             {
@@ -147,14 +146,11 @@ namespace SecuritySystemsManagerMVC.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<JsonResult> CreateLocationAjax([FromBody] LocationEditVm locationData)
         {
             try
             {
-                if (!User.IsInRole("Admin") && !User.IsInRole("Manager"))
-                {
-                    return Json(new { success = false, message = "Access denied" });
-                }
 
                 // Map ViewModel to DTO
                 var locationDto = new LocationDto

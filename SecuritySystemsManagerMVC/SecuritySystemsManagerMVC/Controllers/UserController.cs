@@ -2,6 +2,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using SecuritySystemsManager.Shared;
 using SecuritySystemsManager.Shared.Dtos;
 using SecuritySystemsManager.Shared.Enums;
 using SecuritySystemsManager.Shared.Repos.Contracts;
@@ -28,6 +29,36 @@ namespace SecuritySystemsManagerMVC.Controllers
                 .Select(r => new SelectListItem(r.Name, r.Id.ToString()));
             
             return editVM;
+        }
+
+        [HttpGet]
+        public override async Task<IActionResult> List(int pageSize = DefaultPageSize, int pageNumber = DefaultPageNumber)
+        {
+            try
+            {
+                if (pageSize <= 0 || pageSize > MaxPageSize || pageNumber <= 0)
+                {
+                    return BadRequest(Constants.InvalidPagination);
+                }
+
+                // Use business logic from service layer
+                var groupedUsers = await _service.GetUsersGroupedByRoleAsync();
+                var mappedModels = _mapper.Map<IEnumerable<UserDetailsVm>>(groupedUsers);
+
+                // Calculate pagination
+                var totalRecords = groupedUsers.Count();
+                var totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
+                var pagedUsers = mappedModels.Skip((pageNumber - 1) * pageSize).Take(pageSize);
+
+                ViewBag.TotalPages = totalPages;
+                ViewBag.CurrentPage = pageNumber;
+
+                return View(nameof(List), pagedUsers);
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error500", "Error");
+            }
         }
         
         [HttpPost]

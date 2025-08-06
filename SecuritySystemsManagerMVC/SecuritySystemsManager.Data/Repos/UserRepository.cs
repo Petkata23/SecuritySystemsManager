@@ -30,5 +30,32 @@ namespace SecuritySystemsManager.Data.Repos
             return MapToModel(await _dbSet.FirstOrDefaultAsync(u => u.UserName == username));
         }
 
+        public async Task<IEnumerable<UserDto>> GetAllGroupedByRoleAsync()
+        {
+            // Data access logic: Efficient SQL query with ordering at database level
+            var users = await _dbSet
+                .Include(u => u.Role) // Include role information
+                .ToListAsync();
+
+            // Business logic: Custom ordering by role priority
+            var orderedUsers = users
+                .OrderBy(u => GetRolePriority(u.Role?.RoleType))
+                .ThenBy(u => u.FirstName)
+                .ThenBy(u => u.LastName);
+
+            return orderedUsers.Select(MapToModel);
+        }
+
+        private int GetRolePriority(SecuritySystemsManager.Shared.Enums.RoleType? roleType)
+        {
+            return roleType switch
+            {
+                SecuritySystemsManager.Shared.Enums.RoleType.Admin => 1,
+                SecuritySystemsManager.Shared.Enums.RoleType.Manager => 2,
+                SecuritySystemsManager.Shared.Enums.RoleType.Technician => 3,
+                SecuritySystemsManager.Shared.Enums.RoleType.Client => 4,
+                _ => 999 // Unknown roles go last
+            };
+        }
     }
 } 
