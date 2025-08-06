@@ -12,16 +12,16 @@ namespace SecuritySystemsManager.Shared.Extensions
         {
             return typeName switch
             {
-                "InstalledDeviceDto" => "Инсталираното устройство",
-                "InvoiceDto" => "Фактурата",
-                "LocationDto" => "Локацията",
-                "MaintenanceDeviceDto" => "Устройството за поддръжка",
-                "MaintenanceLogDto" => "Записът за поддръжка",
-                "NotificationDto" => "Известието",
-                "OrderTechnicianDto" => "Техникът по поръчката",
-                "RoleDto" => "Ролята",
-                "SecuritySystemOrderDto" => "Поръчката за охранителна система",
-                "UserDto" => "Потребителят",
+                "InstalledDeviceDto" => "Installed Device",
+                "InvoiceDto" => "Invoice",
+                "LocationDto" => "Location",
+                "MaintenanceDeviceDto" => "Maintenance Device",
+                "MaintenanceLogDto" => "Maintenance Log",
+                "NotificationDto" => "Notification",
+                "OrderTechnicianDto" => "Order Technician",
+                "RoleDto" => "Role",
+                "SecuritySystemOrderDto" => "Security System Order",
+                "UserDto" => "User",
                 _ => typeName
             };
         }

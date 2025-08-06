@@ -191,13 +191,13 @@ document.addEventListener("DOMContentLoaded", function () {
         
         marker.bindPopup(popup);
 
-        // Add a circle around the marker to highlight the area
+        // Add a circle around the marker to highlight the exact location
         L.circle([lat, lon], {
             color: '#0d6efd',
             fillColor: '#0d6efd',
-            fillOpacity: 0.1,
-            radius: 100,
-            weight: 2,
+            fillOpacity: 0.2,
+            radius: 25,
+            weight: 1,
             className: 'location-circle'
         }).addTo(map);
 

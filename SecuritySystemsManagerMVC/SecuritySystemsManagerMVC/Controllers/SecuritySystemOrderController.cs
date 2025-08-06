@@ -45,6 +45,7 @@ namespace SecuritySystemsManagerMVC.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin,Manager,Client")]
         public override async Task<IActionResult> Create()
         {
             var editVM = await PrePopulateVMAsync(new SecuritySystemOrderEditVm());
@@ -66,6 +67,7 @@ namespace SecuritySystemsManagerMVC.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Manager,Client")]
         public override async Task<IActionResult> Create(SecuritySystemOrderEditVm editVM)
         {
             if (User.IsInRole("Client"))
@@ -248,8 +250,92 @@ namespace SecuritySystemsManagerMVC.Controllers
 
             ViewBag.TotalPages = totalPages;
             ViewBag.CurrentPage = pageNumber;
+            // Add flag to indicate if there are any orders before filtering
+            ViewBag.HasOrdersBeforeFilter = totalOrders > 0;
 
             return View(nameof(List), mappedModels);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> FilterOrders(string searchTerm = "", string startDate = "", string endDate = "", string status = "", int pageSize = DefaultPageSize, int pageNumber = DefaultPageNumber)
+        {
+            if (pageSize <= 0 || pageSize > MaxPageSize || pageNumber <= 0)
+            {
+                return BadRequest(Constants.InvalidPagination);
+            }
+
+            // Parse dates
+            DateTime? parsedStartDate = null;
+            DateTime? parsedEndDate = null;
+            
+            if (!string.IsNullOrEmpty(startDate) && DateTime.TryParse(startDate, out DateTime start))
+            {
+                parsedStartDate = start;
+            }
+            
+            if (!string.IsNullOrEmpty(endDate) && DateTime.TryParse(endDate, out DateTime end))
+            {
+                parsedEndDate = end;
+            }
+
+            // Get filtered orders with pagination from repository
+            var (orders, totalCount) = await _service.GetFilteredOrdersAsync(searchTerm, parsedStartDate, parsedEndDate, status, User, pageSize, pageNumber);
+            
+            var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+
+            var mappedModels = _mapper.Map<IEnumerable<SecuritySystemOrderDetailsVm>>(orders);
+
+            ViewBag.TotalPages = totalPages;
+            ViewBag.CurrentPage = pageNumber;
+            ViewBag.SearchTermFilter = searchTerm;
+            ViewBag.StartDateFilter = startDate;
+            ViewBag.EndDateFilter = endDate;
+            ViewBag.StatusFilter = status;
+
+            return View(nameof(List), mappedModels);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetOrdersPartial(string searchTerm = "", string startDate = "", string endDate = "", string status = "", int pageSize = DefaultPageSize, int pageNumber = DefaultPageNumber)
+        {
+            if (pageSize <= 0 || pageSize > MaxPageSize || pageNumber <= 0)
+            {
+                return BadRequest(Constants.InvalidPagination);
+            }
+
+            // Parse dates
+            DateTime? parsedStartDate = null;
+            DateTime? parsedEndDate = null;
+            
+            if (!string.IsNullOrEmpty(startDate) && DateTime.TryParse(startDate, out DateTime start))
+            {
+                parsedStartDate = start;
+            }
+            
+            if (!string.IsNullOrEmpty(endDate) && DateTime.TryParse(endDate, out DateTime end))
+            {
+                parsedEndDate = end;
+            }
+
+            // Get filtered orders with pagination from repository
+            var (orders, totalCount) = await _service.GetFilteredOrdersAsync(searchTerm, parsedStartDate, parsedEndDate, status, User, pageSize, pageNumber);
+            
+            var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+
+            var mappedModels = _mapper.Map<IEnumerable<SecuritySystemOrderDetailsVm>>(orders);
+
+            ViewBag.TotalPages = totalPages;
+            ViewBag.CurrentPage = pageNumber;
+            ViewBag.SearchTermFilter = searchTerm;
+            ViewBag.StartDateFilter = startDate;
+            ViewBag.EndDateFilter = endDate;
+            ViewBag.StatusFilter = status;
+            
+            // Check if there are orders before filtering by getting total count without filters
+            var (allOrders, totalOrdersBeforeFilter) = await _service.GetFilteredOrdersAsync(null, null, null, null, User, 1, 1);
+            ViewBag.HasOrdersBeforeFilter = totalOrdersBeforeFilter > 0;
+
+            return PartialView("_OrdersTable", mappedModels);
         }
 
         [HttpPost]

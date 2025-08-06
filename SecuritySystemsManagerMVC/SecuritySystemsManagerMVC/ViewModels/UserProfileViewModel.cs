@@ -30,5 +30,13 @@ namespace SecuritySystemsManagerMVC.ViewModels
         public bool Is2faEnabled { get; set; }
         
         public int RecoveryCodesLeft { get; set; }
+        
+        // Account Activity Properties
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
+        public DateTime? LastLoginTime { get; set; }
+        public int TotalOrders { get; set; }
+        public int TotalLocations { get; set; }
+        public string UserRole { get; set; }
     }
 } 

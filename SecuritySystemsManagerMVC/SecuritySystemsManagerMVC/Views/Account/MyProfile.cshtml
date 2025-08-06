@@ -7,47 +7,51 @@
 <div class="container py-5">
     <div class="row">
         <div class="col-lg-4">
-            <div class="card mb-4">
-                <div class="card-body text-center">
-                    @if (!string.IsNullOrEmpty(Model.ProfileImage))
-                    {
-                        <img src="@Model.ProfileImage" alt="Profile Picture" class="rounded-circle img-fluid" style="width: 150px; height: 150px; object-fit: cover;">
-                    }
-                    else
-                    {
-                        <div class="bg-primary text-white d-flex align-items-center justify-content-center rounded-circle mx-auto" style="width: 150px; height: 150px;">
-                            <i class="bi bi-person-fill" style="font-size: 5rem;"></i>
+            <div class="profile-sidebar">
+                <div class="card mb-4">
+                    <div class="card-body text-center">
+                        @if (!string.IsNullOrEmpty(Model.ProfileImage))
+                        {
+                            <img src="@Model.ProfileImage" alt="Profile Picture" class="rounded-circle img-fluid" style="width: 150px; height: 150px; object-fit: cover;">
+                        }
+                        else
+                        {
+                            <div class="bg-primary text-white d-flex align-items-center justify-content-center rounded-circle mx-auto" style="width: 150px; height: 150px;">
+                                <i class="bi bi-person-fill" style="font-size: 5rem;"></i>
+                            </div>
+                        }
+                        <h5 class="my-3">@Model.FirstName @Model.LastName</h5>
+                        <p class="text-muted mb-1">@Model.Username</p>
+                        <div class="d-flex justify-content-center mb-2 mt-4">
+                            <a asp-action="EditProfile" class="btn btn-primary me-2">Edit Profile</a>
+                            <a asp-action="ChangePassword" class="btn btn-outline-primary ms-1">Change Password</a>
                         </div>
-                    }
-                    <h5 class="my-3">@Model.FirstName @Model.LastName</h5>
-                    <p class="text-muted mb-1">@Model.Username</p>
-                    <div class="d-flex justify-content-center mb-2 mt-4">
-                        <a asp-action="EditProfile" class="btn btn-primary me-2">Edit Profile</a>
-                        <a asp-action="ChangePassword" class="btn btn-outline-primary ms-1">Change Password</a>
                     </div>
                 </div>
-            </div>
-            <div class="card mb-4 mb-lg-0">
-                <div class="card-header">
-                    <h5 class="mb-0">Security Settings</h5>
-                </div>
-                <div class="card-body p-0">
-                    <ul class="list-group list-group-flush rounded-3">
-                        <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                            <div>
-                                <i class="bi bi-shield-lock me-2 text-primary"></i>
-                                <span>Two-Factor Authentication</span>
-                            </div>
-                            <span class="badge @(Model.TwoFactorEnabled ? "bg-success" : "bg-danger") rounded-pill">
-                                @(Model.TwoFactorEnabled ? "Enabled" : "Disabled")
-                            </span>
-                        </li>
-                        <li class="list-group-item p-3">
+                <div class="card security-settings-card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Security Settings</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="security-settings-list">
+                            <ul class="list-group list-group-flush rounded-3">
+                                <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                    <div>
+                                        <i class="bi bi-shield-lock me-2 text-primary"></i>
+                                        <span>Two-Factor Authentication</span>
+                                    </div>
+                                    <span class="badge @(Model.TwoFactorEnabled ? "bg-success" : "bg-danger") rounded-pill">
+                                        @(Model.TwoFactorEnabled ? "Enabled" : "Disabled")
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="security-settings-actions p-3">
                             <a asp-action="TwoFactorAuthentication" class="btn btn-sm btn-outline-primary w-100">
                                 @(Model.TwoFactorEnabled ? "Manage" : "Enable") Two-Factor Authentication
                             </a>
-                        </li>
-                    </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -95,13 +99,92 @@
                 </div>
             </div>
             <div class="card mb-4">
-                <div class="card-header">
-                    <h5 class="mb-0">Account Activity</h5>
+                <div class="card-header bg-gradient-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-activity me-2"></i>Account Activity
+                    </h5>
                 </div>
                 <div class="card-body">
-                    <div class="alert alert-info mb-0">
-                        <i class="bi bi-info-circle me-2"></i>
-                        Your account activity information will be available here.
+                    <!-- Statistics Cards Row -->
+                    <div class="row mb-4">
+                        <div class="col-lg-4 col-md-6 mb-3">
+                            <div class="activity-stat-card bg-gradient-primary text-white">
+                                <div class="stat-icon">
+                                    <i class="bi bi-calendar-check"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <h6 class="stat-label">Member Since</h6>
+                                    <p class="stat-value">@Model.CreatedAt.ToString("MMM dd, yyyy")</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 mb-3">
+                            <div class="activity-stat-card bg-gradient-success text-white">
+                                <div class="stat-icon">
+                                    <i class="bi bi-person-badge"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <h6 class="stat-label">Role</h6>
+                                    <p class="stat-value">@Model.UserRole</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 mb-3">
+                            <div class="activity-stat-card bg-gradient-warning text-white">
+                                <div class="stat-icon">
+                                    <i class="bi bi-cart-check"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <h6 class="stat-label">Total Orders</h6>
+                                    <p class="stat-value">@Model.TotalOrders</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Activity Details -->
+                    <div class="activity-details">
+                        <div class="row">
+                            <div class="col-lg-6 mb-3">
+                                <div class="activity-detail-item">
+                                    <div class="detail-icon bg-info">
+                                        <i class="bi bi-clock-history"></i>
+                                    </div>
+                                    <div class="detail-content">
+                                        <h6 class="detail-label">Last Updated</h6>
+                                        <p class="detail-value">@Model.UpdatedAt.ToString("MMM dd, yyyy 'at' HH:mm")</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <div class="activity-detail-item">
+                                    <div class="detail-icon bg-danger">
+                                        <i class="bi bi-geo-alt"></i>
+                                    </div>
+                                    <div class="detail-content">
+                                        <h6 class="detail-label">Locations</h6>
+                                        <p class="detail-value">@Model.TotalLocations location@(Model.TotalLocations != 1 ? "s" : "")</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        @if (Model.LastLoginTime.HasValue)
+                        {
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="activity-detail-item">
+                                        <div class="detail-icon bg-success">
+                                            <i class="bi bi-sign-in-alt"></i>
+                                        </div>
+                                        <div class="detail-content">
+                                            <h6 class="detail-label">Last Login</h6>
+                                            <p class="detail-value">@Model.LastLoginTime.Value.ToString("MMM dd, yyyy 'at' HH:mm")</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>

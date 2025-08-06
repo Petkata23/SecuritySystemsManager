@@ -1,5 +1,6 @@
 using SecuritySystemsManager.Shared.Dtos;
 using SecuritySystemsManager.Shared.Repos.Contracts;
+using System.Security.Claims;
 
 namespace SecuritySystemsManager.Shared.Services.Contracts
 {
@@ -12,5 +13,15 @@ namespace SecuritySystemsManager.Shared.Services.Contracts
         Task<IEnumerable<SecuritySystemOrderDto>> GetOrdersByUserRoleAsync(int userId, string userRole, int pageSize, int pageNumber);
         Task<int> GetOrdersCountByUserRoleAsync(int userId, string userRole);
         Task<SecuritySystemOrderDto> GetOrderWithAllDetailsAsync(int orderId);
+        
+        // Universal filtering method with pagination
+        Task<(List<SecuritySystemOrderDto> Orders, int TotalCount)> GetFilteredOrdersAsync(
+            string? searchTerm = null,
+            DateTime? startDate = null,
+            DateTime? endDate = null,
+            string? status = null,
+            ClaimsPrincipal? user = null,
+            int pageSize = 10,
+            int pageNumber = 1);
     }
 } 

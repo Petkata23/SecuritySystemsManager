@@ -43,17 +43,27 @@ namespace SecuritySystemsManagerMVC.Controllers
                     return RedirectToAction("Error404", "Error");
                 }
 
+                // Get profile data from service
+                var profileData = await _userService.GetUserProfileDataAsync(user.Id);
+                
+                // Map to ViewModel
                 var model = new UserProfileViewModel
                 {
-                    Username = user.UserName,
-                    Email = user.Email,
-                    PhoneNumber = user.PhoneNumber,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    ProfileImage = user.ProfileImage,
-                    TwoFactorEnabled = await _userManager.GetTwoFactorEnabledAsync(user),
-                    HasAuthenticator = await _userManager.GetAuthenticatorKeyAsync(user) != null,
-                    RecoveryCodesLeft = await _userManager.CountRecoveryCodesAsync(user),
+                    Username = profileData.Username,
+                    Email = profileData.Email,
+                    PhoneNumber = profileData.PhoneNumber,
+                    FirstName = profileData.FirstName,
+                    LastName = profileData.LastName,
+                    ProfileImage = profileData.ProfileImage,
+                    TwoFactorEnabled = profileData.TwoFactorEnabled,
+                    HasAuthenticator = profileData.HasAuthenticator,
+                    RecoveryCodesLeft = profileData.RecoveryCodesLeft,
+                    CreatedAt = profileData.CreatedAt,
+                    UpdatedAt = profileData.UpdatedAt,
+                    LastLoginTime = profileData.LastLoginTime,
+                    TotalOrders = profileData.TotalOrders,
+                    TotalLocations = profileData.TotalLocations,
+                    UserRole = profileData.UserRole
                 };
 
                 return View(model);

@@ -203,5 +203,50 @@ namespace SecuritySystemsManager.Services
             // Create user with password
             return await CreateUserWithPasswordAsync(userDto, password);
         }
+
+        public async Task<UserProfileDto> GetUserProfileDataAsync(int userId)
+        {
+            var user = await _repository.GetByIdAsync(userId);
+            if (user == null)
+            {
+                throw new ArgumentException("User not found");
+            }
+
+            // Get user role
+            string userRole = "User";
+            if (_userManager != null)
+            {
+                var userEntity = await _userManager.FindByIdAsync(userId.ToString());
+                if (userEntity != null)
+                {
+                    var userRoles = await _userManager.GetRolesAsync(userEntity);
+                    userRole = userRoles.FirstOrDefault() ?? "User";
+                }
+            }
+
+            // Get user statistics
+            var totalOrders = user.OrdersAsClient?.Count ?? 0;
+            var totalLocations = user.OrdersAsClient?.Select(o => o.LocationId).Distinct().Count() ?? 0;
+
+            return new UserProfileDto
+            {
+                Id = user.Id,
+                Username = user.Username,
+                Email = user.Email,
+                PhoneNumber = "", // UserDto doesn't have PhoneNumber
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                ProfileImage = user.ProfileImage ?? "",
+                TwoFactorEnabled = false, // Would need to be calculated
+                HasAuthenticator = false, // Would need to be calculated
+                RecoveryCodesLeft = 0, // Would need to be calculated
+                CreatedAt = user.CreatedAt,
+                UpdatedAt = user.UpdatedAt,
+                LastLoginTime = null, // IdentityUser doesn't have LastLoginTime by default
+                TotalOrders = totalOrders,
+                TotalLocations = totalLocations,
+                UserRole = userRole
+            };
+        }
     }
 } 

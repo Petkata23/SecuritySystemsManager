@@ -1,5 +1,5 @@
 // Utility functions
-// Функция за форматиране на времето
+// Function for formatting time
 function formatTime(timestamp) {
     const date = new Date(timestamp);
     const now = new Date();
@@ -20,7 +20,7 @@ function formatTime(timestamp) {
     }
 }
 
-// Функция за escape на HTML
+// Function for HTML escaping
 function escapeHtml(text) {
     if (text === null || text === undefined) {
         return '';
@@ -39,38 +39,38 @@ document.addEventListener('DOMContentLoaded', function () {
     const closeInfoPanelBtn = document.getElementById('closeInfoPanel');
     let currentUserId = currentChatUserId;
 
-    // Добавяме event listener за затваряне на информационния панел
+    // Add event listener for closing the info panel
     closeInfoPanelBtn?.addEventListener('click', () => {
         userInfoPanel.classList.remove('active');
         setTimeout(() => userInfoPanel.style.display = 'none', 300);
     });
 
-    // Функция за прикачване на event listeners към чат елементите
+    // Function for attaching event listeners to chat elements
     function attachChatItemListeners() {
         document.querySelectorAll('.chat-list-item').forEach(item => {
             item.addEventListener('click', handleChatItemClick);
         });
     }
 
-    // Функция за обработка на клик върху чат
+    // Function for handling chat item click
     function handleChatItemClick(e) {
         e.preventDefault();
         const userId = e.currentTarget.dataset.userId;
         console.log('Chat item clicked, userId:', userId);
         
         if (userId) {
-            // Визуална индикация за избрания чат
+            // Visual indication for selected chat
             document.querySelectorAll('.chat-list-item').forEach(item => {
                 item.classList.remove('active');
             });
             e.currentTarget.classList.add('active');
             
-            // Зареждане на чата
+            // Load the chat
             loadChat(parseInt(userId));
         }
     }
 
-    // Подобрена функция за обновяване на списъка с чатове
+    // Improved function for updating the chat list
     async function updateChatList() {
         try {
             const response = await fetch('/Chat/GetActiveChats');
@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const chats = await response.json();
             const chatList = document.getElementById('chatList');
             
-            // Запазваме текущия активен чат
+            // Keep the current active chat
             const activeUserId = document.querySelector('.chat-list-item.active')?.dataset.userId;
             
             chatList.innerHTML = chats.map(chat => `
@@ -99,10 +99,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 </div>
             `).join('');
 
-            // Прикачваме event listeners към новите елементи
+            // Attach event listeners to new elements
             attachChatItemListeners();
 
-            // Обновяваме статистиката
+            // Update statistics
             updateStatistics();
             
         } catch (error) {
@@ -110,13 +110,13 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Подобрена функция за обновяване на статистиката
+    // Improved function for updating statistics
     function updateStatistics() {
-        // Обновяваме броя непрочетени съобщения
+        // Update unread messages count
         const unreadCount = document.querySelectorAll('.unread-indicator').length;
         document.getElementById('unreadCount').textContent = unreadCount;
         
-        // Обновяваме броя активни чатове
+        // Update active chats count
         const activeChatsCount = document.querySelectorAll('.chat-list-item').length;
         document.getElementById('activeChatsCount').textContent = activeChatsCount;
     }
@@ -170,7 +170,7 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .catch(err => console.error('Error connecting to SignalR:', err));
 
-    // Първоначално прикачване на event listeners
+    // Initial attachment of event listeners
     attachChatItemListeners();
 
     // Refresh button functionality
@@ -199,7 +199,7 @@ document.addEventListener('DOMContentLoaded', function () {
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
-    // Функция за зареждане на чат
+    // Function for loading chat
     async function loadChat(userId) {
         console.log('Loading chat for userId:', userId);
         if (!userId) {
@@ -213,14 +213,14 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        // Първо обновяваме структурата на чата ако е нужно
+        // First update the chat structure if needed
         if (!chatMain.querySelector('.chat-messages')) {
             chatMain.innerHTML = `
                 <div class="chat-header"></div>
                 <div class="chat-messages" id="adminChatMessages"></div>
                 <div class="chat-input">
                     <div class="input-group">
-                        <input type="text" class="form-control" id="adminMessageInput" placeholder="Въведете съобщение...">
+                        <input type="text" class="form-control" id="adminMessageInput" placeholder="Enter message...">
                         <button class="btn btn-primary" id="adminSendMessage">
                             <i class="bi bi-send"></i>
                         </button>
@@ -228,7 +228,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 </div>
             `;
 
-            // Прикачваме event listeners за изпращане на съобщения
+            // Attach event listeners for sending messages
             const newMessageInput = document.getElementById('adminMessageInput');
             const newSendButton = document.getElementById('adminSendMessage');
 
@@ -251,7 +251,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        // Показваме loading състояние
+        // Show loading state
         chatMain.classList.add('loading');
         messageInput.disabled = true;
         sendButton.disabled = true;
@@ -260,12 +260,12 @@ document.addEventListener('DOMContentLoaded', function () {
             const response = await fetch(`/Chat/GetChatMessages/${userId}`);
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({}));
-                throw new Error(errorData.error || 'Грешка при зареждане на чата');
+                throw new Error(errorData.error || 'Error loading chat');
             }
             
             const data = await response.json();
             
-            // Обновяваме UI за чата
+            // Update UI for chat
             const chatHeader = chatMain.querySelector('.chat-header');
             if (chatHeader && data.user) {
                 chatHeader.innerHTML = `
@@ -275,10 +275,10 @@ document.addEventListener('DOMContentLoaded', function () {
                             <small class="text-muted">${escapeHtml(data.user.role)}</small>
                         </div>
                         <div class="chat-actions">
-                            <button class="btn btn-icon" id="markAsRead" title="Маркирай като прочетено">
+                            <button class="btn btn-icon" id="markAsRead" title="Mark as Read">
                                 <i class="bi bi-check2-all"></i>
                             </button>
-                            <button class="btn btn-icon" id="showUserInfo" title="Информация">
+                            <button class="btn btn-icon" id="showUserInfo" title="Information">
                                 <i class="bi bi-info-circle"></i>
                             </button>
                         </div>
@@ -286,7 +286,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 `;
             }
 
-            // Обновяваме съобщенията
+            // Update messages
             chatMessages.innerHTML = data.messages.map(message => `
                 <div class="message ${message.isFromSupport ? 'sent' : 'received'}">
                     <div class="message-content">${escapeHtml(message.message)}</div>
@@ -297,18 +297,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 </div>
             `).join('');
 
-            // Скролваме до последното съобщение
+            // Scroll to last message
             chatMessages.scrollTop = chatMessages.scrollHeight;
             
-            // Обновяваме currentUserId
+            // Update currentUserId
             currentUserId = userId;
             
-            // Активираме input полето
+            // Activate input field
             messageInput.disabled = false;
             sendButton.disabled = false;
             messageInput.focus();
 
-            // Прикачваме event listeners за новите бутони
+            // Attach event listeners for new buttons
             document.getElementById('markAsRead')?.addEventListener('click', handleMarkAsRead);
             document.getElementById('showUserInfo')?.addEventListener('click', handleShowUserInfo);
             
@@ -320,7 +320,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <i class="bi bi-exclamation-circle"></i>
                         <p>${error.message}</p>
                         <button class="btn btn-sm btn-primary" onclick="loadChat(${userId})">
-                            <i class="bi bi-arrow-clockwise"></i> Опитай отново
+                            <i class="bi bi-arrow-clockwise"></i> Try Again
                         </button>
                     </div>
                 `;
@@ -330,7 +330,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Функция за добавяне на съобщение към чата
+    // Function for adding message to chat
     function appendMessage(message) {
         const chatMessages = document.getElementById('adminChatMessages');
         if (!chatMessages) {
@@ -364,7 +364,7 @@ document.addEventListener('DOMContentLoaded', function () {
         chatMessages.appendChild(messageDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
         
-        // Обновяваме последното съобщение в списъка с чатове
+        // Update last message in chat list
         const chatItem = document.querySelector(`.chat-list-item[data-user-id="${currentUserId}"]`);
         if (chatItem) {
             const lastMessageElement = chatItem.querySelector('.chat-last-message');
@@ -379,7 +379,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Функция за изпращане на съобщение
+    // Function for sending message
     async function sendMessage() {
         const messageInput = document.getElementById('adminMessageInput');
         const sendButton = document.getElementById('adminSendMessage');
@@ -400,7 +400,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const newMessage = {
                 message: message,
                 isFromSupport: true,
-                senderName: 'Поддръжка',
+                senderName: 'Support',
                 timestamp: new Date().toISOString()
             };
             
@@ -411,11 +411,11 @@ document.addEventListener('DOMContentLoaded', function () {
             
         } catch (error) {
             console.error('Error sending message:', error);
-            alert('Грешка при изпращане на съобщението. Моля, опитайте отново.');
+            alert('Error sending message. Please try again.');
         }
     }
 
-    // Функция за маркиране като прочетено
+    // Function for marking as read
     async function handleMarkAsRead() {
         if (!currentUserId) return;
 
@@ -423,19 +423,19 @@ document.addEventListener('DOMContentLoaded', function () {
             const response = await fetch(`/Chat/MarkAllAsRead/${currentUserId}`, { method: 'POST' });
             if (!response.ok) throw new Error('Network response was not ok');
             
-            // Обновяваме UI
+            // Update UI
             document.querySelectorAll('.unread-indicator').forEach(indicator => {
                 indicator.remove();
             });
             
-            // Обновяваме статистиката
+            // Update statistics
             updateStatistics();
         } catch (err) {
             console.error('Error marking messages as read:', err);
         }
     }
 
-    // Функция за показване на информация за потребителя
+    // Function for showing user information
     async function handleShowUserInfo() {
         if (!currentUserId) return;
         

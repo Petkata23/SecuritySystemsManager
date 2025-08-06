@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -86,80 +87,44 @@ namespace SecuritySystemsManagerMVC.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin,Manager,Technician")]
         public override async Task<IActionResult> Create()
         {
-            // Check if user is a client - clients cannot create invoices
-            string userRole = User.FindFirstValue(ClaimTypes.Role);
-            if (userRole == "Client")
-            {
-                return Forbid();
-            }
-
             return await base.Create();
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Manager,Technician")]
         public override async Task<IActionResult> Create(InvoiceEditVm editVM)
         {
-            // Check if user is a client - clients cannot create invoices
-            string userRole = User.FindFirstValue(ClaimTypes.Role);
-            if (userRole == "Client")
-            {
-                return Forbid();
-            }
-
             return await base.Create(editVM);
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin,Manager")]
         public override async Task<IActionResult> Edit(int? id)
         {
-            // Check if user is a client - clients cannot edit invoices
-            string userRole = User.FindFirstValue(ClaimTypes.Role);
-            if (userRole == "Client")
-            {
-                return Forbid();
-            }
-
             return await base.Edit(id);
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Manager")]
         public override async Task<IActionResult> Edit(int id, InvoiceEditVm editVM)
         {
-            // Check if user is a client - clients cannot edit invoices
-            string userRole = User.FindFirstValue(ClaimTypes.Role);
-            if (userRole == "Client")
-            {
-                return Forbid();
-            }
-
             return await base.Edit(id, editVM);
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin,Manager")]
         public override async Task<IActionResult> Delete(int? id)
         {
-            // Check if user is a client - clients cannot delete invoices
-            string userRole = User.FindFirstValue(ClaimTypes.Role);
-            if (userRole == "Client")
-            {
-                return Forbid();
-            }
-
             return await base.Delete(id);
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Manager")]
         public override async Task<IActionResult> Delete(int id)
         {
-            // Check if user is a client - clients cannot delete invoices
-            string userRole = User.FindFirstValue(ClaimTypes.Role);
-            if (userRole == "Client")
-            {
-                return Forbid();
-            }
-
             return await base.Delete(id);
         }
 

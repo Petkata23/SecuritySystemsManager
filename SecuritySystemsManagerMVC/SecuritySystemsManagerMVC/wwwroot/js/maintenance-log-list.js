@@ -55,15 +55,16 @@ $(document).ready(function() {
             }
         });
         
-        // Show message if no results
-        if ($(".maintenance-log-item:visible").length === 0) {
-            if ($("#no-results-message").length === 0) {
-                $("#maintenanceLogsList").append(
-                    '<div id="no-results-message" class="col-12"><div class="alert alert-info">No maintenance logs match your filters</div></div>'
-                );
-            }
-        } else {
-            $("#no-results-message").remove();
+        // Always remove existing no-results message first
+        $("#no-results-message").remove();
+        
+        // Show message if no results (count visible items excluding the no-results message)
+        const visibleItems = $(".maintenance-log-item:visible").length;
+        
+        if (visibleItems === 0) {
+            $("#maintenanceLogsList").append(
+                '<div id="no-results-message" class="col-12"><div class="alert alert-info">No maintenance logs match your filters</div></div>'
+            );
         }
     }
 }); 

@@ -20,87 +20,158 @@ $(document).ready(function() {
         $("#cardView").removeClass('d-none');
     });
     
-    // Filter functionality
-    $("#statusFilter, #startDate, #endDate").on("change", filterOrders);
-    $("#searchBtn").on("click", filterOrders);
+    // AJAX filter functionality
+    $("#statusFilter, #startDate, #endDate").on("change", function() {
+        applyServerSideFilters();
+    });
+    
+    $("#searchBtn").on("click", function() {
+        applyServerSideFilters();
+    });
+    
     $("#searchInput").on("keyup", function(e) {
         if (e.key === "Enter") {
-            filterOrders();
+            applyServerSideFilters();
         }
     });
     
-    function filterOrders() {
-        const status = $("#statusFilter").val().toLowerCase();
+    function applyServerSideFilters() {
+        const status = $("#statusFilter").val();
         const startDate = $("#startDate").val();
         const endDate = $("#endDate").val();
-        const searchText = $("#searchInput").val().toLowerCase();
+        const searchTerm = $("#searchInput").val();
         
-        // Filter table view
-        $("#ordersTable tbody tr").each(function() {
-            filterElement($(this), status, startDate, endDate, searchText);
-        });
+        // Show loading indicator
+        $("#ordersTableContainer").html('<div class="text-center py-5"><i class="bi bi-hourglass-split fa-spin" style="font-size: 2rem;"></i><p class="mt-2">Loading...</p></div>');
         
-        // Filter card view
-        $(".order-card-col").each(function() {
-            filterElement($(this), status, startDate, endDate, searchText);
-        });
+        // Build the URL with filter parameters
+        let url = '/SecuritySystemOrder/GetOrdersPartial?';
+        const params = new URLSearchParams();
         
-        // Show empty message if all rows are hidden in the active view
-        const activeView = $("#tableView").hasClass("d-none") ? "card" : "table";
+        if (status) params.append('status', status);
+        if (startDate) params.append('startDate', startDate);
+        if (endDate) params.append('endDate', endDate);
+        if (searchTerm) params.append('searchTerm', searchTerm);
         
-        if (activeView === "table") {
-            const visibleRows = $("#ordersTable tbody tr:visible").length;
-            if (visibleRows === 0) {
-                if ($("#no-results-row").length === 0) {
-                    $("#ordersTable tbody").append(
-                        '<tr id="no-results-row"><td colspan="6" class="text-center py-4">' +
-                        '<i class="bi bi-search text-muted mb-2" style="font-size: 2rem;"></i>' +
-                        '<p class="mb-0">No orders match your search criteria</p>' +
-                        '</td></tr>'
-                    );
-                }
-            } else {
-                $("#no-results-row").remove();
+        // Add pagination parameters (start with page 1 when filtering)
+        params.append('pageSize', '10');
+        params.append('pageNumber', '1');
+        
+        url += params.toString();
+        
+        // Make AJAX request
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function(response) {
+                $("#ordersTableContainer").html(response);
+                
+                // Re-initialize tooltips for new content
+                var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                    return new bootstrap.Tooltip(tooltipTriggerEl);
+                });
+                
+                // Re-initialize view toggle functionality
+                $("#tableViewBtn").click(function() {
+                    $(this).addClass('active');
+                    $("#cardViewBtn").removeClass('active');
+                    $("#tableView").removeClass('d-none');
+                    $("#cardView").addClass('d-none');
+                });
+                
+                $("#cardViewBtn").click(function() {
+                    $(this).addClass('active');
+                    $("#tableViewBtn").removeClass('active');
+                    $("#tableView").addClass('d-none');
+                    $("#cardView").removeClass('d-none');
+                });
+            },
+            error: function() {
+                $("#ordersTableContainer").html('<div class="text-center py-5"><i class="bi bi-exclamation-triangle text-danger" style="font-size: 2rem;"></i><p class="mt-2 text-danger">Error loading orders. Please try again.</p></div>');
             }
-        } else {
-            const visibleCards = $(".order-card-col:visible").length;
-            if (visibleCards === 0) {
-                if ($("#no-results-card").length === 0) {
-                    $("#cardView .row").append(
-                        '<div id="no-results-card" class="col-12 text-center py-5">' +
-                        '<i class="bi bi-search text-muted mb-2" style="font-size: 2rem;"></i>' +
-                        '<p class="mb-0">No orders match your search criteria</p>' +
-                        '</div>'
-                    );
-                }
-            } else {
-                $("#no-results-card").remove();
-            }
-        }
+        });
     }
     
-    function filterElement(element, status, startDate, endDate, searchText) {
-        const rowStatus = element.data("status").toString().toLowerCase();
-        const rowDate = element.data("date");
-        const rowText = element.text().toLowerCase();
+    // Handle pagination clicks with AJAX
+    $(document).on('click', '.pagination .page-link', function(e) {
+        e.preventDefault();
         
-        let statusMatch = status === "" || rowStatus.includes(status);
-        let dateMatch = true;
-        
-        if (startDate && rowDate < startDate) {
-            dateMatch = false;
+        const href = $(this).attr('href');
+        if (href) {
+            // Extract parameters from href
+            const url = new URL(href, window.location.origin);
+            const searchTerm = url.searchParams.get('searchTerm') || '';
+            const startDate = url.searchParams.get('startDate') || '';
+            const endDate = url.searchParams.get('endDate') || '';
+            const status = url.searchParams.get('status') || '';
+            const pageNumber = url.searchParams.get('pageNumber') || '1';
+            
+            // Show loading indicator
+            $("#ordersTableContainer").html('<div class="text-center py-5"><i class="bi bi-hourglass-split fa-spin" style="font-size: 2rem;"></i><p class="mt-2">Loading...</p></div>');
+            
+            // Build AJAX URL
+            let ajaxUrl = '/SecuritySystemOrder/GetOrdersPartial?';
+            const params = new URLSearchParams();
+            
+            if (searchTerm) params.append('searchTerm', searchTerm);
+            if (startDate) params.append('startDate', startDate);
+            if (endDate) params.append('endDate', endDate);
+            if (status) params.append('status', status);
+            params.append('pageNumber', pageNumber);
+            params.append('pageSize', '10');
+            
+            ajaxUrl += params.toString();
+            
+            // Make AJAX request
+            $.ajax({
+                url: ajaxUrl,
+                type: 'GET',
+                success: function(response) {
+                    $("#ordersTableContainer").html(response);
+                    
+                    // Re-initialize tooltips for new content
+                    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                        return new bootstrap.Tooltip(tooltipTriggerEl);
+                    });
+                    
+                    // Re-initialize view toggle functionality
+                    $("#tableViewBtn").click(function() {
+                        $(this).addClass('active');
+                        $("#cardViewBtn").removeClass('active');
+                        $("#tableView").removeClass('d-none');
+                        $("#cardView").addClass('d-none');
+                    });
+                    
+                    $("#cardViewBtn").click(function() {
+                        $(this).addClass('active');
+                        $("#tableViewBtn").removeClass('active');
+                        $("#tableView").addClass('d-none');
+                        $("#cardView").removeClass('d-none');
+                    });
+                },
+                error: function() {
+                    $("#ordersTableContainer").html('<div class="text-center py-5"><i class="bi bi-exclamation-triangle text-danger" style="font-size: 2rem;"></i><p class="mt-2 text-danger">Error loading orders. Please try again.</p></div>');
+                }
+            });
         }
-        
-        if (endDate && rowDate > endDate) {
-            dateMatch = false;
+    });
+    
+    // Initialize filters with current values from ViewBag (if any)
+    $(document).ready(function() {
+        // These values will be set by the server when returning filtered results
+        if (typeof searchTermFilter !== 'undefined') {
+            $("#searchInput").val(searchTermFilter);
         }
-        
-        let textMatch = searchText === "" || rowText.includes(searchText);
-        
-        if (statusMatch && dateMatch && textMatch) {
-            element.show();
-        } else {
-            element.hide();
+        if (typeof startDateFilter !== 'undefined') {
+            $("#startDate").val(startDateFilter);
         }
-    }
+        if (typeof endDateFilter !== 'undefined') {
+            $("#endDate").val(endDateFilter);
+        }
+        if (typeof statusFilter !== 'undefined') {
+            $("#statusFilter").val(statusFilter);
+        }
+    });
 }); 

@@ -3,6 +3,7 @@ using SecuritySystemsManager.Shared.Dtos;
 using SecuritySystemsManager.Shared.Enums;
 using SecuritySystemsManager.Shared.Repos.Contracts;
 using SecuritySystemsManager.Shared.Services.Contracts;
+using System.Security.Claims;
 
 namespace SecuritySystemsManager.Services
 {
@@ -125,6 +126,19 @@ namespace SecuritySystemsManager.Services
         public async Task<SecuritySystemOrderDto> GetOrderWithAllDetailsAsync(int orderId)
         {
             return await _orderRepository.GetOrderWithAllDetailsAsync(orderId);
+        }
+
+        // Universal filtering method with pagination
+        public async Task<(List<SecuritySystemOrderDto> Orders, int TotalCount)> GetFilteredOrdersAsync(
+            string? searchTerm = null,
+            DateTime? startDate = null,
+            DateTime? endDate = null,
+            string? status = null,
+            ClaimsPrincipal? user = null,
+            int pageSize = 10,
+            int pageNumber = 1)
+        {
+            return await _orderRepository.GetFilteredOrdersAsync(searchTerm, startDate, endDate, status, user, pageSize, pageNumber);
         }
     }
 } 

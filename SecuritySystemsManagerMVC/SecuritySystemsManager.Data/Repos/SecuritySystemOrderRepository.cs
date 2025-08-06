@@ -3,7 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using SecuritySystemsManager.Data.Entities;
 using SecuritySystemsManager.Shared.Attributes;
 using SecuritySystemsManager.Shared.Dtos;
+using SecuritySystemsManager.Shared.Enums;
 using SecuritySystemsManager.Shared.Repos.Contracts;
+using System.Security.Claims;
 
 namespace SecuritySystemsManager.Data.Repos
 {
@@ -171,6 +173,96 @@ namespace SecuritySystemsManager.Data.Repos
                 return null;
 
             return _mapper.Map<SecuritySystemOrderDto>(order);
+        }
+
+        // Universal filtering method with pagination
+        public async Task<(List<SecuritySystemOrderDto> Orders, int TotalCount)> GetFilteredOrdersAsync(
+            string? searchTerm = null,
+            DateTime? startDate = null,
+            DateTime? endDate = null,
+            string? status = null,
+            ClaimsPrincipal? user = null,
+            int pageSize = 10,
+            int pageNumber = 1)
+        {
+            // Get user ID and role
+            string userIdStr = user?.FindFirstValue(ClaimTypes.NameIdentifier);
+            string userRole = user?.FindFirstValue(ClaimTypes.Role);
+            
+            if (string.IsNullOrEmpty(userIdStr) || string.IsNullOrEmpty(userRole))
+            {
+                return (new List<SecuritySystemOrderDto>(), 0);
+            }
+            
+            if (!int.TryParse(userIdStr, out int userId))
+            {
+                return (new List<SecuritySystemOrderDto>(), 0);
+            }
+
+            // Get base orders based on user role using existing methods
+            IEnumerable<SecuritySystemOrderDto> baseOrders;
+            int totalCount;
+            
+            if (userRole == "Client")
+            {
+                baseOrders = await GetOrdersByClientIdAsync(userId, int.MaxValue, 1); // Get all orders for client
+                totalCount = await GetOrdersCountByClientIdAsync(userId);
+            }
+            else if (userRole == "Technician")
+            {
+                baseOrders = await GetOrdersByTechnicianIdAsync(userId, int.MaxValue, 1); // Get all orders for technician
+                totalCount = await GetOrdersCountByTechnicianIdAsync(userId);
+            }
+            else
+            {
+                // Manager/Admin - get all orders
+                baseOrders = await GetAllAsync();
+                totalCount = await _context.Orders.CountAsync();
+            }
+
+            // Convert to list for filtering
+            var ordersList = baseOrders.ToList();
+
+            // Apply additional filters
+            var filteredOrders = ordersList.AsQueryable();
+
+            // Apply search term filter
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                filteredOrders = filteredOrders.Where(o => o.Title.ToLower().Contains(searchTerm.ToLower()));
+            }
+
+            // Apply status filter
+            if (!string.IsNullOrEmpty(status))
+            {
+                if (Enum.TryParse<OrderStatus>(status, true, out OrderStatus orderStatus))
+                {
+                    filteredOrders = filteredOrders.Where(o => o.Status == orderStatus);
+                }
+            }
+
+            // Apply date range filters
+            if (startDate.HasValue)
+            {
+                filteredOrders = filteredOrders.Where(o => o.RequestedDate >= startDate.Value);
+            }
+
+            if (endDate.HasValue)
+            {
+                filteredOrders = filteredOrders.Where(o => o.RequestedDate <= endDate.Value);
+            }
+
+            // Get filtered count
+            var filteredCount = filteredOrders.Count();
+
+            // Apply pagination and ordering
+            var paginatedOrders = filteredOrders
+                .OrderByDescending(o => o.CreatedAt)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            return (paginatedOrders, filteredCount);
         }
     }
 } 

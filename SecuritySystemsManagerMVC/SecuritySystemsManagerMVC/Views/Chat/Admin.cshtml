@@ -2,7 +2,7 @@
 @using SecuritySystemsManagerMVC.ViewModels.Chat
 @model ChatAdminPanelVm
 @{
-    ViewData["Title"] = "Чат поддръжка";
+    ViewData["Title"] = "Chat Support";
 }
 
 @section Styles {
@@ -17,7 +17,7 @@
         </div>
         <div class="stat-info">
             <h3 id="activeChatsCount">@Model.ActiveChats?.Count() ?? 0</h3>
-            <p>Активни чатове</p>
+            <p>Active Chats</p>
         </div>
     </div>
     <div class="stat-card">
@@ -26,7 +26,7 @@
         </div>
         <div class="stat-info">
             <h3 id="unreadCount">@Model.ActiveChats?.Count(c => c.HasUnreadMessages) ?? 0</h3>
-            <p>Непрочетени</p>
+            <p>Unread</p>
         </div>
     </div>
 </div>
@@ -34,9 +34,9 @@
 <div class="chat-admin-container">
     <div class="chat-sidebar">
         <div class="sidebar-header">
-            <h5 class="mb-0">Активни чатове</h5>
+            <h5 class="mb-0">Active Chats</h5>
             <div class="sidebar-actions">
-                <button class="btn btn-icon" id="refreshChats" title="Обнови">
+                <button class="btn btn-icon" id="refreshChats" title="Refresh">
                     <i class="bi bi-arrow-clockwise"></i>
                 </button>
             </div>
@@ -75,10 +75,10 @@
                         <small class="text-muted">@Model.CurrentChat.UserRole</small>
                     </div>
                                             <div class="chat-actions">
-                            <button class="btn btn-icon" id="markAsRead" title="Маркирай като прочетено">
+                            <button class="btn btn-icon" id="markAsRead" title="Mark as Read">
                                 <i class="bi bi-check2-all"></i>
                             </button>
-                            <button class="btn btn-icon" id="showUserInfo" title="Информация">
+                            <button class="btn btn-icon" id="showUserInfo" title="Information">
                                 <i class="bi bi-info-circle"></i>
                             </button>
                         </div>
@@ -113,8 +113,8 @@
             <div class="no-chat-selected">
                 <div class="empty-state">
                     <i class="bi bi-chat-dots"></i>
-                    <h5>Изберете чат от списъка</h5>
-                    <p>Изберете потребител от списъка вляво, за да започнете разговор</p>
+                    <h5>Select a chat from the list</h5>
+                    <p>Select a user from the list on the left to start a conversation</p>
                 </div>
             </div>
         }
@@ -122,7 +122,7 @@
 
     <div class="info-panel" id="userInfoPanel" style="display: none;">
         <div class="info-panel-header">
-            <h5>Информация за потребителя</h5>
+            <h5>User Information</h5>
             <button class="btn btn-icon" id="closeInfoPanel">
                 <i class="bi bi-x"></i>
             </button>
@@ -132,14 +132,14 @@
                 <div class="stat-item">
                     <i class="bi bi-clock"></i>
                     <div>
-                        <label>Първо съобщение</label>
+                        <label>First Message</label>
                         <span id="firstMessageDate">-</span>
                     </div>
                 </div>
                 <div class="stat-item">
                     <i class="bi bi-chat-left-text"></i>
                     <div>
-                        <label>Общо съобщения</label>
+                        <label>Total Messages</label>
                         <span id="totalMessages">0</span>
                     </div>
                 </div>

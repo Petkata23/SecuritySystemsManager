@@ -460,6 +460,11 @@
     gap: 5px;
 }
 
+/* Add spacing between "Address:" label and the actual address */
+.leaflet-popup-content .popup-info p strong {
+    margin-right: 8px;
+}
+
 /* Details Page Styling */
 .location-details-container {
     background-color: var(--dark-bg);

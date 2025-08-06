@@ -117,35 +117,56 @@ function initializeStatusToggle() {
 
 // Initialize device filters functionality
 function initializeDeviceFilters() {
-    // Filter devices by status
-    $('#filterDevices').on('change', function() {
-        const filterValue = $(this).val();
-        
-        if (filterValue === 'all') {
-            $('.device-card').show();
-        } else if (filterValue === 'fixed') {
-            $('.device-card').hide();
-            $('.device-card .status-fixed').closest('.device-card').show();
-        } else if (filterValue === 'not-fixed') {
-            $('.device-card').hide();
-            $('.device-card .status-not-fixed').closest('.device-card').show();
-        }
-    });
-    
-    // Search devices by name
-    $('#searchDevices').on('keyup', function() {
-        const searchValue = $(this).val().toLowerCase();
+    // Combined filter function
+    function applyFilters() {
+        const filterValue = $('#filterDevices').val();
+        const searchValue = $('#searchDevices').val().toLowerCase();
         
         $('.device-card').each(function() {
-            const deviceName = $(this).find('.device-info-item strong').text().toLowerCase();
+            const $card = $(this);
+            const deviceName = $card.find('.device-info-item strong').text().toLowerCase();
+            const isFixed = $card.find('.status-fixed').length > 0;
             
-            if (deviceName.includes(searchValue)) {
-                $(this).show();
+            // Status filter
+            let statusMatch = true;
+            if (filterValue === 'fixed') {
+                statusMatch = isFixed;
+            } else if (filterValue === 'not-fixed') {
+                statusMatch = !isFixed;
+            }
+            
+            // Search filter
+            const searchMatch = searchValue === '' || deviceName.includes(searchValue);
+            
+            // Show/hide based on both filters
+            if (statusMatch && searchMatch) {
+                $card.show();
             } else {
-                $(this).hide();
+                $card.hide();
             }
         });
-    });
+        
+        // Always remove existing no-results message first
+        $('#no-results-devices').remove();
+        
+        // Show message if no results (count visible cards excluding the no-results message)
+        const visibleCards = $('.device-card:visible').length;
+        
+        if (visibleCards === 0) {
+            $('.maintenance-device-body').append(
+                '<div id="no-results-devices" class="col-12 text-center py-5">' +
+                '<i class="bi bi-search text-muted mb-2" style="font-size: 2rem;"></i>' +
+                '<p class="mb-0">No maintenance devices match your filters</p>' +
+                '</div>'
+            );
+        }
+    }
+    
+    // Filter devices by status
+    $('#filterDevices').on('change', applyFilters);
+    
+    // Search devices by name
+    $('#searchDevices').on('keyup', applyFilters);
 }
 
 // Helper function to show toast notifications

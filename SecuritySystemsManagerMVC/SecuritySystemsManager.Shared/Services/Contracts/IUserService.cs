@@ -13,5 +13,6 @@ namespace SecuritySystemsManager.Shared.Services.Contracts
         Task<string> UploadUserProfileImageAsync(IFormFile imageFile);
         Task<string> UploadProfileImageAsync(int userId, IFormFile profileImageFile);
         Task<UserDto> CreateUserWithDetailsAsync(UserDto userDto, string password, IFormFile profileImageFile);
+        Task<UserProfileDto> GetUserProfileDataAsync(int userId);
     }
 } 

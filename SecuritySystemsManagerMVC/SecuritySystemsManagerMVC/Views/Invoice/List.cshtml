@@ -4,6 +4,9 @@
     ViewData["Title"] = "Invoices";
     var userRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
     var isClient = userRole == "Client";
+    var isTechnician = userRole == "Technician";
+    var canManageInvoices = userRole == "Admin" || userRole == "Manager";
+    var canCreateInvoices = userRole == "Admin" || userRole == "Manager" || userRole == "Technician";
 }
 
 @section Styles {
@@ -18,7 +21,7 @@
             </h1>
             <p class="text-muted">Manage and track all system invoices</p>
         </div>
-        @if (!isClient)
+        @if (canCreateInvoices)
         {
             <div>
                 <a asp-action="Create" class="btn btn-primary">
@@ -94,7 +97,7 @@
                                 <a asp-action="Details" asp-route-id="@invoice.Id" class="btn btn-sm btn-outline-primary">
                                     <i class="bi bi-eye"></i>
                                 </a>
-                                @if (!isClient)
+                                @if (canManageInvoices)
                                 {
                                     <a asp-action="Edit" asp-route-id="@invoice.Id" class="btn btn-sm btn-outline-secondary">
                                         <i class="bi bi-pencil"></i>
@@ -114,7 +117,7 @@
                     <i class="bi bi-receipt text-muted" style="font-size: 3rem;"></i>
                     <h4 class="mt-3">No Invoices Found</h4>
                     <p class="text-muted">There are no invoices in the system yet.</p>
-                    @if (!isClient)
+                    @if (canCreateInvoices)
                     {
                         <a asp-action="Create" class="btn btn-primary mt-2">
                             <i class="bi bi-plus-circle me-2"></i>Create First Invoice

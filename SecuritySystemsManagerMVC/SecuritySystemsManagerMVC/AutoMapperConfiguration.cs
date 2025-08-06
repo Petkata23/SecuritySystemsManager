@@ -40,7 +40,20 @@ namespace SecuritySystemsManagerMVC
             CreateMap<LocationDto, LocationEditVm>().ReverseMap();
 
             CreateMap<SecuritySystemOrder, SecuritySystemOrderDto>().ReverseMap();
-            CreateMap<SecuritySystemOrderDto, SecuritySystemOrderDetailsVm>().ReverseMap();
+            CreateMap<SecuritySystemOrderDto, SecuritySystemOrderDetailsVm>()
+                .ForMember(dest => dest.Client, opt => opt.MapFrom(src => src.Client))
+                .ForMember(dest => dest.Location, opt => opt.MapFrom(src => src.Location))
+                .ForMember(dest => dest.Invoice, opt => opt.MapFrom(src => src.Invoice))
+                .ForMember(dest => dest.InstalledDevices, opt => opt.MapFrom(src => src.InstalledDevices))
+                .ForMember(dest => dest.Technicians, opt => opt.MapFrom(src => src.Technicians))
+                .ForMember(dest => dest.MaintenanceLogs, opt => opt.MapFrom(src => src.MaintenanceLogs));
+            CreateMap<SecuritySystemOrderDetailsVm, SecuritySystemOrderDto>()
+                .ForMember(dest => dest.Client, opt => opt.Ignore())
+                .ForMember(dest => dest.Location, opt => opt.Ignore())
+                .ForMember(dest => dest.Invoice, opt => opt.Ignore())
+                .ForMember(dest => dest.InstalledDevices, opt => opt.Ignore())
+                .ForMember(dest => dest.Technicians, opt => opt.Ignore())
+                .ForMember(dest => dest.MaintenanceLogs, opt => opt.Ignore());
             CreateMap<SecuritySystemOrderDto, SecuritySystemOrderEditVm>().ReverseMap();
 
             CreateMap<MaintenanceDevice, MaintenanceDeviceDto>().ReverseMap();
