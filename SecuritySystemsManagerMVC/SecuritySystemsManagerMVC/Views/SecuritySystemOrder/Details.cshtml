@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="~/css/custom-modal.css" asp-append-version="true" />
 }
 
-<div class="container-fluid animate-fade-in px-4">
+<div class="container-fluid animate-fade-in px-5">
     <!-- Success/Error Messages -->
     @if (TempData["SuccessMessage"] != null)
     {
@@ -36,7 +36,7 @@
         </div>
     }
     
-    <div class="row mb-4">
+    <div class="row mb-5">
         <div class="col-12">
             <div class="card bg-gradient-primary text-white">
                 <div class="card-body py-4">
@@ -57,125 +57,252 @@
     </div>
 
     <div class="row">
-        <div class="col-lg-8">
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-transparent">
-                    <h5 class="mb-0">Order Information</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <h6 class="text-muted mb-3">General Information</h6>
-                            <dl class="row">
-                                <dt class="col-sm-4">Title</dt>
-                                <dd class="col-sm-8">@Model.Title</dd>
-                                
-                                <dt class="col-sm-4">Description</dt>
-                                <dd class="col-sm-8">@Model.Description</dd>
-                                
-                                <dt class="col-sm-4">Phone</dt>
-                                <dd class="col-sm-8">@Model.PhoneNumber</dd>
-                                
-                                <dt class="col-sm-4">Status</dt>
-                                <dd class="col-sm-8">
-                                    <span class="badge bg-@GetStatusBadgeClass(Model.Status)">
-                                        @GetStatusDisplayName(Model.Status)
-                                    </span>
-                                </dd>
-                                
-                                <dt class="col-sm-4">Requested Date</dt>
-                                <dd class="col-sm-8">@Model.RequestedDate.ToString()</dd>
-                            </dl>
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <h6 class="text-muted mb-3">Client Information</h6>
-                            @if (Model.Client != null)
-                            {
-                                <div class="d-flex align-items-center mb-3">
-                                    <div class="client-avatar me-3">
-                                        @if (!string.IsNullOrEmpty(Model.Client.ProfileImage))
-                                        {
-                                            <img src="@Model.Client.ProfileImage" alt="@Model.Client.FirstName @Model.Client.LastName" class="rounded-circle" width="48" height="48">
-                                        }
-                                        else
-                                        {
-                                            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center client-initials">
-                                                @(Model.Client.FirstName?.Substring(0, 1))@(Model.Client.LastName?.Substring(0, 1))
-                                            </div>
-                                        }
-                                    </div>
-                                    <div>
-                                        <h6 class="mb-0">@Model.Client.FirstName @Model.Client.LastName</h6>
-                                        <p class="text-muted mb-0">@Model.Client.Email</p>
-                                    </div>
-                                </div>
-                                
-                                <dl class="row">
-                                    <dt class="col-sm-4">Username</dt>
-                                    <dd class="col-sm-8">@Model.Client.Username</dd>
-                                    
-                                    <dt class="col-sm-4">Role</dt>
-                                    <dd class="col-sm-8">@Model.Client.RoleName</dd>
-                                </dl>
-                            }
-                            else
-                            {
-                                <p class="text-muted">No client information available</p>
-                            }
+        <div class="col-lg-8 px-3">
+            <!-- Order Information - Professional Layout -->
+            <div class="order-information-container">
+                <!-- Order Overview Section -->
+                <div class="card shadow-sm mb-4 order-overview-card">
+                    <div class="card-header bg-gradient-primary text-white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="mb-1">
+                                    <i class="bi bi-file-earmark-text me-2"></i>Order Overview
+                                </h5>
+                                <small>Complete order details and specifications</small>
+                            </div>
+                            <div class="order-status-badge">
+                                <span class="badge bg-@GetStatusBadgeClass(Model.Status) fs-6 px-3 py-2">
+                                    <i class="bi bi-@(Model.Status == OrderStatus.Pending ? "clock" : Model.Status == OrderStatus.InProgress ? "gear" : Model.Status == OrderStatus.Completed ? "check-circle" : "x-circle") me-1"></i>
+                                    @GetStatusDisplayName(Model.Status)
+                                </span>
+                            </div>
                         </div>
                     </div>
-                    
-                    <h6 class="text-muted mb-3">Location Information</h6>
-                    @if (Model.Location != null)
-                    {
-                        <div class="row mb-4">
-                            <div class="col-md-6">
-                                <dl class="row">
-                                    <dt class="col-sm-4">Name</dt>
-                                    <dd class="col-sm-8">@Model.Location.Name</dd>
-                                    
-                                    <dt class="col-sm-4">Address</dt>
-                                    <dd class="col-sm-8">@Model.Location.Address</dd>
-                                    
-                                    <dt class="col-sm-4">Description</dt>
-                                    <dd class="col-sm-8">@Model.Location.Description</dd>
-                                </dl>
+                    <div class="card-body p-0">
+                        <div class="row g-0">
+                            <!-- Order Details -->
+                            <div class="col-lg-8 p-5">
+                                <div class="order-details-section">
+                                    <h6 class="section-title">
+                                        <i class="bi bi-info-circle me-2"></i>Order Details
+                                    </h6>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="info-item">
+                                                <label class="info-label">Title</label>
+                                                <div class="info-value">@Model.Title</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="info-item">
+                                                <label class="info-label">Phone Number</label>
+                                                <div class="info-value">
+                                                    <i class="bi bi-telephone me-1"></i>@Model.PhoneNumber
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col-12">
+                                            <div class="info-item">
+                                                <label class="info-label">Description</label>
+                                                <div class="info-value description-text">@Model.Description</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col-md-6">
+                                            <div class="info-item">
+                                                <label class="info-label">Requested Date</label>
+                                                <div class="info-value">
+                                                    <i class="bi bi-calendar-event me-1"></i>@Model.RequestedDate.ToString("dd/MM/yyyy HH:mm")
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="info-item">
+                                                <label class="info-label">Order ID</label>
+                                                <div class="info-value">
+                                                    <span class="badge bg-secondary">#@Model.Id</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <div id="locationDetailsMap" 
-                                     data-latitude="@Model.Location.Latitude" 
-                                     data-longitude="@Model.Location.Longitude"
-                                     data-name="@Model.Location.Name"
-                                     data-address="@Model.Location.Address"
-                                     data-description="@Model.Location.Description"
-                                     class="location-map">
+                            
+                            <!-- Client Information -->
+                            <div class="col-lg-4 p-5 client-section">
+                                <div class="client-info-card">
+                                    <h6 class="section-title">
+                                        <i class="bi bi-person-circle me-2"></i>Client Information
+                                    </h6>
+                                    @if (Model.Client != null)
+                                    {
+                                        <div class="client-profile">
+                                            <div class="client-avatar-large">
+                                                @if (!string.IsNullOrEmpty(Model.Client.ProfileImage))
+                                                {
+                                                    <img src="@Model.Client.ProfileImage" alt="@Model.Client.FirstName @Model.Client.LastName" class="rounded-circle">
+                                                }
+                                                else
+                                                {
+                                                    <div class="client-initials-large">
+                                                        @(Model.Client.FirstName?.Substring(0, 1))@(Model.Client.LastName?.Substring(0, 1))
+                                                    </div>
+                                                }
+                                            </div>
+                                            <div class="client-details">
+                                                <h6 class="client-name">@Model.Client.FirstName @Model.Client.LastName</h6>
+                                                <p class="client-email">
+                                                    <i class="bi bi-envelope me-1"></i>@Model.Client.Email
+                                                </p>
+                                                <div class="client-meta">
+                                                    <span class="client-username">
+                                                        <i class="bi bi-person me-1"></i>@Model.Client.Username
+                                                    </span>
+                                                    <span class="client-role">
+                                                        <i class="bi bi-shield me-1"></i>@Model.Client.RoleName
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="no-client-info">
+                                            <i class="bi bi-person-x text-muted"></i>
+                                            <p class="text-muted mb-0">No client information available</p>
+                                        </div>
+                                    }
                                 </div>
                             </div>
                         </div>
-                    }
-                    else
-                    {
-                        <p class="text-muted">No location information available</p>
-                    }
-                    
-                    <div class="d-flex justify-content-between mt-4">
-                        <a asp-action="List" class="btn btn-secondary">
-                            <i class="bi bi-arrow-left me-2"></i>Back to List
-                        </a>
-                        <div>
-                            @if (isAdminOrManager)
-                            {
-                                <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger me-2">
-                                    <i class="bi bi-trash me-2"></i>Delete
-                                </a>
-                            }
-                            @if (isAdminOrManager)
-                            {
-                                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
-                                    <i class="bi bi-pencil me-2"></i>Edit
-                                </a>
-                            }
+                    </div>
+                </div>
+
+                <!-- Location Information Section -->
+                @if (Model.Location != null)
+                {
+                    <div class="card shadow-sm mb-4 location-card">
+                        <div class="card-header bg-gradient-info text-white">
+                            <h5 class="mb-1">
+                                <i class="bi bi-geo-alt me-2"></i>Installation Location
+                            </h5>
+                            <small>Site details and geographic information</small>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="row g-0">
+                                <!-- Location Details -->
+                                <div class="col-lg-6 p-5">
+                                    <div class="location-details-section">
+                                        <div class="location-header mb-4">
+                                            <h6 class="location-name">
+                                                <i class="bi bi-building me-2"></i>@Model.Location.Name
+                                            </h6>
+                                            <p class="location-description text-muted">@Model.Location.Description</p>
+                                        </div>
+                                        
+                                        <div class="location-info-grid">
+                                            <div class="location-info-item">
+                                                <div class="info-icon">
+                                                    <i class="bi bi-geo-alt"></i>
+                                                </div>
+                                                <div class="info-content">
+                                                    <label class="info-label">Address</label>
+                                                    <div class="info-value">@Model.Location.Address</div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="location-info-item">
+                                                <div class="info-icon">
+                                                    <i class="bi bi-pin-map"></i>
+                                                </div>
+                                                <div class="info-content">
+                                                    <label class="info-label">Coordinates</label>
+                                                    <div class="info-value coordinates-display">
+                                                        @Model.Location.Latitude, @Model.Location.Longitude
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="location-actions mt-4">
+                                            <div class="d-flex gap-2 flex-wrap">
+                                                <a href="https://maps.google.com/?q=@Model.Location.Latitude,@Model.Location.Longitude" 
+                                                   target="_blank" 
+                                                   class="btn btn-primary btn-sm">
+                                                    <i class="bi bi-map me-1"></i>Open in Google Maps
+                                                </a>
+                                                <button type="button" 
+                                                        class="btn btn-outline-secondary btn-sm" 
+                                                        onclick="copyToClipboard('@Model.Location.Address')"
+                                                        title="Copy address to clipboard">
+                                                    <i class="bi bi-clipboard me-1"></i>Copy Address
+                                                </button>
+                                                <button type="button" 
+                                                        class="btn btn-outline-info btn-sm" 
+                                                        onclick="copyToClipboard('@Model.Location.Latitude, @Model.Location.Longitude')"
+                                                        title="Copy coordinates to clipboard">
+                                                    <i class="bi bi-geo-alt me-1"></i>Copy Coordinates
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Interactive Map -->
+                                <div class="col-lg-6 p-5">
+                                    <div class="map-container">
+                                        <div class="map-header">
+                                            <h6 class="map-title">
+                                                <i class="bi bi-map me-2"></i>Interactive Location Map
+                                            </h6>
+                                            <p class="map-description">Real-time map showing the installation site</p>
+                                        </div>
+                                        <div id="locationDetailsMap" 
+                                             data-latitude="@Model.Location.Latitude" 
+                                             data-longitude="@Model.Location.Longitude"
+                                             data-name="@Model.Location.Name"
+                                             data-address="@Model.Location.Address"
+                                             data-description="@Model.Location.Description"
+                                             class="location-map">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-body text-center py-5">
+                            <i class="bi bi-geo-alt text-muted icon-large"></i>
+                            <h6 class="text-muted mt-3">No Location Information</h6>
+                            <p class="text-muted mb-0">Location details are not available for this order</p>
+                        </div>
+                    </div>
+                }
+
+                <!-- Action Buttons -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a asp-action="List" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Back to Orders List
+                            </a>
+                            <div class="action-buttons">
+                                @if (isAdminOrManager)
+                                {
+                                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary me-2">
+                                        <i class="bi bi-pencil me-2"></i>Edit Order
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger">
+                                        <i class="bi bi-trash me-2"></i>Delete Order
+                                    </a>
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -366,23 +493,26 @@
                             <a asp-controller="Invoice" asp-action="Details" asp-route-id="@Model.Invoice.Id" class="btn btn-outline-primary">
                                 <i class="bi bi-file-earmark-pdf me-2"></i>View Invoice
                             </a>
-                            @if (!Model.Invoice.IsPaid)
+                            @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
                             {
-                                <form asp-controller="Invoice" asp-action="MarkAsPaid" method="post" class="d-grid">
-                                    <input type="hidden" name="id" value="@Model.Invoice.Id" />
-                                    <button type="submit" class="btn btn-success" onclick="return confirm('Are you sure you want to mark this invoice as paid?');">
-                                        <i class="bi bi-credit-card me-2"></i>Mark as Paid
-                                    </button>
-                                </form>
-                            }
-                            else
-                            {
-                                <form asp-controller="Invoice" asp-action="MarkAsUnpaid" method="post" class="d-grid">
-                                    <input type="hidden" name="id" value="@Model.Invoice.Id" />
-                                    <button type="submit" class="btn btn-warning" onclick="return confirm('Are you sure you want to mark this invoice as unpaid?');">
-                                        <i class="bi bi-arrow-counterclockwise me-2"></i>Mark as Unpaid
-                                    </button>
-                                </form>
+                                @if (!Model.Invoice.IsPaid)
+                                {
+                                    <form asp-controller="Invoice" asp-action="MarkAsPaid" method="post" class="d-grid">
+                                        <input type="hidden" name="id" value="@Model.Invoice.Id" />
+                                        <button type="submit" class="btn btn-success" onclick="return confirm('Are you sure you want to mark this invoice as paid?');">
+                                            <i class="bi bi-credit-card me-2"></i>Mark as Paid
+                                        </button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <form asp-controller="Invoice" asp-action="MarkAsUnpaid" method="post" class="d-grid">
+                                        <input type="hidden" name="id" value="@Model.Invoice.Id" />
+                                        <button type="submit" class="btn btn-warning" onclick="return confirm('Are you sure you want to mark this invoice as unpaid?');">
+                                            <i class="bi bi-arrow-counterclockwise me-2"></i>Mark as Unpaid
+                                        </button>
+                                    </form>
+                                }
                             }
                         </div>
                     }
@@ -722,6 +852,28 @@
     <script src="~/js/locations-details.js"></script>
     <script src="~/js/order-details-modal.js" asp-append-version="true"></script>
     <script src="~/js/invoice-modal.js" asp-append-version="true"></script>
+    
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                // Show a temporary success message
+                const button = event.target.closest('button');
+                const originalText = button.innerHTML;
+                button.innerHTML = '<i class="bi bi-check me-1"></i>Copied!';
+                button.classList.remove('btn-outline-secondary');
+                button.classList.add('btn-success');
+                
+                setTimeout(function() {
+                    button.innerHTML = originalText;
+                    button.classList.remove('btn-success');
+                    button.classList.add('btn-outline-secondary');
+                }, 2000);
+            }).catch(function(err) {
+                console.error('Could not copy text: ', err);
+                alert('Failed to copy address to clipboard');
+            });
+        }
+    </script>
 }
 
 @functions {

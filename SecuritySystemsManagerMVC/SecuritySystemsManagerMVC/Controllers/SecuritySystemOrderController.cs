@@ -98,28 +98,13 @@ namespace SecuritySystemsManagerMVC.Controllers
                     // Get all technicians (users with Technician role)
                     var allTechnicians = (await _userService.GetAllAsync())
                         .Where(u => u.Role?.RoleType == RoleType.Technician)
-                        .ToList();
+                        .Select(u => new SelectListItem($"{u.FirstName} {u.LastName}", u.Id.ToString()));
 
-                    // Get technicians that are not already assigned to this order
-                    var availableTechnicians = allTechnicians
-                        .Where(t => order.Technicians == null || !order.Technicians.Any(at => at.Id == t.Id))
-                        .ToList();
-
-                    // Pass available technicians to the view
-                    ViewBag.AvailableTechnicians = availableTechnicians;
-                    
-                    // Pass authorization info to the view
-                    ViewBag.CanManageTechnicians = true;
-                }
-                else
-                {
-                    ViewBag.CanManageTechnicians = false;
+                    ViewBag.AvailableTechnicians = allTechnicians;
                 }
 
-                // Map to view model
-                var viewModel = _mapper.Map<SecuritySystemOrderDetailsVm>(order);
-                
-                return View(viewModel);
+                var mappedModel = _mapper.Map<SecuritySystemOrderDetailsVm>(order);
+                return View(mappedModel);
             }
             catch (Exception ex)
             {
@@ -134,11 +119,15 @@ namespace SecuritySystemsManagerMVC.Controllers
             try
             {
                 await _service.AddTechnicianToOrderAsync(orderId, technicianId);
-                TempData["Success"] = "Technician successfully assigned to the order.";
+                TempData["Success"] = "Technician added successfully to the order.";
+            }
+            catch (ArgumentException ex)
+            {
+                TempData["Error"] = ex.Message;
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = $"Error assigning technician: {ex.Message}";
+                TempData["Error"] = "An error occurred while adding the technician.";
             }
 
             return RedirectToAction(nameof(Details), new { id = orderId });
@@ -151,11 +140,15 @@ namespace SecuritySystemsManagerMVC.Controllers
             try
             {
                 await _service.RemoveTechnicianFromOrderAsync(orderId, technicianId);
-                TempData["Success"] = "Technician successfully removed from the order.";
+                TempData["Success"] = "Technician removed successfully from the order.";
+            }
+            catch (ArgumentException ex)
+            {
+                TempData["Error"] = ex.Message;
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = $"Error removing technician: {ex.Message}";
+                TempData["Error"] = "An error occurred while removing the technician.";
             }
 
             return RedirectToAction(nameof(Details), new { id = orderId });
@@ -172,23 +165,6 @@ namespace SecuritySystemsManagerMVC.Controllers
         [Authorize(Roles = "Admin,Manager")]
         public override async Task<IActionResult> Edit(int id, SecuritySystemOrderEditVm editVM)
         {
-            // Get the original order to check if status has changed
-            var originalOrder = await _service.GetByIdIfExistsAsync(id);
-            if (originalOrder != null && originalOrder.Status != editVM.Status)
-            {
-                // Status has changed, we need to send a notification
-                var result = await base.Edit(id, editVM);
-                
-                // Send notification to client about status change
-                await _notificationService.SendOrderStatusChangeNotificationAsync(
-                    id, 
-                    editVM.ClientId, 
-                    originalOrder.Status, 
-                    editVM.Status);
-                
-                return result;
-            }
-            
             return await base.Edit(id, editVM);
         }
 
@@ -209,78 +185,55 @@ namespace SecuritySystemsManagerMVC.Controllers
         [HttpGet]
         public override async Task<IActionResult> List(int pageSize = DefaultPageSize, int pageNumber = DefaultPageNumber)
         {
-            if (pageSize <= 0 || pageSize > MaxPageSize || pageNumber <= 0)
+            try
             {
-                return BadRequest(Constants.InvalidPagination);
-            }
+                // Simple validation - can stay in controller
+                if (pageSize <= 0 || pageSize > MaxPageSize || pageNumber <= 0)
+                {
+                    return BadRequest(Constants.InvalidPagination);
+                }
 
-            // Get current user ID and role
-            string userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            string userRole = User.FindFirstValue(ClaimTypes.Role);
-            
-            // Debug information
-            Console.WriteLine($"User ID: {userIdStr}, User Role: {userRole}");
-            
-            // Check all claims
-            Console.WriteLine("All claims:");
-            foreach (var claim in User.Claims)
+                var (orders, totalCount) = await _service.GetFilteredOrdersAsync(null, null, null, null, User, pageSize, pageNumber);
+                
+                // Simple math - can stay in controller
+                var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+
+                var mappedModels = _mapper.Map<IEnumerable<SecuritySystemOrderDetailsVm>>(orders);
+
+                ViewBag.TotalPages = totalPages;
+                ViewBag.CurrentPage = pageNumber;
+                // Add flag to indicate if there are any orders before filtering
+                ViewBag.HasOrdersBeforeFilter = totalCount > 0;
+
+                return View(mappedModels);
+            }
+            catch (Exception ex)
             {
-                Console.WriteLine($"Type: {claim.Type}, Value: {claim.Value}");
+                return RedirectToAction("Error500", "Error");
             }
-            
-            if (string.IsNullOrEmpty(userIdStr) || string.IsNullOrEmpty(userRole))
-            {
-                return Unauthorized();
-            }
-            
-            if (!int.TryParse(userIdStr, out int userId))
-            {
-                return BadRequest("Invalid user ID");
-            }
-
-            // Get orders based on user role
-            var orders = await _service.GetOrdersByUserRoleAsync(userId, userRole, pageSize, pageNumber);
-            var totalOrders = await _service.GetOrdersCountByUserRoleAsync(userId, userRole);
-            var totalPages = (int)Math.Ceiling((double)totalOrders / pageSize);
-            
-            // Debug information
-            Console.WriteLine($"Orders count: {orders.Count()}, Total orders: {totalOrders}, Total pages: {totalPages}");
-
-            var mappedModels = _mapper.Map<IEnumerable<SecuritySystemOrderDetailsVm>>(orders);
-
-            ViewBag.TotalPages = totalPages;
-            ViewBag.CurrentPage = pageNumber;
-            // Add flag to indicate if there are any orders before filtering
-            ViewBag.HasOrdersBeforeFilter = totalOrders > 0;
-
-            return View(nameof(List), mappedModels);
         }
 
         [HttpGet]
         public async Task<IActionResult> FilterOrders(string searchTerm = "", string startDate = "", string endDate = "", string status = "", int pageSize = DefaultPageSize, int pageNumber = DefaultPageNumber)
         {
+            // Simple validation - can stay in controller
             if (pageSize <= 0 || pageSize > MaxPageSize || pageNumber <= 0)
             {
                 return BadRequest(Constants.InvalidPagination);
             }
 
-            // Parse dates
-            DateTime? parsedStartDate = null;
-            DateTime? parsedEndDate = null;
-            
-            if (!string.IsNullOrEmpty(startDate) && DateTime.TryParse(startDate, out DateTime start))
+            // Use service to parse dates
+            var (parsedStartDate, parsedEndDate, dateError) = await _service.ParseDateRangeAsync(startDate, endDate);
+            if (!string.IsNullOrEmpty(dateError))
             {
-                parsedStartDate = start;
-            }
-            
-            if (!string.IsNullOrEmpty(endDate) && DateTime.TryParse(endDate, out DateTime end))
-            {
-                parsedEndDate = end;
+                TempData["Error"] = dateError;
+                return RedirectToAction(nameof(List));
             }
 
-            // Get filtered orders with pagination from repository
+            // Get filtered orders with pagination from service
             var (orders, totalCount) = await _service.GetFilteredOrdersAsync(searchTerm, parsedStartDate, parsedEndDate, status, User, pageSize, pageNumber);
             
+            // Simple math - can stay in controller
             var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
 
             var mappedModels = _mapper.Map<IEnumerable<SecuritySystemOrderDetailsVm>>(orders);
@@ -298,28 +251,23 @@ namespace SecuritySystemsManagerMVC.Controllers
         [HttpGet]
         public async Task<IActionResult> GetOrdersPartial(string searchTerm = "", string startDate = "", string endDate = "", string status = "", int pageSize = DefaultPageSize, int pageNumber = DefaultPageNumber)
         {
+            // Simple validation - can stay in controller
             if (pageSize <= 0 || pageSize > MaxPageSize || pageNumber <= 0)
             {
                 return BadRequest(Constants.InvalidPagination);
             }
 
-            // Parse dates
-            DateTime? parsedStartDate = null;
-            DateTime? parsedEndDate = null;
-            
-            if (!string.IsNullOrEmpty(startDate) && DateTime.TryParse(startDate, out DateTime start))
+            // Use service to parse dates
+            var (parsedStartDate, parsedEndDate, dateError) = await _service.ParseDateRangeAsync(startDate, endDate);
+            if (!string.IsNullOrEmpty(dateError))
             {
-                parsedStartDate = start;
-            }
-            
-            if (!string.IsNullOrEmpty(endDate) && DateTime.TryParse(endDate, out DateTime end))
-            {
-                parsedEndDate = end;
+                return BadRequest(dateError);
             }
 
-            // Get filtered orders with pagination from repository
+            // Get filtered orders with pagination from service
             var (orders, totalCount) = await _service.GetFilteredOrdersAsync(searchTerm, parsedStartDate, parsedEndDate, status, User, pageSize, pageNumber);
             
+            // Simple math - can stay in controller
             var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
 
             var mappedModels = _mapper.Map<IEnumerable<SecuritySystemOrderDetailsVm>>(orders);
@@ -344,18 +292,11 @@ namespace SecuritySystemsManagerMVC.Controllers
         {
             try
             {
-                // Get the invoice service from DI
-                var invoiceService = HttpContext.RequestServices.GetService<IInvoiceService>();
-                if (invoiceService == null)
-                {
-                    TempData["ErrorMessage"] = "Invoice service not available";
-                    return RedirectToAction(nameof(Details), new { id = orderId });
-                }
-
                 // Calculate total amount from form data
                 decimal totalAmount = laborCost;
                 
                 // Get device costs from form data
+                var deviceCosts = new Dictionary<string, decimal>();
                 var formData = Request.Form.ToDictionary(x => x.Key, x => x.Value.ToString());
                 foreach (var item in formData)
                 {
@@ -363,19 +304,22 @@ namespace SecuritySystemsManagerMVC.Controllers
                     {
                         if (decimal.TryParse(item.Value, out decimal deviceCost))
                         {
-                            totalAmount += deviceCost;
+                            deviceCosts[item.Key] = deviceCost;
                         }
                     }
                 }
 
-                // Generate the invoice with calculated amount
-                await invoiceService.GenerateInvoiceFromOrderAsync(orderId, totalAmount);
+                // Use service to generate invoice
+                var (success, errorMessage) = await _service.GenerateInvoiceFromOrderAsync(orderId, laborCost, deviceCosts);
                 
-                TempData["SuccessMessage"] = $"Invoice generated successfully with total amount: ${totalAmount:F2}";
-            }
-            catch (InvalidOperationException ex)
-            {
-                TempData["ErrorMessage"] = ex.Message;
+                if (success)
+                {
+                    TempData["SuccessMessage"] = errorMessage; // Contains success message
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = errorMessage;
+                }
             }
             catch (Exception ex)
             {

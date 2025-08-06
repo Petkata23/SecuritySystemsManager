@@ -118,61 +118,27 @@ namespace SecuritySystemsManagerMVC.Controllers
                     return RedirectToAction("Error404", "Error");
                 }
 
-            var email = await _userManager.GetEmailAsync(user);
-            if (model.Email != email)
-            {
-                var setEmailResult = await _userManager.SetEmailAsync(user, model.Email);
-                if (!setEmailResult.Succeeded)
+                // Use service to update profile
+                var (success, errors) = await _userService.UpdateUserProfileAsync(
+                    user.Id, 
+                    model.Email, 
+                    model.PhoneNumber, 
+                    model.FirstName, 
+                    model.LastName, 
+                    model.ProfileImageFile);
+
+                if (!success)
                 {
-                    foreach (var error in setEmailResult.Errors)
+                    foreach (var error in errors)
                     {
-                        ModelState.AddModelError(string.Empty, error.Description);
+                        ModelState.AddModelError(string.Empty, error);
                     }
                     return View(model);
                 }
-            }
 
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-            if (model.PhoneNumber != phoneNumber)
-            {
-                var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, model.PhoneNumber);
-                if (!setPhoneResult.Succeeded)
-                {
-                    foreach (var error in setPhoneResult.Errors)
-                    {
-                        ModelState.AddModelError(string.Empty, error.Description);
-                    }
-                    return View(model);
-                }
-            }
-
-            // Update additional fields
-            user.FirstName = model.FirstName;
-            user.LastName = model.LastName;
-
-            // Handle profile image
-            if (model.ProfileImageFile != null && model.ProfileImageFile.Length > 0)
-            {
-                string imageUrl = await _userService.UploadUserProfileImageAsync(model.ProfileImageFile);
-                if (!string.IsNullOrEmpty(imageUrl))
-                {
-                    user.ProfileImage = imageUrl;
-                }
-            }
-
-            var updateResult = await _userManager.UpdateAsync(user);
-            if (!updateResult.Succeeded)
-            {
-                foreach (var error in updateResult.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
-                return View(model);
-            }
-
-            await _signInManager.RefreshSignInAsync(user);
-            TempData["Success"] = "Your profile has been updated successfully.";
-            return RedirectToAction(nameof(MyProfile));
+                await _signInManager.RefreshSignInAsync(user);
+                TempData["Success"] = "Your profile has been updated successfully.";
+                return RedirectToAction(nameof(MyProfile));
             }
             catch (Exception ex)
             {
@@ -189,7 +155,7 @@ namespace SecuritySystemsManagerMVC.Controllers
                 return NotFound();
             }
 
-            var hasPassword = await _userManager.HasPasswordAsync(user);
+            var hasPassword = await _userService.UserHasPasswordAsync(user.Id);
             if (!hasPassword)
             {
                 return RedirectToAction(nameof(SetPassword));
@@ -213,12 +179,14 @@ namespace SecuritySystemsManagerMVC.Controllers
                 return NotFound();
             }
 
-            var changePasswordResult = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
-            if (!changePasswordResult.Succeeded)
+            // Use service to change password
+            var (success, errors) = await _userService.ChangeUserPasswordAsync(user.Id, model.OldPassword, model.NewPassword);
+            
+            if (!success)
             {
-                foreach (var error in changePasswordResult.Errors)
+                foreach (var error in errors)
                 {
-                    ModelState.AddModelError(string.Empty, error.Description);
+                    ModelState.AddModelError(string.Empty, error);
                 }
                 return View(model);
             }
@@ -236,7 +204,7 @@ namespace SecuritySystemsManagerMVC.Controllers
                 return NotFound();
             }
 
-            var hasPassword = await _userManager.HasPasswordAsync(user);
+            var hasPassword = await _userService.UserHasPasswordAsync(user.Id);
             if (hasPassword)
             {
                 return RedirectToAction(nameof(ChangePassword));
@@ -260,12 +228,14 @@ namespace SecuritySystemsManagerMVC.Controllers
                 return NotFound();
             }
 
-            var addPasswordResult = await _userManager.AddPasswordAsync(user, model.NewPassword);
-            if (!addPasswordResult.Succeeded)
+            // Use service to set password
+            var (success, errors) = await _userService.SetUserPasswordAsync(user.Id, model.NewPassword);
+            
+            if (!success)
             {
-                foreach (var error in addPasswordResult.Errors)
+                foreach (var error in errors)
                 {
-                    ModelState.AddModelError(string.Empty, error.Description);
+                    ModelState.AddModelError(string.Empty, error);
                 }
                 return View(model);
             }
@@ -283,11 +253,14 @@ namespace SecuritySystemsManagerMVC.Controllers
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
+            // Use service to get 2FA info
+            var (hasAuthenticator, is2faEnabled, recoveryCodesLeft) = await _userService.GetTwoFactorAuthInfoAsync(user.Id);
+
             var model = new TwoFactorAuthenticationViewModel
             {
-                HasAuthenticator = await _userManager.GetAuthenticatorKeyAsync(user) != null,
-                Is2faEnabled = await _userManager.GetTwoFactorEnabledAsync(user),
-                RecoveryCodesLeft = await _userManager.CountRecoveryCodesAsync(user),
+                HasAuthenticator = hasAuthenticator,
+                Is2faEnabled = is2faEnabled,
+                RecoveryCodesLeft = recoveryCodesLeft,
             };
 
             return View(model);
@@ -301,17 +274,13 @@ namespace SecuritySystemsManagerMVC.Controllers
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var authenticatorKey = await _userManager.GetAuthenticatorKeyAsync(user);
-            if (string.IsNullOrEmpty(authenticatorKey))
-            {
-                await _userManager.ResetAuthenticatorKeyAsync(user);
-                authenticatorKey = await _userManager.GetAuthenticatorKeyAsync(user);
-            }
+            // Use service to get setup info
+            var (sharedKey, authenticatorUri) = await _userService.GetTwoFactorSetupInfoAsync(user.Id);
 
             var model = new TwoFactorAuthenticationViewModel
             {
-                SharedKey = FormatKey(authenticatorKey),
-                AuthenticatorUri = GenerateQrCodeUri(user.Email, authenticatorKey)
+                SharedKey = sharedKey,
+                AuthenticatorUri = authenticatorUri
             };
 
             return View(model);
@@ -330,36 +299,32 @@ namespace SecuritySystemsManagerMVC.Controllers
             if (!ModelState.IsValid || string.IsNullOrEmpty(model.Code))
             {
                 ModelState.AddModelError("Code", "Verification code is required.");
-                var authenticatorKey = await _userManager.GetAuthenticatorKeyAsync(user);
-                model.SharedKey = FormatKey(authenticatorKey);
-                model.AuthenticatorUri = GenerateQrCodeUri(user.Email, authenticatorKey);
+                var (sharedKey, authenticatorUri) = await _userService.GetTwoFactorSetupInfoAsync(user.Id);
+                model.SharedKey = sharedKey;
+                model.AuthenticatorUri = authenticatorUri;
                 return View(model);
             }
 
-            // Strip spaces and hyphens
-            var verificationCode = model.Code.Replace(" ", string.Empty).Replace("-", string.Empty);
-
-            var is2faTokenValid = await _userManager.VerifyTwoFactorTokenAsync(
-                user, _userManager.Options.Tokens.AuthenticatorTokenProvider, verificationCode);
-
-            if (!is2faTokenValid)
+            // Use service to enable 2FA
+            var (success, errors, recoveryCodes) = await _userService.EnableTwoFactorAuthAsync(user.Id, model.Code);
+            
+            if (!success)
             {
-                ModelState.AddModelError("Code", "Verification code is invalid.");
-                var authenticatorKey = await _userManager.GetAuthenticatorKeyAsync(user);
-                model.SharedKey = FormatKey(authenticatorKey);
-                model.AuthenticatorUri = GenerateQrCodeUri(user.Email, authenticatorKey);
+                foreach (var error in errors)
+                {
+                    ModelState.AddModelError("Code", error);
+                }
+                var (sharedKey, authenticatorUri) = await _userService.GetTwoFactorSetupInfoAsync(user.Id);
+                model.SharedKey = sharedKey;
+                model.AuthenticatorUri = authenticatorUri;
                 TempData["Error"] = "Verification code is invalid. Please try again.";
                 return View(model);
             }
 
-            await _userManager.SetTwoFactorEnabledAsync(user, true);
-            var userId = await _userManager.GetUserIdAsync(user);
-            
             TempData["Success"] = "Your authenticator app has been verified and two-factor authentication has been enabled.";
 
             // Generate recovery codes for the user
-            var recoveryCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10);
-            if (recoveryCodes != null)
+            if (recoveryCodes != null && recoveryCodes.Length > 0)
             {
                 var recoveryCodesString = string.Join(", ", recoveryCodes);
                 TempData["RecoveryCodes"] = recoveryCodesString;
@@ -367,34 +332,6 @@ namespace SecuritySystemsManagerMVC.Controllers
             }
 
             return RedirectToAction(nameof(TwoFactorAuthentication));
-        }
-
-        // Helper method to format the authenticator key
-        private string FormatKey(string unformattedKey)
-        {
-            var result = new StringBuilder();
-            int currentPosition = 0;
-            while (currentPosition + 4 < unformattedKey.Length)
-            {
-                result.Append(unformattedKey.Substring(currentPosition, 4)).Append(" ");
-                currentPosition += 4;
-            }
-            if (currentPosition < unformattedKey.Length)
-            {
-                result.Append(unformattedKey.Substring(currentPosition));
-            }
-
-            return result.ToString().ToLowerInvariant();
-        }
-
-        // Helper method to generate QR code URI
-        private string GenerateQrCodeUri(string email, string unformattedKey)
-        {
-            return string.Format(
-                "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6",
-                _urlEncoder.Encode("Security Systems Manager"),
-                _urlEncoder.Encode(email),
-                unformattedKey);
         }
 
         [HttpGet]
@@ -406,7 +343,8 @@ namespace SecuritySystemsManagerMVC.Controllers
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            if (!await _userManager.GetTwoFactorEnabledAsync(user))
+            var (hasAuthenticator, is2faEnabled, recoveryCodesLeft) = await _userService.GetTwoFactorAuthInfoAsync(user.Id);
+            if (!is2faEnabled)
             {
                 TempData["Error"] = "Cannot disable 2FA as it's not currently enabled.";
                 return RedirectToAction(nameof(TwoFactorAuthentication));
@@ -425,13 +363,19 @@ namespace SecuritySystemsManagerMVC.Controllers
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var disable2faResult = await _userManager.SetTwoFactorEnabledAsync(user, false);
-            if (!disable2faResult.Succeeded)
+            // Use service to disable 2FA
+            var (success, errors) = await _userService.DisableTwoFactorAuthAsync(user.Id);
+            
+            if (!success)
             {
-                throw new InvalidOperationException($"Unexpected error occurred disabling 2FA for user with ID '{user.Id}'.");
+                foreach (var error in errors)
+                {
+                    TempData["Error"] = error;
+                }
+                return RedirectToAction(nameof(TwoFactorAuthentication));
             }
 
-            TempData["Success"] = "2FA has been disabled. You can re-enable 2FA when you setup an authenticator app.";
+            TempData["Success"] = "Two-factor authentication has been disabled.";
             return RedirectToAction(nameof(TwoFactorAuthentication));
         }
 
@@ -457,12 +401,20 @@ namespace SecuritySystemsManagerMVC.Controllers
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            await _userManager.SetTwoFactorEnabledAsync(user, false);
-            await _userManager.ResetAuthenticatorKeyAsync(user);
-            await _signInManager.RefreshSignInAsync(user);
+            // Use service to reset authenticator
+            var (success, errors) = await _userService.ResetAuthenticatorAsync(user.Id);
+            
+            if (!success)
+            {
+                foreach (var error in errors)
+                {
+                    TempData["Error"] = error;
+                }
+                return RedirectToAction(nameof(TwoFactorAuthentication));
+            }
 
-            TempData["Success"] = "Your authenticator app key has been reset, you will need to configure your authenticator app using the new key.";
-            return RedirectToAction(nameof(EnableAuthenticator));
+            TempData["Success"] = "Your authenticator app key has been reset.";
+            return RedirectToAction(nameof(TwoFactorAuthentication));
         }
     }
 } 

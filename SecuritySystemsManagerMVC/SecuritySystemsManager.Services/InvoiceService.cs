@@ -4,6 +4,10 @@ using SecuritySystemsManager.Shared.Repos.Contracts;
 using SecuritySystemsManager.Shared.Services.Contracts;
 using System;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace SecuritySystemsManager.Services
 {
@@ -147,6 +151,80 @@ namespace SecuritySystemsManager.Services
             
             // Get the saved invoice with the generated ID
             return await _invoiceRepository.GetInvoiceByOrderIdAsync(orderId);
+        }
+
+        // Universal filtering method with pagination
+        public async Task<(List<InvoiceDto> Invoices, int TotalCount)> GetFilteredInvoicesAsync(
+            string? searchTerm = null,
+            string? paymentStatus = null,
+            ClaimsPrincipal? user = null,
+            int pageSize = 10,
+            int pageNumber = 1)
+        {
+            // Get user role and ID
+            string userRole = "Client"; // Default
+            int userId = 0;
+
+            if (user != null)
+            {
+                if (user.IsInRole("Admin") || user.IsInRole("Manager"))
+                {
+                    userRole = user.IsInRole("Admin") ? "Admin" : "Manager";
+                }
+                else if (user.IsInRole("Technician"))
+                {
+                    userRole = "Technician";
+                }
+                else
+                {
+                    userRole = "Client";
+                }
+
+                var userIdClaim = user.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (!string.IsNullOrEmpty(userIdClaim) && int.TryParse(userIdClaim, out int parsedUserId))
+                {
+                    userId = parsedUserId;
+                }
+            }
+
+            // Get invoices based on user role
+            var invoices = await GetInvoicesByUserRoleAsync(userId, userRole, pageSize, pageNumber);
+            var totalCount = await GetInvoicesCountByUserRoleAsync(userId, userRole);
+
+            // Apply filters
+            var filteredInvoices = invoices.AsEnumerable();
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                filteredInvoices = filteredInvoices.Where(i =>
+                    i.Id.ToString().Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    (i.SecuritySystemOrder != null && i.SecuritySystemOrder.Title != null && i.SecuritySystemOrder.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)) ||
+                    i.TotalAmount.ToString().Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (!string.IsNullOrEmpty(paymentStatus))
+            {
+                if (paymentStatus.ToLower() == "paid")
+                {
+                    filteredInvoices = filteredInvoices.Where(i => i.IsPaid == true);
+                }
+                else if (paymentStatus.ToLower() == "unpaid")
+                {
+                    filteredInvoices = filteredInvoices.Where(i => i.IsPaid == false);
+                }
+            }
+
+            // Get filtered count
+            var filteredCount = filteredInvoices.Count();
+
+            // Apply pagination and ordering
+            var paginatedInvoices = filteredInvoices
+                .OrderByDescending(i => i.IssuedOn)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            return (paginatedInvoices, filteredCount);
         }
     }
 } 

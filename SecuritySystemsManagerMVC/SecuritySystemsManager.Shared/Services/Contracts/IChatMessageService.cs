@@ -19,5 +19,14 @@ namespace SecuritySystemsManager.Shared.Services.Contracts
         Task<List<int>> GetSupportUserIdsAsync();
         Task<ChatMessageDto> ProcessUserMessageAsync(int userId, string message);
         Task<ChatMessageDto> ProcessSupportMessageAsync(int senderId, int recipientId, string message);
+        
+        // New methods for business logic from controller
+        Task<IEnumerable<ChatMessageDto>> GetActiveChatsAsync();
+        Task<IEnumerable<ChatMessageDto>> GetChatConversationAsync(int userId);
+        Task<int> GetUnreadMessagesCountAsync(int userId);
+        Task<IEnumerable<ChatMessageDto>> GetRecentMessagesAsync(int count = 20);
+        Task MarkAllMessagesAsReadAsync(int userId);
+        Task MarkAllMessagesAsReadForUserAsync(int userId);
+        Task<IEnumerable<ChatMessageDto>> GetChatMessagesForUserAsync(int userId);
     }
 } 

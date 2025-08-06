@@ -15,8 +15,6 @@ namespace SecuritySystemsManager.Shared.Dtos
         public int RecoveryCodesLeft { get; set; }
         
         // Account Activity Properties
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
         public DateTime? LastLoginTime { get; set; }
         public int TotalOrders { get; set; }
         public int TotalLocations { get; set; }

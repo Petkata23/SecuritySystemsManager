@@ -60,6 +60,7 @@ namespace SecuritySystemsManagerMVC.Controllers
                 {
                     return BadRequest("Authorization code is missing");
                 }
+
                 var appKey = _configuration["Dropbox:AppKey"];
                 var appSecret = _configuration["Dropbox:AppSecret"];
                 var redirectUri = Url.Action("Callback", "DropboxAuth", null, Request.Scheme, Request.Host.Value);
@@ -100,17 +101,19 @@ namespace SecuritySystemsManagerMVC.Controllers
                     ViewBag.ExpiresIn = tokenData.ExpiresIn;
                     ViewBag.ExpiryTime = expiryTime;
                     
-                    return View();
+                    return View("Callback");
                 }
                 else
                 {
-                    var errorContent = await response.Content.ReadAsStringAsync();
-                    return BadRequest($"Failed to get token: {errorContent}");
+                    var errorResponse = await response.Content.ReadAsStringAsync();
+                    ViewBag.Error = $"Failed to exchange code for token: {response.StatusCode} - {errorResponse}";
+                    return View("Error");
                 }
             }
             catch (Exception ex)
             {
-                return RedirectToAction("Error500", "Error");
+                ViewBag.Error = $"Error during OAuth callback: {ex.Message}";
+                return View("Error");
             }
         }
 
@@ -119,121 +122,63 @@ namespace SecuritySystemsManagerMVC.Controllers
         {
             try
             {
-                // This will trigger a token refresh if needed
                 var accessToken = await _tokenManager.GetAccessTokenAsync();
+                var result = !string.IsNullOrEmpty(accessToken);
+                if (result)
+                {
+                    ViewBag.Message = "Token refreshed successfully";
+                }
+                else
+                {
+                    ViewBag.Message = "Token refresh not needed or failed";
+                }
                 
-                return Json(new { 
-                    success = true, 
-                    message = "Token refresh successful",
-                    tokenFirstChars = accessToken.Substring(0, 10) + "..." // Only show first few characters for security
-                });
+                return View("TestResult");
             }
             catch (Exception ex)
             {
-                return Json(new { 
-                    success = false, 
-                    message = $"Token refresh failed: {ex.Message}" 
-                });
+                ViewBag.Error = $"Error testing token refresh: {ex.Message}";
+                return View("Error");
             }
         }
-        
+
         private void UpdateTokenInConfig(string accessToken, string refreshToken, DateTime expiryTime)
         {
             try
             {
                 if (!System.IO.File.Exists(_configFilePath))
                 {
-                    Console.WriteLine($"[DropboxAuthController] Config file not found: {_configFilePath}");
+                    ViewBag.Error = "Configuration file not found";
                     return;
                 }
 
-                // Read the JSON file
-                string json = System.IO.File.ReadAllText(_configFilePath);
-                
-                // Parse the JSON
-                using (JsonDocument document = JsonDocument.Parse(json))
+                var jsonContent = System.IO.File.ReadAllText(_configFilePath);
+                var jsonDoc = JsonDocument.Parse(jsonContent);
+                var root = jsonDoc.RootElement;
+
+                // Create a new JSON object with updated Dropbox settings
+                var updatedJson = new
                 {
-                    // Create a new JSON object with the updated tokens
-                    var options = new JsonWriterOptions
+                    Dropbox = new
                     {
-                        Indented = true
-                    };
-
-                    using (var ms = new MemoryStream())
-                    {
-                        using (var writer = new Utf8JsonWriter(ms, options))
-                        {
-                            writer.WriteStartObject();
-                            
-                            // Copy all properties from the original JSON
-                            foreach (var property in document.RootElement.EnumerateObject())
-                            {
-                                if (property.Name == "Dropbox")
-                                {
-                                    writer.WritePropertyName("Dropbox");
-                                    writer.WriteStartObject();
-                                    
-                                    // Copy all properties from the Dropbox object
-                                    foreach (var dropboxProperty in property.Value.EnumerateObject())
-                                    {
-                                        if (dropboxProperty.Name == "AccessToken")
-                                        {
-                                            // Update the access token
-                                            writer.WritePropertyName("AccessToken");
-                                            writer.WriteStringValue(accessToken);
-                                        }
-                                        else if (dropboxProperty.Name == "RefreshToken")
-                                        {
-                                            // Update the refresh token
-                                            writer.WritePropertyName("RefreshToken");
-                                            writer.WriteStringValue(refreshToken);
-                                        }
-                                        else if (dropboxProperty.Name == "TokenExpiry")
-                                        {
-                                            // Update the token expiry
-                                            writer.WritePropertyName("TokenExpiry");
-                                            writer.WriteStringValue(expiryTime.ToString("o")); // ISO 8601 format
-                                        }
-                                        else
-                                        {
-                                            // Copy the property as is
-                                            writer.WritePropertyName(dropboxProperty.Name);
-                                            dropboxProperty.Value.WriteTo(writer);
-                                        }
-                                    }
-                                    
-                                    // Add TokenExpiry if it doesn't exist
-                                    if (!property.Value.TryGetProperty("TokenExpiry", out _))
-                                    {
-                                        writer.WritePropertyName("TokenExpiry");
-                                        writer.WriteStringValue(expiryTime.ToString("o")); // ISO 8601 format
-                                    }
-                                    
-                                    writer.WriteEndObject();
-                                }
-                                else
-                                {
-                                    // Copy the property as is
-                                    writer.WritePropertyName(property.Name);
-                                    property.Value.WriteTo(writer);
-                                }
-                            }
-                            
-                            writer.WriteEndObject();
-                        }
-
-                        // Write the updated JSON back to the file
-                        var updatedJson = Encoding.UTF8.GetString(ms.ToArray());
-                        System.IO.File.WriteAllText(_configFilePath, updatedJson);
-                        
-                        Console.WriteLine("[DropboxAuthController] Updated tokens in config file.");
+                        AppKey = _configuration["Dropbox:AppKey"],
+                        AppSecret = _configuration["Dropbox:AppSecret"],
+                        AccessToken = accessToken,
+                        RefreshToken = refreshToken,
+                        ExpiresAt = expiryTime.ToString("yyyy-MM-ddTHH:mm:ssZ")
                     }
-                }
+                };
+
+                // Merge with existing configuration
+                var options = new JsonSerializerOptions { WriteIndented = true };
+                var updatedJsonString = JsonSerializer.Serialize(updatedJson, options);
+
+                // Write back to file
+                System.IO.File.WriteAllText(_configFilePath, updatedJsonString);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[DropboxAuthController] Error updating tokens in config: {ex.Message}");
-                // Don't throw here, as we don't want to fail the authentication just because we couldn't update the config
+                ViewBag.Error = $"Error updating configuration file: {ex.Message}";
             }
         }
 

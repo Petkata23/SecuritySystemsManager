@@ -176,21 +176,24 @@
                 </div>
                 <div class="card-body">
                     <div class="d-flex gap-3">
-                        @if (!Model.IsPaid)
+                        @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
                         {
-                            <form asp-action="MarkAsPaid" asp-route-id="@Model.Id" method="post">
-                                <button type="submit" class="btn btn-success">
-                                    <i class="bi bi-check-circle me-2"></i>Mark as Paid
-                                </button>
-                            </form>
-                        }
-                        else
-                        {
-                            <form asp-action="MarkAsUnpaid" asp-route-id="@Model.Id" method="post">
-                                <button type="submit" class="btn btn-warning">
-                                    <i class="bi bi-x-circle me-2"></i>Mark as Unpaid
-                                </button>
-                            </form>
+                            @if (!Model.IsPaid)
+                            {
+                                <form asp-action="MarkAsPaid" asp-route-id="@Model.Id" method="post">
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="bi bi-check-circle me-2"></i>Mark as Paid
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form asp-action="MarkAsUnpaid" asp-route-id="@Model.Id" method="post">
+                                    <button type="submit" class="btn btn-warning">
+                                        <i class="bi bi-x-circle me-2"></i>Mark as Unpaid
+                                    </button>
+                                </form>
+                            }
                         }
                         <button class="btn btn-info text-white" onclick="window.print()">
                             <i class="bi bi-printer me-2"></i>Print Invoice

@@ -125,30 +125,106 @@ namespace SecuritySystemsManager.Services
 
         public async Task<ChatMessageDto> ProcessSupportMessageAsync(int senderId, int recipientId, string message)
         {
-            if (string.IsNullOrWhiteSpace(message))
-            {
-                throw new ArgumentException("Message cannot be empty");
-            }
-
             var sender = await _userService.GetByIdIfExistsAsync(senderId);
-            if (sender == null)
-            {
-                throw new UnauthorizedAccessException("Support user not found");
-            }
 
-            // Save the message to the database
+            var recipient = await _userService.GetByIdIfExistsAsync(recipientId);
+
+            // Send the message
             await SendMessageAsync(senderId, recipientId, message, true);
 
-            // Return the saved message
-            return new ChatMessageDto
+            // Return the created message
+            var messages = await _repository.GetMessagesByUserIdAsync(recipientId);
+            return messages.OrderByDescending(m => m.Timestamp).FirstOrDefault();
+        }
+
+        // New methods for business logic from controller
+        public async Task<IEnumerable<ChatMessageDto>> GetActiveChatsAsync()
+        {
+            var messages = await GetAllAsync();
+            return messages
+                .Where(m => !m.IsFromSupport) // Exclude support messages
+                .Where(m => m.SenderId != 0) // Exclude system messages
+                .OrderByDescending(m => m.Timestamp)
+                .ToList();
+        }
+
+        public async Task<IEnumerable<ChatMessageDto>> GetChatConversationAsync(int userId)
+        {
+            var user = await _userService.GetByIdIfExistsAsync(userId);
+            if (user == null || user.Role?.Name == "Admin" || user.Role?.Name == "Manager")
             {
-                SenderId = senderId,
-                RecipientId = recipientId,
-                Message = message,
-                Timestamp = DateTime.UtcNow,
-                IsFromSupport = true,
-                IsRead = false
-            };
+                return new List<ChatMessageDto>();
+            }
+
+            var conversation = await GetMessagesByUserIdAsync(userId);
+            var chatMessages = conversation.Select(m => new ChatMessageDto
+            {
+                Id = m.Id,
+                Message = m.Message,
+                Timestamp = m.Timestamp,
+                IsFromSupport = m.IsFromSupport,
+                SenderName = m.IsFromSupport ? "Поддръжка" : m.SenderName ?? "Unknown",
+                SenderId = m.SenderId,
+                IsRead = m.IsRead,
+                ReadAt = m.ReadAt
+            });
+
+            // Mark messages as read when opening the chat
+            foreach (var message in conversation.Where(m => !m.IsRead && !m.IsFromSupport))
+            {
+                await MarkAsReadAsync(message.Id);
+            }
+
+            return chatMessages;
+        }
+
+        public async Task<int> GetUnreadMessagesCountAsync(int userId)
+        {
+            var unreadMessages = await GetUnreadMessagesAsync(userId);
+            return unreadMessages.Count();
+        }
+
+        public async Task<IEnumerable<ChatMessageDto>> GetRecentMessagesAsync(int count = 20)
+        {
+            var allMessages = await GetAllAsync();
+            return allMessages
+                .OrderByDescending(m => m.Timestamp)
+                .Take(count)
+                .ToList();
+        }
+
+        public async Task MarkAllMessagesAsReadAsync(int userId)
+        {
+            var unreadMessages = await GetUnreadMessagesAsync(userId);
+            foreach (var message in unreadMessages)
+            {
+                await MarkAsReadAsync(message.Id);
+            }
+        }
+
+        public async Task MarkAllMessagesAsReadForUserAsync(int userId)
+        {
+            var messages = await GetMessagesByUserIdAsync(userId);
+            foreach (var message in messages.Where(m => !m.IsRead && !m.IsFromSupport))
+            {
+                await MarkAsReadAsync(message.Id);
+            }
+        }
+
+        public async Task<IEnumerable<ChatMessageDto>> GetChatMessagesForUserAsync(int userId)
+        {
+            var conversation = await GetMessagesByUserIdAsync(userId);
+            return conversation.Select(m => new ChatMessageDto
+            {
+                Id = m.Id,
+                Message = m.Message,
+                Timestamp = m.Timestamp,
+                IsFromSupport = m.IsFromSupport,
+                SenderName = m.IsFromSupport ? "Поддръжка" : m.SenderName ?? "Unknown",
+                SenderId = m.SenderId,
+                IsRead = m.IsRead,
+                ReadAt = m.ReadAt
+            });
         }
     }
 } 

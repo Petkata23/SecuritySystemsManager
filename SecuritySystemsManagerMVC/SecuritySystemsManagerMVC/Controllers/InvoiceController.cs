@@ -34,36 +34,86 @@ namespace SecuritySystemsManagerMVC.Controllers
         [HttpGet]
         public override async Task<IActionResult> List(int pageSize = DefaultPageSize, int pageNumber = DefaultPageNumber)
         {
+            try
+            {
+                // Simple validation - can stay in controller
+                if (pageSize <= 0 || pageSize > MaxPageSize || pageNumber <= 0)
+                {
+                    return BadRequest(SecuritySystemsManager.Shared.Constants.InvalidPagination);
+                }
+
+                var (invoices, totalCount) = await _service.GetFilteredInvoicesAsync(null, null, User, pageSize, pageNumber);
+                
+                // Simple math - can stay in controller
+                var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+
+                var mappedModels = _mapper.Map<IEnumerable<InvoiceDetailsVm>>(invoices);
+
+                ViewBag.TotalPages = totalPages;
+                ViewBag.CurrentPage = pageNumber;
+                // Add flag to indicate if there are any invoices before filtering
+                ViewBag.HasInvoicesBeforeFilter = totalCount > 0;
+
+                return View(mappedModels);
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error500", "Error");
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> FilterInvoices(string searchTerm = "", string paymentStatus = "", int pageSize = DefaultPageSize, int pageNumber = DefaultPageNumber)
+        {
+            // Simple validation - can stay in controller
             if (pageSize <= 0 || pageSize > MaxPageSize || pageNumber <= 0)
             {
                 return BadRequest(SecuritySystemsManager.Shared.Constants.InvalidPagination);
             }
 
-            // Get current user ID and role
-            string userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            string userRole = User.FindFirstValue(ClaimTypes.Role);
-
-            if (string.IsNullOrEmpty(userIdStr) || string.IsNullOrEmpty(userRole))
-            {
-                return Unauthorized();
-            }
-
-            if (!int.TryParse(userIdStr, out int userId))
-            {
-                return BadRequest("Invalid user ID");
-            }
-
-            // Get invoices based on user role
-            var invoices = await _service.GetInvoicesByUserRoleAsync(userId, userRole, pageSize, pageNumber);
-            var totalInvoices = await _service.GetInvoicesCountByUserRoleAsync(userId, userRole);
-            var totalPages = (int)Math.Ceiling((double)totalInvoices / pageSize);
+            // Get filtered invoices with pagination from service
+            var (invoices, totalCount) = await _service.GetFilteredInvoicesAsync(searchTerm, paymentStatus, User, pageSize, pageNumber);
+            
+            // Simple math - can stay in controller
+            var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
 
             var mappedModels = _mapper.Map<IEnumerable<InvoiceDetailsVm>>(invoices);
 
             ViewBag.TotalPages = totalPages;
             ViewBag.CurrentPage = pageNumber;
+            ViewBag.SearchTermFilter = searchTerm;
+            ViewBag.PaymentStatusFilter = paymentStatus;
 
             return View(nameof(List), mappedModels);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetInvoicesPartial(string searchTerm = "", string paymentStatus = "", int pageSize = DefaultPageSize, int pageNumber = DefaultPageNumber)
+        {
+            // Simple validation - can stay in controller
+            if (pageSize <= 0 || pageSize > MaxPageSize || pageNumber <= 0)
+            {
+                return BadRequest(SecuritySystemsManager.Shared.Constants.InvalidPagination);
+            }
+
+            // Get filtered invoices with pagination from service
+            var (invoices, totalCount) = await _service.GetFilteredInvoicesAsync(searchTerm, paymentStatus, User, pageSize, pageNumber);
+            
+            // Simple math - can stay in controller
+            var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+
+            var mappedModels = _mapper.Map<IEnumerable<InvoiceDetailsVm>>(invoices);
+
+            ViewBag.TotalPages = totalPages;
+            ViewBag.CurrentPage = pageNumber;
+            ViewBag.SearchTermFilter = searchTerm;
+            ViewBag.PaymentStatusFilter = paymentStatus;
+            
+            // Check if there are invoices before filtering by getting total count without filters
+            var (allInvoices, totalInvoicesBeforeFilter) = await _service.GetFilteredInvoicesAsync(null, null, User, 1, 1);
+            ViewBag.HasInvoicesBeforeFilter = totalInvoicesBeforeFilter > 0;
+
+            return PartialView("_InvoicesTable", mappedModels);
         }
 
         [HttpGet]
@@ -129,6 +179,7 @@ namespace SecuritySystemsManagerMVC.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> MarkAsPaid(int id)
         {
             try
@@ -143,6 +194,7 @@ namespace SecuritySystemsManagerMVC.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> MarkAsUnpaid(int id)
         {
             try

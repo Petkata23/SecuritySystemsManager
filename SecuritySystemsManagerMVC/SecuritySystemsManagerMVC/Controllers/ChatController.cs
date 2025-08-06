@@ -32,82 +32,79 @@ namespace SecuritySystemsManagerMVC.Controllers
         {
             try
             {
-                var messages = await _chatMessageService.GetAllAsync();
+                // Use service to get active chats
+                var messages = await _chatMessageService.GetActiveChatsAsync();
                 var allUsers = await _userService.GetAllAsync();
 
-            var activeChats = messages
-                .Where(m => !m.IsFromSupport) // Exclude support messages
-                .GroupBy(m => m.SenderId)
-                .Where(g => g.Any() && g.Key != 0) // Exclude system messages
-                .Select(g =>
+                // Simple grouping logic - can stay in controller
+                var activeChats = messages
+                    .Where(m => !m.IsFromSupport) // Exclude support messages
+                    .GroupBy(m => m.SenderId)
+                    .Where(g => g.Any() && g.Key != 0) // Exclude system messages
+                    .Select(g =>
+                    {
+                        var user = allUsers.FirstOrDefault(u => u.Id == g.Key);
+                        var username = user?.Username ?? g.First().SenderName ?? "Unknown";
+                        
+                        return new ChatUserVm
+                        {
+                            UserId = g.Key,
+                            Username = username,
+                            LastMessage = messages
+                                .Where(m => m.SenderId == g.Key || m.RecipientId == g.Key)
+                                .OrderByDescending(m => m.Timestamp)
+                                .First()?.Message ?? "",
+                            LastMessageTime = messages
+                                .Where(m => m.SenderId == g.Key || m.RecipientId == g.Key)
+                                .Max(m => m.Timestamp),
+                            HasUnreadMessages = g.Any(m => !m.IsRead && !m.IsFromSupport),
+                            UserRole = user?.Role?.Name ?? "User",
+                            UnreadCount = g.Count(m => !m.IsRead && !m.IsFromSupport),
+                            IsOnline = false // Will be updated by SignalR
+                        };
+                    })
+                    .OrderByDescending(c => c.LastMessageTime)
+                    .ToList();
+
+                ChatUserVm currentChat = null;
+                IEnumerable<ChatMessageVm> chatMessages = null;
+
+                if (userId.HasValue)
                 {
-                    var user = allUsers.FirstOrDefault(u => u.Id == g.Key);
-                    var username = user?.Username ?? g.First().SenderName ?? "Unknown";
-                    
-                    return new ChatUserVm
+                    var user = await _userService.GetByIdIfExistsAsync(userId.Value);
+                    if (user != null && user.Role?.Name != "Admin" && user.Role?.Name != "Manager")
                     {
-                        UserId = g.Key,
-                        Username = username,
-                        LastMessage = messages
-                            .Where(m => m.SenderId == g.Key || m.RecipientId == g.Key)
-                            .OrderByDescending(m => m.Timestamp)
-                            .First()?.Message ?? "",
-                        LastMessageTime = messages
-                            .Where(m => m.SenderId == g.Key || m.RecipientId == g.Key)
-                            .Max(m => m.Timestamp),
-                        HasUnreadMessages = g.Any(m => !m.IsRead && !m.IsFromSupport),
-                        UserRole = user?.Role?.Name ?? "User",
-                        UnreadCount = g.Count(m => !m.IsRead && !m.IsFromSupport),
-                        IsOnline = false // Will be updated by SignalR
-                    };
-                })
-                .OrderByDescending(c => c.LastMessageTime)
-                .ToList();
+                        currentChat = new ChatUserVm
+                        {
+                            UserId = user.Id,
+                            Username = user.Username,
+                            UserRole = user.Role?.Name ?? "User"
+                        };
 
-            ChatUserVm currentChat = null;
-            IEnumerable<ChatMessageVm> chatMessages = null;
-
-            if (userId.HasValue)
-            {
-                var user = await _userService.GetByIdIfExistsAsync(userId.Value);
-                if (user != null && user.Role?.Name != "Admin" && user.Role?.Name != "Manager")
-                {
-                    currentChat = new ChatUserVm
-                    {
-                        UserId = user.Id,
-                        Username = user.Username,
-                        UserRole = user.Role?.Name ?? "User"
-                    };
-
-                    var conversation = await _chatMessageService.GetMessagesByUserIdAsync(userId.Value);
-                    chatMessages = conversation.Select(m => new ChatMessageVm
-                    {
-                        Id = m.Id,
-                        Message = m.Message,
-                        Timestamp = m.Timestamp,
-                        IsFromSupport = m.IsFromSupport,
-                        SenderName = m.IsFromSupport ? "Поддръжка" : m.SenderName ?? "Unknown",
-                        SenderId = m.SenderId,
-                        IsRead = m.IsRead,
-                        ReadAt = m.ReadAt
-                    });
-
-                    // Mark messages as read when opening the chat
-                    foreach (var message in conversation.Where(m => !m.IsRead && !m.IsFromSupport))
-                    {
-                        await _chatMessageService.MarkAsReadAsync(message.Id);
+                        // Use service to get conversation
+                        var conversation = await _chatMessageService.GetChatConversationAsync(userId.Value);
+                        chatMessages = conversation.Select(m => new ChatMessageVm
+                        {
+                            Id = m.Id,
+                            Message = m.Message,
+                            Timestamp = m.Timestamp,
+                            IsFromSupport = m.IsFromSupport,
+                            SenderName = m.IsFromSupport ? "Поддръжка" : m.SenderName ?? "Unknown",
+                            SenderId = m.SenderId,
+                            IsRead = m.IsRead,
+                            ReadAt = m.ReadAt
+                        });
                     }
                 }
-            }
 
-            var viewModel = new ChatAdminPanelVm
-            {
-                ActiveChats = activeChats,
-                CurrentChat = currentChat,
-                Messages = chatMessages?.ToList() ?? new List<ChatMessageVm>()
-            };
+                var model = new ChatAdminPanelVm
+                {
+                    ActiveChats = activeChats,
+                    CurrentChat = currentChat,
+                    Messages = chatMessages?.ToList() ?? new List<ChatMessageVm>()
+                };
 
-            return View(viewModel);
+                return View(model);
             }
             catch (Exception ex)
             {
@@ -121,122 +118,143 @@ namespace SecuritySystemsManagerMVC.Controllers
         {
             try
             {
-                // Load all needed data upfront
-                var allMessages = (await _chatMessageService.GetAllAsync()).ToList();
-                var allUsers = (await _userService.GetAllAsync()).ToList();
+                // Use service to get active chats
+                var messages = await _chatMessageService.GetActiveChatsAsync();
+                var allUsers = await _userService.GetAllAsync();
 
-                var chats = allMessages
-                    .Where(m => !m.IsFromSupport)
+                // Simple grouping logic - can stay in controller
+                var activeChats = messages
+                    .Where(m => !m.IsFromSupport) // Exclude support messages
                     .GroupBy(m => m.SenderId)
-                    .Where(g => g.Any() && g.Key != 0)
+                    .Where(g => g.Any() && g.Key != 0) // Exclude system messages
                     .Select(g =>
                     {
                         var user = allUsers.FirstOrDefault(u => u.Id == g.Key);
-                        if (user == null) return null;
-
-                        var userMessages = allMessages
-                            .Where(m => m.SenderId == g.Key || m.RecipientId == g.Key)
-                            .ToList();
-
-                        return new
+                        var username = user?.Username ?? g.First().SenderName ?? "Unknown";
+                        
+                        return new ChatUserVm
                         {
-                            userId = g.Key,
-                            username = user.Username,
-                            userRole = user.Role?.Name ?? "User",
-                            lastMessage = userMessages
+                            UserId = g.Key,
+                            Username = username,
+                            LastMessage = messages
+                                .Where(m => m.SenderId == g.Key || m.RecipientId == g.Key)
                                 .OrderByDescending(m => m.Timestamp)
                                 .First()?.Message ?? "",
-                            lastMessageTime = userMessages.Any() ? userMessages.Max(m => m.Timestamp) : DateTime.MinValue,
-                            hasUnread = userMessages.Any(m => !m.IsRead && !m.IsFromSupport),
-                            unreadCount = userMessages.Count(m => !m.IsRead && !m.IsFromSupport)
+                            LastMessageTime = messages
+                                .Where(m => m.SenderId == g.Key || m.RecipientId == g.Key)
+                                .Max(m => m.Timestamp),
+                            HasUnreadMessages = g.Any(m => !m.IsRead && !m.IsFromSupport),
+                            UserRole = user?.Role?.Name ?? "User",
+                            UnreadCount = g.Count(m => !m.IsRead && !m.IsFromSupport),
+                            IsOnline = false // Will be updated by SignalR
                         };
                     })
-                    .Where(c => c != null)
-                    .OrderByDescending(c => c.lastMessageTime)
+                    .OrderByDescending(c => c.LastMessageTime)
                     .ToList();
 
-                return Json(chats);
+                return Json(activeChats);
             }
             catch (Exception ex)
             {
-                return Json(new { error = "Възникна грешка при зареждане на активните чатове" });
+                return Json(new List<ChatUserVm>());
             }
         }
 
         [HttpPost]
         public async Task<IActionResult> SendMessage(int? recipientId, string message)
         {
-            if (string.IsNullOrEmpty(message))
+            try
             {
-                return BadRequest("Message cannot be empty");
+                var userId = GetUserId();
+                await _chatMessageService.SendMessageAsync(userId, recipientId, message);
+                return Json(new { success = true });
             }
-
-            var senderId = GetUserId();
-            await _chatMessageService.SendMessageAsync(senderId, recipientId, message);
-
-            return RedirectToAction("AdminPanel");
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
         }
 
         [HttpGet]
         public async Task<IActionResult> UnreadMessages()
         {
-            var userId = GetUserId();
-            var messages = await _chatMessageService.GetUnreadMessagesAsync(userId);
-
-            var messageVMs = messages.Select(m => new ChatMessageVm
+            try
             {
-                Id = m.Id,
-                Message = m.Message,
-                Timestamp = m.Timestamp,
-                IsFromSupport = m.IsFromSupport,
-                SenderName = m.IsFromSupport ? "Поддръжка" : m.SenderName ?? "Unknown",
-                SenderId = m.SenderId,
-                IsRead = m.IsRead,
-                ReadAt = m.ReadAt
-            });
+                var userId = GetUserId();
+                var unreadMessages = await _chatMessageService.GetUnreadMessagesAsync(userId);
+                
+                var result = unreadMessages.Select(m => new
+                {
+                    id = m.Id,
+                    message = m.Message,
+                    timestamp = m.Timestamp.ToString("dd/MM/yyyy HH:mm"),
+                    isFromSupport = m.IsFromSupport,
+                    senderName = m.IsFromSupport ? "Поддръжка" : m.SenderName ?? "Unknown"
+                });
 
-            return Json(new { count = messageVMs.Count(), messages = messageVMs });
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return Json(new List<object>());
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> MarkAsRead(int messageId)
         {
-            await _chatMessageService.MarkAsReadAsync(messageId);
-            return Ok();
+            try
+            {
+                await _chatMessageService.MarkAsReadAsync(messageId);
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
         }
 
         [HttpGet]
         [Route("Chat/GetUnreadCount")]
         public async Task<IActionResult> GetUnreadCount()
         {
-            var userId = GetUserId();
-            var messages = await _chatMessageService.GetUnreadMessagesAsync(userId);
-            return Json(new { count = messages.Count() });
+            try
+            {
+                var userId = GetUserId();
+                var count = await _chatMessageService.GetUnreadMessagesCountAsync(userId);
+                return Json(new { count = count });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { count = 0 });
+            }
         }
 
         [HttpGet]
         [Route("Chat/GetRecentMessages")]
         public async Task<IActionResult> GetRecentMessages(int count = 20)
         {
-            var userId = GetUserId();
-            var messages = await _chatMessageService.GetMessagesByUserIdAsync(userId);
-            
-            var recentMessages = messages
-                .OrderByDescending(m => m.Timestamp)
-                .Take(count)
-                .Select(m => new ChatMessageVm
+            try
+            {
+                var recentMessages = await _chatMessageService.GetRecentMessagesAsync(count);
+                
+                var result = recentMessages.Select(m => new
                 {
-                    Id = m.Id,
-                    Message = m.Message,
-                    Timestamp = m.Timestamp,
-                    IsFromSupport = m.IsFromSupport,
-                    SenderName = m.IsFromSupport ? "Поддръжка" : m.SenderName ?? "Unknown",
-                    SenderId = m.SenderId,
-                    IsRead = m.IsRead,
-                    ReadAt = m.ReadAt
+                    id = m.Id,
+                    message = m.Message,
+                    timestamp = m.Timestamp.ToString("dd/MM/yyyy HH:mm"),
+                    isFromSupport = m.IsFromSupport,
+                    senderName = m.IsFromSupport ? "Поддръжка" : m.SenderName ?? "Unknown",
+                    senderId = m.SenderId,
+                    isRead = m.IsRead
                 });
 
-            return Json(recentMessages);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return Json(new List<object>());
+            }
         }
 
         [HttpPost]
@@ -246,18 +264,12 @@ namespace SecuritySystemsManagerMVC.Controllers
             try
             {
                 var userId = GetUserId();
-                var messages = await _chatMessageService.GetUnreadMessagesAsync(userId);
-
-                foreach (var message in messages)
-                {
-                    await _chatMessageService.MarkAsReadAsync(message.Id);
-                }
-
-                return Ok();
+                await _chatMessageService.MarkAllMessagesAsReadAsync(userId);
+                return Json(new { success = true });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { error = "Възникна грешка при маркиране на съобщенията като прочетени" });
+                return Json(new { success = false, error = ex.Message });
             }
         }
 
@@ -267,16 +279,12 @@ namespace SecuritySystemsManagerMVC.Controllers
         {
             try
             {
-                var messages = await _chatMessageService.GetMessagesByUserIdAsync(userId);
-                foreach (var message in messages.Where(m => !m.IsRead && !m.IsFromSupport))
-                {
-                    await _chatMessageService.MarkAsReadAsync(message.Id);
-                }
-                return Ok();
+                await _chatMessageService.MarkAllMessagesAsReadForUserAsync(userId);
+                return Json(new { success = true });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { error = "Възникна грешка при маркиране на съобщенията като прочетени" });
+                return Json(new { success = false, error = ex.Message });
             }
         }
 
@@ -287,29 +295,35 @@ namespace SecuritySystemsManagerMVC.Controllers
         {
             try
             {
-                var messages = await _chatMessageService.GetMessagesByUserIdAsync(userId);
                 var user = await _userService.GetByIdIfExistsAsync(userId);
-
                 if (user == null)
                 {
-                    return NotFound(new { error = "Потребителят не е намерен" });
+                    return Json(new { success = false, error = "User not found" });
                 }
 
-                var firstMessage = messages.OrderBy(m => m.Timestamp).FirstOrDefault();
+                var messages = await _chatMessageService.GetMessagesByUserIdAsync(userId);
                 var lastMessage = messages.OrderByDescending(m => m.Timestamp).FirstOrDefault();
 
-                return Json(new
+                var result = new
                 {
-                    username = user.Username,
-                    role = user.Role?.Name ?? "User",
-                    firstMessageDate = firstMessage?.Timestamp,
-                    lastActivity = lastMessage?.Timestamp,
-                    totalMessages = messages.Count()
-                });
+                    success = true,
+                    user = new
+                    {
+                        id = user.Id,
+                        username = user.Username,
+                        role = user.Role?.Name ?? "User"
+                    },
+                    lastMessage = lastMessage?.Message ?? "",
+                    lastMessageTime = lastMessage?.Timestamp.ToString("dd/MM/yyyy HH:mm") ?? "",
+                    hasUnreadMessages = messages.Any(m => !m.IsRead && !m.IsFromSupport),
+                    unreadCount = messages.Count(m => !m.IsRead && !m.IsFromSupport)
+                };
+
+                return Json(result);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { error = "Възникна грешка при зареждане на информацията за потребителя" });
+                return Json(new { success = false, error = ex.Message });
             }
         }
 
@@ -320,45 +334,25 @@ namespace SecuritySystemsManagerMVC.Controllers
         {
             try
             {
-                var user = await _userService.GetByIdIfExistsAsync(userId);
-                if (user == null || user.Role?.Name == "Admin" || user.Role?.Name == "Manager")
+                var conversation = await _chatMessageService.GetChatMessagesForUserAsync(userId);
+                
+                var result = conversation.Select(m => new
                 {
-                    return NotFound(new { error = "Потребителят не е намерен" });
-                }
-
-                var messages = await _chatMessageService.GetMessagesByUserIdAsync(userId);
-                var chatMessages = messages.Select(m => new ChatMessageVm
-                {
-                    Id = m.Id,
-                    Message = m.Message,
-                    Timestamp = m.Timestamp,
-                    IsFromSupport = m.IsFromSupport,
-                    SenderName = m.IsFromSupport ? "Поддръжка" : m.SenderName ?? "Unknown",
-                    SenderId = m.SenderId,
-                    IsRead = m.IsRead,
-                    ReadAt = m.ReadAt
-                }).OrderBy(m => m.Timestamp);
-
-                // Маркираме съобщенията като прочетени
-                foreach (var message in messages.Where(m => !m.IsRead && !m.IsFromSupport))
-                {
-                    await _chatMessageService.MarkAsReadAsync(message.Id);
-                }
-
-                return Json(new
-                {
-                    messages = chatMessages,
-                    user = new
-                    {
-                        id = user.Id,
-                        username = user.Username,
-                        role = user.Role?.Name ?? "User"
-                    }
+                    id = m.Id,
+                    message = m.Message,
+                    timestamp = m.Timestamp.ToString("dd/MM/yyyy HH:mm"),
+                    isFromSupport = m.IsFromSupport,
+                    senderName = m.IsFromSupport ? "Поддръжка" : m.SenderName ?? "Unknown",
+                    senderId = m.SenderId,
+                    isRead = m.IsRead,
+                    readAt = m.ReadAt?.ToString("dd/MM/yyyy HH:mm")
                 });
+
+                return Json(result);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { error = "Възникна грешка при зареждане на съобщенията" });
+                return Json(new List<object>());
             }
         }
 
@@ -368,30 +362,30 @@ namespace SecuritySystemsManagerMVC.Controllers
         {
             try
             {
-                if (string.IsNullOrEmpty(model.Message))
+                if (string.IsNullOrWhiteSpace(model.Message))
                 {
-                    return BadRequest(new { error = "Съобщението не може да бъде празно" });
+                    return Json(new { success = false, error = "Message cannot be empty" });
                 }
 
                 var senderId = GetUserId();
-                await _chatMessageService.SendMessageAsync(senderId, model.RecipientId, model.Message, true);
-
-                return Ok(new { success = true });
+                await _chatMessageService.ProcessSupportMessageAsync(senderId, model.RecipientId ?? 0, model.Message);
+                
+                return Json(new { success = true });
             }
             catch (Exception ex)
             {
-                return BadRequest(new { error = "Грешка при изпращане на съобщението" });
+                return Json(new { success = false, error = ex.Message });
             }
         }
 
         private int GetUserId()
         {
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-            if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (int.TryParse(userIdClaim, out int userId))
             {
-                throw new UnauthorizedAccessException("Invalid or missing UserId claim");
+                return userId;
             }
-            return userId;
+            throw new InvalidOperationException("User ID not found in claims");
         }
     }
 } 

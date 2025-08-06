@@ -320,6 +320,55 @@
     gap: 8px;
 }
 
+/* Filter card styles */
+.filter-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--card-shadow);
+    margin-bottom: 1rem;
+}
+
+.filter-card .card-header {
+    background-color: var(--header-bg);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.filter-card .card-header h5 {
+    color: var(--light-color);
+    font-weight: 600;
+    margin: 0;
+}
+
+.btn-filter-toggle {
+    font-size: 0.85rem;
+    padding: 0.375rem 0.75rem;
+}
+
+/* Invoices card styles */
+.invoices-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--card-shadow);
+}
+
+.invoices-card .card-header {
+    background-color: var(--header-bg);
+    border-bottom: 1px solid var(--border-color);
+    padding: 1rem 1.5rem;
+}
+
+.invoices-card .card-header h5 {
+    color: var(--light-color);
+    font-weight: 600;
+    margin: 0;
+}
+
+.invoices-card .card-footer {
+    background-color: var(--header-bg);
+    border-top: 1px solid var(--border-color);
+    padding: 1rem 1.5rem;
+}
+
 /* Create/Edit form styles */
 .invoice-form-container {
     background-color: var(--card-bg);

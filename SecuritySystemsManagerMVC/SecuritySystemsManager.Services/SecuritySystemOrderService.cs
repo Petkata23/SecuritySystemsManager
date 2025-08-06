@@ -12,13 +12,16 @@ namespace SecuritySystemsManager.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly ISecuritySystemOrderRepository _orderRepository;
+        private readonly IInvoiceService _invoiceService;
 
         public SecuritySystemOrderService(
             ISecuritySystemOrderRepository repository, 
-            IUserRepository userRepository) : base(repository)
+            IUserRepository userRepository,
+            IInvoiceService invoiceService) : base(repository)
         {
             _userRepository = userRepository;
             _orderRepository = repository;
+            _invoiceService = invoiceService;
         }
 
         public async Task AddTechnicianToOrderAsync(int orderId, int technicianId)
@@ -138,7 +141,119 @@ namespace SecuritySystemsManager.Services
             int pageSize = 10,
             int pageNumber = 1)
         {
-            return await _orderRepository.GetFilteredOrdersAsync(searchTerm, startDate, endDate, status, user, pageSize, pageNumber);
+            // Get user role and ID
+            string userRole = "Client"; // Default
+            int userId = 0;
+
+            if (user != null)
+            {
+                if (user.IsInRole("Admin") || user.IsInRole("Manager"))
+                {
+                    userRole = user.IsInRole("Admin") ? "Admin" : "Manager";
+                }
+                else if (user.IsInRole("Technician"))
+                {
+                    userRole = "Technician";
+                }
+                else
+                {
+                    userRole = "Client";
+                }
+
+                var userIdClaim = user.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (!string.IsNullOrEmpty(userIdClaim) && int.TryParse(userIdClaim, out int parsedUserId))
+                {
+                    userId = parsedUserId;
+                }
+            }
+
+            // Get orders based on user role
+            var orders = await GetOrdersByUserRoleAsync(userId, userRole, pageSize, pageNumber);
+            var totalCount = await GetOrdersCountByUserRoleAsync(userId, userRole);
+
+            // Apply filters
+            var filteredOrders = orders.AsEnumerable();
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                filteredOrders = filteredOrders.Where(o =>
+                    o.Description?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) == true);
+            }
+
+            if (startDate.HasValue)
+            {
+                filteredOrders = filteredOrders.Where(o => o.RequestedDate >= startDate.Value);
+            }
+
+            if (endDate.HasValue)
+            {
+                filteredOrders = filteredOrders.Where(o => o.RequestedDate <= endDate.Value);
+            }
+
+            if (!string.IsNullOrEmpty(status) && Enum.TryParse<OrderStatus>(status, out var statusEnum))
+            {
+                filteredOrders = filteredOrders.Where(o => o.Status == statusEnum);
+            }
+
+            return (filteredOrders.ToList(), totalCount);
         }
+
+        // New methods for business logic from controller
+        public async Task<(bool Success, string ErrorMessage)> GenerateInvoiceFromOrderAsync(int orderId, decimal laborCost, Dictionary<string, decimal> deviceCosts)
+        {
+            try
+            {
+                // Calculate total amount
+                decimal totalAmount = laborCost;
+                
+                // Add device costs
+                foreach (var deviceCost in deviceCosts.Values)
+                {
+                    totalAmount += deviceCost;
+                }
+
+                // Generate the invoice with calculated amount
+                await _invoiceService.GenerateInvoiceFromOrderAsync(orderId, totalAmount);
+                
+                return (true, $"Invoice generated successfully with total amount: ${totalAmount:F2}");
+            }
+            catch (InvalidOperationException ex)
+            {
+                return (false, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Error generating invoice: {ex.Message}");
+            }
+        }
+
+        public async Task<(DateTime? ParsedStartDate, DateTime? ParsedEndDate, string ErrorMessage)> ParseDateRangeAsync(string startDate, string endDate)
+        {
+            DateTime? parsedStartDate = null;
+            DateTime? parsedEndDate = null;
+            string errorMessage = null;
+            
+            if (!string.IsNullOrEmpty(startDate) && DateTime.TryParse(startDate, out DateTime start))
+            {
+                parsedStartDate = start;
+            }
+            else if (!string.IsNullOrEmpty(startDate))
+            {
+                errorMessage = "Invalid start date format";
+            }
+            
+            if (!string.IsNullOrEmpty(endDate) && DateTime.TryParse(endDate, out DateTime end))
+            {
+                parsedEndDate = end;
+            }
+            else if (!string.IsNullOrEmpty(endDate))
+            {
+                errorMessage = "Invalid end date format";
+            }
+
+            return (parsedStartDate, parsedEndDate, errorMessage);
+        }
+
+
     }
 } 

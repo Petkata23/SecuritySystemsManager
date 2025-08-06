@@ -8,6 +8,8 @@ using SecuritySystemsManager.Shared.Repos.Contracts;
 using SecuritySystemsManager.Shared.Security;
 using SecuritySystemsManager.Shared.Services.Contracts;
 using System.IO;
+using System.Text;
+using System.Text.Encodings.Web;
 
 namespace SecuritySystemsManager.Services
 {
@@ -16,11 +18,13 @@ namespace SecuritySystemsManager.Services
     {
         private readonly IFileStorageService _fileStorageService;
         private readonly UserManager<User>? _userManager;
+        private readonly UrlEncoder _urlEncoder;
 
-        public UserService(IUserRepository repository, IFileStorageService fileStorageService, UserManager<User>? userManager = null) : base(repository)
+        public UserService(IUserRepository repository, IFileStorageService fileStorageService, UserManager<User>? userManager = null, UrlEncoder? urlEncoder = null) : base(repository)
         {
             _fileStorageService = fileStorageService;
             _userManager = userManager;
+            _urlEncoder = urlEncoder ?? UrlEncoder.Default;
         }
 
         public async Task<bool> CanUserLoginAsync(string username, string password)
@@ -247,6 +251,289 @@ namespace SecuritySystemsManager.Services
                 TotalLocations = totalLocations,
                 UserRole = userRole
             };
+        }
+
+        // New methods for account management business logic
+        public async Task<(bool Success, List<string> Errors)> UpdateUserProfileAsync(int userId, string email, string phoneNumber, string firstName, string lastName, IFormFile profileImageFile)
+        {
+            var errors = new List<string>();
+            
+            if (_userManager == null)
+            {
+                errors.Add("User manager is not available");
+                return (false, errors);
+            }
+
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+            {
+                errors.Add("User not found");
+                return (false, errors);
+            }
+
+            // Update email if changed
+            var currentEmail = await _userManager.GetEmailAsync(user);
+            if (email != currentEmail)
+            {
+                var setEmailResult = await _userManager.SetEmailAsync(user, email);
+                if (!setEmailResult.Succeeded)
+                {
+                    errors.AddRange(setEmailResult.Errors.Select(e => e.Description));
+                }
+            }
+
+            // Update phone number if changed
+            var currentPhoneNumber = await _userManager.GetPhoneNumberAsync(user);
+            if (phoneNumber != currentPhoneNumber)
+            {
+                var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, phoneNumber);
+                if (!setPhoneResult.Succeeded)
+                {
+                    errors.AddRange(setPhoneResult.Errors.Select(e => e.Description));
+                }
+            }
+
+            // Update additional fields
+            user.FirstName = firstName;
+            user.LastName = lastName;
+
+            // Handle profile image
+            if (profileImageFile != null && profileImageFile.Length > 0)
+            {
+                string imageUrl = await UploadUserProfileImageAsync(profileImageFile);
+                if (!string.IsNullOrEmpty(imageUrl))
+                {
+                    user.ProfileImage = imageUrl;
+                }
+            }
+
+            var updateResult = await _userManager.UpdateAsync(user);
+            if (!updateResult.Succeeded)
+            {
+                errors.AddRange(updateResult.Errors.Select(e => e.Description));
+            }
+
+            return (errors.Count == 0, errors);
+        }
+
+        public async Task<(bool Success, List<string> Errors)> ChangeUserPasswordAsync(int userId, string oldPassword, string newPassword)
+        {
+            var errors = new List<string>();
+            
+            if (_userManager == null)
+            {
+                errors.Add("User manager is not available");
+                return (false, errors);
+            }
+
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+            {
+                errors.Add("User not found");
+                return (false, errors);
+            }
+
+            var changePasswordResult = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
+            if (!changePasswordResult.Succeeded)
+            {
+                errors.AddRange(changePasswordResult.Errors.Select(e => e.Description));
+            }
+
+            return (errors.Count == 0, errors);
+        }
+
+        public async Task<(bool Success, List<string> Errors)> SetUserPasswordAsync(int userId, string newPassword)
+        {
+            var errors = new List<string>();
+            
+            if (_userManager == null)
+            {
+                errors.Add("User manager is not available");
+                return (false, errors);
+            }
+
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+            {
+                errors.Add("User not found");
+                return (false, errors);
+            }
+
+            var addPasswordResult = await _userManager.AddPasswordAsync(user, newPassword);
+            if (!addPasswordResult.Succeeded)
+            {
+                errors.AddRange(addPasswordResult.Errors.Select(e => e.Description));
+            }
+
+            return (errors.Count == 0, errors);
+        }
+
+        public async Task<bool> UserHasPasswordAsync(int userId)
+        {
+            if (_userManager == null)
+                return false;
+
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            return user != null && await _userManager.HasPasswordAsync(user);
+        }
+
+        public async Task<(bool HasAuthenticator, bool Is2faEnabled, int RecoveryCodesLeft)> GetTwoFactorAuthInfoAsync(int userId)
+        {
+            if (_userManager == null)
+                return (false, false, 0);
+
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+                return (false, false, 0);
+
+            return (
+                await _userManager.GetAuthenticatorKeyAsync(user) != null,
+                await _userManager.GetTwoFactorEnabledAsync(user),
+                await _userManager.CountRecoveryCodesAsync(user)
+            );
+        }
+
+        public async Task<(string SharedKey, string AuthenticatorUri)> GetTwoFactorSetupInfoAsync(int userId)
+        {
+            if (_userManager == null)
+                return (string.Empty, string.Empty);
+
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+                return (string.Empty, string.Empty);
+
+            var authenticatorKey = await _userManager.GetAuthenticatorKeyAsync(user);
+            if (string.IsNullOrEmpty(authenticatorKey))
+            {
+                await _userManager.ResetAuthenticatorKeyAsync(user);
+                authenticatorKey = await _userManager.GetAuthenticatorKeyAsync(user);
+            }
+
+            return (
+                await FormatAuthenticatorKey(authenticatorKey),
+                await GenerateQrCodeUriAsync(user.Email, authenticatorKey)
+            );
+        }
+
+        public async Task<(bool Success, List<string> Errors, string[] RecoveryCodes)> EnableTwoFactorAuthAsync(int userId, string verificationCode)
+        {
+            var errors = new List<string>();
+            string[] recoveryCodes = new string[0];
+            
+            if (_userManager == null)
+            {
+                errors.Add("User manager is not available");
+                return (false, errors, recoveryCodes);
+            }
+
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+            {
+                errors.Add("User not found");
+                return (false, errors, recoveryCodes);
+            }
+
+            if (string.IsNullOrEmpty(verificationCode))
+            {
+                errors.Add("Verification code is required");
+                return (false, errors, recoveryCodes);
+            }
+
+            // Strip spaces and hyphens
+            var cleanCode = verificationCode.Replace(" ", string.Empty).Replace("-", string.Empty);
+
+            var is2faTokenValid = await _userManager.VerifyTwoFactorTokenAsync(
+                user, _userManager.Options.Tokens.AuthenticatorTokenProvider, cleanCode);
+
+            if (!is2faTokenValid)
+            {
+                errors.Add("Verification code is invalid");
+                return (false, errors, recoveryCodes);
+            }
+
+            await _userManager.SetTwoFactorEnabledAsync(user, true);
+            
+            // Generate recovery codes
+            recoveryCodes = (await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10)).ToArray();
+
+            return (true, errors, recoveryCodes);
+        }
+
+        public async Task<(bool Success, List<string> Errors)> DisableTwoFactorAuthAsync(int userId)
+        {
+            var errors = new List<string>();
+            
+            if (_userManager == null)
+            {
+                errors.Add("User manager is not available");
+                return (false, errors);
+            }
+
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+            {
+                errors.Add("User not found");
+                return (false, errors);
+            }
+
+            if (!await _userManager.GetTwoFactorEnabledAsync(user))
+            {
+                errors.Add("Two-factor authentication is not enabled");
+                return (false, errors);
+            }
+
+            await _userManager.SetTwoFactorEnabledAsync(user, false);
+            return (true, errors);
+        }
+
+        public async Task<(bool Success, List<string> Errors)> ResetAuthenticatorAsync(int userId)
+        {
+            var errors = new List<string>();
+            
+            if (_userManager == null)
+            {
+                errors.Add("User manager is not available");
+                return (false, errors);
+            }
+
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+            {
+                errors.Add("User not found");
+                return (false, errors);
+            }
+
+            await _userManager.SetTwoFactorEnabledAsync(user, false);
+            await _userManager.ResetAuthenticatorKeyAsync(user);
+            await _userManager.UpdateAsync(user);
+
+            return (true, errors);
+        }
+
+        public async Task<string> FormatAuthenticatorKey(string unformattedKey)
+        {
+            var result = new StringBuilder();
+            int currentPosition = 0;
+            while (currentPosition + 4 < unformattedKey.Length)
+            {
+                result.Append(unformattedKey.Substring(currentPosition, 4)).Append(" ");
+                currentPosition += 4;
+            }
+            if (currentPosition < unformattedKey.Length)
+            {
+                result.Append(unformattedKey.Substring(currentPosition));
+            }
+
+            return result.ToString().ToLowerInvariant();
+        }
+
+        public async Task<string> GenerateQrCodeUriAsync(string email, string unformattedKey)
+        {
+            return string.Format(
+                "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6",
+                _urlEncoder.Encode("Security Systems Manager"),
+                _urlEncoder.Encode(email),
+                unformattedKey);
         }
     }
 } 

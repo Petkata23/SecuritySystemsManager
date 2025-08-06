@@ -23,5 +23,9 @@ namespace SecuritySystemsManager.Shared.Services.Contracts
             ClaimsPrincipal? user = null,
             int pageSize = 10,
             int pageNumber = 1);
+            
+        // New methods for business logic from controller
+        Task<(bool Success, string ErrorMessage)> GenerateInvoiceFromOrderAsync(int orderId, decimal laborCost, Dictionary<string, decimal> deviceCosts);
+        Task<(DateTime? ParsedStartDate, DateTime? ParsedEndDate, string ErrorMessage)> ParseDateRangeAsync(string startDate, string endDate);
     }
 } 
