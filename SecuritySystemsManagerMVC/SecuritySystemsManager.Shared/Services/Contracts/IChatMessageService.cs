@@ -25,6 +25,7 @@ namespace SecuritySystemsManager.Shared.Services.Contracts
         Task<IEnumerable<ChatMessageDto>> GetChatConversationAsync(int userId);
         Task<int> GetUnreadMessagesCountAsync(int userId);
         Task<IEnumerable<ChatMessageDto>> GetRecentMessagesAsync(int count = 20);
+        Task<IEnumerable<ChatMessageDto>> GetRecentMessagesForUserAsync(int userId, int count = 20);
         Task MarkAllMessagesAsReadAsync(int userId);
         Task MarkAllMessagesAsReadForUserAsync(int userId);
         Task<IEnumerable<ChatMessageDto>> GetChatMessagesForUserAsync(int userId);

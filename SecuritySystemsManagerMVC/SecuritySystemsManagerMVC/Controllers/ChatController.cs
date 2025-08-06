@@ -250,7 +250,8 @@ namespace SecuritySystemsManagerMVC.Controllers
         {
             try
             {
-                var recentMessages = await _chatMessageService.GetRecentMessagesAsync(count);
+                var userId = GetUserId();
+                var recentMessages = await _chatMessageService.GetRecentMessagesForUserAsync(userId, count);
                 
                 var result = recentMessages.Select(m => new
                 {

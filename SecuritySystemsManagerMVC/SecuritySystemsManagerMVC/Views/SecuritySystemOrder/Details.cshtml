@@ -6,7 +6,7 @@
     bool isClient = User.IsInRole("Client");
     bool isAdminOrManager = User.IsInRole("Admin") || User.IsInRole("Manager");
     bool isTechnician = User.IsInRole("Technician");
-    bool canManageMaintenance = User.IsInRole("Admin") || User.IsInRole("Manager") || User.IsInRole("Technician");
+    bool canManageMaintenance = User.IsInRole("Admin") || User.IsInRole("Manager");
 }
 
 @section Styles {
@@ -659,9 +659,21 @@
                                     }
                                     else
                                     {
-                                        <a asp-controller="User" asp-action="Create" class="btn btn-success">
-                                            <i class="bi bi-plus-lg me-2"></i>Create Technician
-                                        </a>
+                                        @if (User.IsInRole("Admin"))
+                                        {
+                                            <a asp-controller="User" asp-action="Create" class="btn btn-success">
+                                                <i class="bi bi-plus-lg me-2"></i>Create Technician
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <div class="alert alert-info d-flex align-items-center">
+                                                <i class="bi bi-info-circle-fill fs-4 me-3"></i>
+                                                <div>
+                                                    Contact an administrator to create a new technician account.
+                                                </div>
+                                            </div>
+                                        }
                                     }
                                 </div>
                             </form>
@@ -855,28 +867,6 @@
     <script src="~/js/locations-details.js"></script>
     <script src="~/js/order-details-modal.js" asp-append-version="true"></script>
     <script src="~/js/invoice-modal.js" asp-append-version="true"></script>
-    
-    <script>
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(function() {
-                // Show a temporary success message
-                const button = event.target.closest('button');
-                const originalText = button.innerHTML;
-                button.innerHTML = '<i class="bi bi-check me-1"></i>Copied!';
-                button.classList.remove('btn-outline-secondary');
-                button.classList.add('btn-success');
-                
-                setTimeout(function() {
-                    button.innerHTML = originalText;
-                    button.classList.remove('btn-success');
-                    button.classList.add('btn-outline-secondary');
-                }, 2000);
-            }).catch(function(err) {
-                console.error('Could not copy text: ', err);
-                alert('Failed to copy address to clipboard');
-            });
-        }
-    </script>
 }
 
 @functions {

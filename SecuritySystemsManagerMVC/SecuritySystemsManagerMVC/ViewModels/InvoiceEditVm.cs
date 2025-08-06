@@ -27,6 +27,7 @@ namespace SecuritySystemsManagerMVC.ViewModels
         public InvoiceEditVm()
         {
             AllOrders = new List<SelectListItem>();
+            IssuedOn = DateTime.Today;
         }
     }
 }

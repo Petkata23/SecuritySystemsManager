@@ -12,7 +12,7 @@ using System.Diagnostics;
 
 namespace SecuritySystemsManagerMVC.Controllers
 {
-    [Authorize(Roles = "Admin,Manager")]
+    [Authorize(Roles = "Admin")]
     public class UserController : BaseCrudController<UserDto, IUserRepository, IUserService, UserEditVm, UserDetailsVm>
     {
         protected readonly IRoleService _roleService;

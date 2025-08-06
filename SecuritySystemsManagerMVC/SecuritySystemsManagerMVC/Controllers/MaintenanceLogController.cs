@@ -43,7 +43,7 @@ namespace SecuritySystemsManagerMVC.Controllers
         // GET: MaintenanceLog/CreateForOrder/5
         [HttpGet]
         [Route("MaintenanceLog/CreateForOrder/{orderId}")]
-        [Authorize(Roles = "Admin,Manager,Technician")]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> CreateForOrder(int orderId)
         {
             try
@@ -134,14 +134,14 @@ namespace SecuritySystemsManagerMVC.Controllers
 
         // Override Create method to restrict access
         [HttpGet]
-        [Authorize(Roles = "Admin,Manager,Technician")]
+        [Authorize(Roles = "Admin,Manager")]
         public override async Task<IActionResult> Create()
         {
             return await base.Create();
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Manager,Technician")]
+        [Authorize(Roles = "Admin,Manager")]
         public override async Task<IActionResult> Create(MaintenanceLogEditVm editVM)
         {
             return await base.Create(editVM);
@@ -149,14 +149,14 @@ namespace SecuritySystemsManagerMVC.Controllers
 
         // Override Edit method to restrict access
         [HttpGet]
-        [Authorize(Roles = "Admin,Manager,Technician")]
+        [Authorize(Roles = "Admin,Manager")]
         public override async Task<IActionResult> Edit(int? id)
         {
             return await base.Edit(id);
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Manager,Technician")]
+        [Authorize(Roles = "Admin,Manager")]
         public override async Task<IActionResult> Edit(int id, MaintenanceLogEditVm editVM)
         {
             return await base.Edit(id, editVM);
@@ -164,14 +164,14 @@ namespace SecuritySystemsManagerMVC.Controllers
 
         // Override Delete method to restrict access
         [HttpGet]
-        [Authorize(Roles = "Admin,Manager,Technician")]
+        [Authorize(Roles = "Admin,Manager")]
         public override async Task<IActionResult> Delete(int? id)
         {
             return await base.Delete(id);
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Manager,Technician")]
+        [Authorize(Roles = "Admin,Manager")]
         public override async Task<IActionResult> Delete(int id)
         {
             return await base.Delete(id);

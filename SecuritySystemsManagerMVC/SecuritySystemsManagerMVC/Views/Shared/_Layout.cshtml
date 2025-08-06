@@ -123,7 +123,7 @@
                                 <a class="nav-link" asp-controller="Location" asp-action="List"><i class="bi bi-geo-alt me-2"></i>My Locations</a>
                             </li>
                         }
-                        @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                        @if (User.IsInRole("Admin"))
                         {
                             <!-- Administration Dropdown Menu -->
                             <li class="nav-item dropdown">
@@ -132,11 +132,8 @@
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="administrationDropdown">
                                     <li><a class="dropdown-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "User" ? "active" : "")" asp-controller="User" asp-action="List"><i class="bi bi-people me-2"></i>Users</a></li>
-                                    @if (User.IsInRole("Admin"))
-                                    {
-                                        <li><a class="dropdown-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Role" ? "active" : "")" asp-controller="Role" asp-action="List"><i class="bi bi-person-badge me-2"></i>Roles</a></li>
-                                        <li><a class="dropdown-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Chat" ? "active" : "")" asp-controller="Chat" asp-action="Admin"><i class="bi bi-chat-dots me-2"></i>Chat Administration</a></li>
-                                    }
+                                    <li><a class="dropdown-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Role" ? "active" : "")" asp-controller="Role" asp-action="List"><i class="bi bi-person-badge me-2"></i>Roles</a></li>
+                                    <li><a class="dropdown-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Chat" ? "active" : "")" asp-controller="Chat" asp-action="Admin"><i class="bi bi-chat-dots me-2"></i>Chat Administration</a></li>
                                 </ul>
                             </li>
                         }
@@ -280,7 +277,7 @@
         <script src="~/js/site.js" asp-append-version="true"></script>
     
     <!-- Chat Widget -->
-    @if (User.Identity.IsAuthenticated && !User.IsInRole("Admin") && !User.IsInRole("Manager"))
+    @if (User.Identity.IsAuthenticated && User.IsInRole("Client"))
     {
         @await Html.PartialAsync("_ChatWidget")
     }

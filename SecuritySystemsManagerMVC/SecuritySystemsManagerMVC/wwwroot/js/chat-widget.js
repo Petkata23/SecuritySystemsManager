@@ -233,7 +233,7 @@ $(document).ready(function () {
         if (savedHistory) {
             try {
                 chatHistory = JSON.parse(savedHistory);
-                displayChatHistory();
+                // Don't display here, let loadExistingMessages handle it
             } catch (e) {
                 console.error('Error loading chat history:', e);
                 chatHistory = [];
@@ -264,11 +264,15 @@ $(document).ready(function () {
                     saveChatHistory();
                     displayChatHistory();
                 } else {
-                    console.log('No existing messages found or invalid response format');
+                    console.log('No existing messages found for current user');
+                    // Show welcome message if no messages exist
+                    $('#welcomeMessage').show();
                 }
             })
             .fail(function(err) {
                 console.error('Error loading existing messages:', err);
+                // Show welcome message on error
+                $('#welcomeMessage').show();
             });
     }
 
@@ -283,6 +287,7 @@ $(document).ready(function () {
     function displayChatHistory() {
         if (chatHistory.length === 0) {
             $('#welcomeMessage').show();
+            $('#chatWidgetContent').empty();
             return;
         }
 

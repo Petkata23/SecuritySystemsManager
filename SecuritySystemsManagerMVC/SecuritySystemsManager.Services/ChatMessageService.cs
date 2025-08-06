@@ -194,10 +194,18 @@ namespace SecuritySystemsManager.Services
 
         public async Task<IEnumerable<ChatMessageDto>> GetRecentMessagesAsync(int count = 20)
         {
-            var allMessages = await GetAllAsync();
-            return allMessages
+            // This method should not be used for the chat widget
+            // The chat widget should use GetMessagesByUserIdAsync instead
+            throw new NotImplementedException("Use GetMessagesByUserIdAsync for user-specific messages");
+        }
+
+        public async Task<IEnumerable<ChatMessageDto>> GetRecentMessagesForUserAsync(int userId, int count = 20)
+        {
+            var userMessages = await GetMessagesByUserIdAsync(userId);
+            return userMessages
                 .OrderByDescending(m => m.Timestamp)
                 .Take(count)
+                .OrderBy(m => m.Timestamp) // Re-order for display (oldest first)
                 .ToList();
         }
 
