@@ -437,6 +437,7 @@
 .empty-state {
     padding: 4rem 2rem;
     text-align: center;
+    background-color: var(--card-bg);
 }
 
 .empty-state-icon {
@@ -771,4 +772,4 @@
     .pagination .page-item:not(.active):not(:first-child):not(:last-child) {
         display: none;
     }
-} 
+}
