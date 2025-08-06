@@ -36,6 +36,9 @@ namespace SecuritySystemsManagerMVC.Controllers
                 var messages = await _chatMessageService.GetActiveChatsAsync();
                 var allUsers = await _userService.GetAllAsync();
 
+                // Get all messages for finding last message
+                var allMessages = await _chatMessageService.GetAllAsync();
+
                 // Simple grouping logic - can stay in controller
                 var activeChats = messages
                     .Where(m => !m.IsFromSupport) // Exclude support messages
@@ -50,12 +53,16 @@ namespace SecuritySystemsManagerMVC.Controllers
                         {
                             UserId = g.Key,
                             Username = username,
-                            LastMessage = messages
-                                .Where(m => m.SenderId == g.Key || m.RecipientId == g.Key)
+                            LastMessage = allMessages
+                                .Where(m => (m.SenderId == g.Key && !m.IsFromSupport) || 
+                                           (m.RecipientId == g.Key && m.IsFromSupport) ||
+                                           (m.SenderId == g.Key && m.IsFromSupport))
                                 .OrderByDescending(m => m.Timestamp)
                                 .First()?.Message ?? "",
-                            LastMessageTime = messages
-                                .Where(m => m.SenderId == g.Key || m.RecipientId == g.Key)
+                            LastMessageTime = allMessages
+                                .Where(m => (m.SenderId == g.Key && !m.IsFromSupport) || 
+                                           (m.RecipientId == g.Key && m.IsFromSupport) ||
+                                           (m.SenderId == g.Key && m.IsFromSupport))
                                 .Max(m => m.Timestamp),
                             HasUnreadMessages = g.Any(m => !m.IsRead && !m.IsFromSupport),
                             UserRole = user?.Role?.Name ?? "User",
@@ -89,7 +96,7 @@ namespace SecuritySystemsManagerMVC.Controllers
                             Message = m.Message,
                             Timestamp = m.Timestamp,
                             IsFromSupport = m.IsFromSupport,
-                            SenderName = m.IsFromSupport ? "Поддръжка" : m.SenderName ?? "Unknown",
+                            SenderName = m.IsFromSupport ? "Support" : m.SenderName ?? "Unknown",
                             SenderId = m.SenderId,
                             IsRead = m.IsRead,
                             ReadAt = m.ReadAt
@@ -122,6 +129,9 @@ namespace SecuritySystemsManagerMVC.Controllers
                 var messages = await _chatMessageService.GetActiveChatsAsync();
                 var allUsers = await _userService.GetAllAsync();
 
+                // Get all messages for finding last message
+                var allMessages = await _chatMessageService.GetAllAsync();
+
                 // Simple grouping logic - can stay in controller
                 var activeChats = messages
                     .Where(m => !m.IsFromSupport) // Exclude support messages
@@ -136,12 +146,16 @@ namespace SecuritySystemsManagerMVC.Controllers
                         {
                             UserId = g.Key,
                             Username = username,
-                            LastMessage = messages
-                                .Where(m => m.SenderId == g.Key || m.RecipientId == g.Key)
+                            LastMessage = allMessages
+                                .Where(m => (m.SenderId == g.Key && !m.IsFromSupport) || 
+                                           (m.RecipientId == g.Key && m.IsFromSupport) ||
+                                           (m.SenderId == g.Key && m.IsFromSupport))
                                 .OrderByDescending(m => m.Timestamp)
                                 .First()?.Message ?? "",
-                            LastMessageTime = messages
-                                .Where(m => m.SenderId == g.Key || m.RecipientId == g.Key)
+                            LastMessageTime = allMessages
+                                .Where(m => (m.SenderId == g.Key && !m.IsFromSupport) || 
+                                           (m.RecipientId == g.Key && m.IsFromSupport) ||
+                                           (m.SenderId == g.Key && m.IsFromSupport))
                                 .Max(m => m.Timestamp),
                             HasUnreadMessages = g.Any(m => !m.IsRead && !m.IsFromSupport),
                             UserRole = user?.Role?.Name ?? "User",
@@ -189,7 +203,7 @@ namespace SecuritySystemsManagerMVC.Controllers
                     message = m.Message,
                     timestamp = m.Timestamp.ToString("dd/MM/yyyy HH:mm"),
                     isFromSupport = m.IsFromSupport,
-                    senderName = m.IsFromSupport ? "Поддръжка" : m.SenderName ?? "Unknown"
+                    senderName = m.IsFromSupport ? "Support" : m.SenderName ?? "Unknown"
                 });
 
                 return Json(result);
@@ -244,7 +258,7 @@ namespace SecuritySystemsManagerMVC.Controllers
                     message = m.Message,
                     timestamp = m.Timestamp.ToString("dd/MM/yyyy HH:mm"),
                     isFromSupport = m.IsFromSupport,
-                    senderName = m.IsFromSupport ? "Поддръжка" : m.SenderName ?? "Unknown",
+                    senderName = m.IsFromSupport ? "Support" : m.SenderName ?? "Unknown",
                     senderId = m.SenderId,
                     isRead = m.IsRead
                 });
@@ -303,6 +317,7 @@ namespace SecuritySystemsManagerMVC.Controllers
 
                 var messages = await _chatMessageService.GetMessagesByUserIdAsync(userId);
                 var lastMessage = messages.OrderByDescending(m => m.Timestamp).FirstOrDefault();
+                var firstMessage = messages.OrderBy(m => m.Timestamp).FirstOrDefault();
 
                 var result = new
                 {
@@ -316,7 +331,9 @@ namespace SecuritySystemsManagerMVC.Controllers
                     lastMessage = lastMessage?.Message ?? "",
                     lastMessageTime = lastMessage?.Timestamp.ToString("dd/MM/yyyy HH:mm") ?? "",
                     hasUnreadMessages = messages.Any(m => !m.IsRead && !m.IsFromSupport),
-                    unreadCount = messages.Count(m => !m.IsRead && !m.IsFromSupport)
+                    unreadCount = messages.Count(m => !m.IsRead && !m.IsFromSupport),
+                    firstMessageDate = firstMessage?.Timestamp.ToString("yyyy-MM-ddTHH:mm:ss") ?? null,
+                    totalMessages = messages.Count()
                 };
 
                 return Json(result);
@@ -334,25 +351,43 @@ namespace SecuritySystemsManagerMVC.Controllers
         {
             try
             {
+                var user = await _userService.GetByIdIfExistsAsync(userId);
+                if (user == null)
+                {
+                    return Json(new { success = false, error = "User not found" });
+                }
+
                 var conversation = await _chatMessageService.GetChatMessagesForUserAsync(userId);
                 
-                var result = conversation.Select(m => new
+                var messages = conversation.Select(m => new
                 {
                     id = m.Id,
                     message = m.Message,
                     timestamp = m.Timestamp.ToString("dd/MM/yyyy HH:mm"),
                     isFromSupport = m.IsFromSupport,
-                    senderName = m.IsFromSupport ? "Поддръжка" : m.SenderName ?? "Unknown",
+                    senderName = m.IsFromSupport ? "Support" : m.SenderName ?? "Unknown",
                     senderId = m.SenderId,
                     isRead = m.IsRead,
                     readAt = m.ReadAt?.ToString("dd/MM/yyyy HH:mm")
                 });
 
+                var result = new
+                {
+                    success = true,
+                    user = new
+                    {
+                        id = user.Id,
+                        username = user.Username,
+                        role = user.Role?.Name ?? "User"
+                    },
+                    messages = messages
+                };
+
                 return Json(result);
             }
             catch (Exception ex)
             {
-                return Json(new List<object>());
+                return Json(new { success = false, error = ex.Message });
             }
         }
 

@@ -1,7 +1,30 @@
 // Utility functions
 // Function for formatting time
 function formatTime(timestamp) {
-    const date = new Date(timestamp);
+    // Handle both string and Date objects
+    let date;
+    if (typeof timestamp === 'string') {
+        // Check if it's already in a formatted string (dd/MM/yyyy HH:mm)
+        if (timestamp.includes('/')) {
+            // Parse Bulgarian date format
+            const parts = timestamp.split(' ');
+            const dateParts = parts[0].split('/');
+            const timeParts = parts[1].split(':');
+            date = new Date(
+                parseInt(dateParts[2]), // year
+                parseInt(dateParts[1]) - 1, // month (0-based)
+                parseInt(dateParts[0]), // day
+                parseInt(timeParts[0]), // hour
+                parseInt(timeParts[1]) // minute
+            );
+        } else {
+            // If it's a string, parse it as local time
+            date = new Date(timestamp);
+        }
+    } else {
+        date = new Date(timestamp);
+    }
+    
     const now = new Date();
     const diffInHours = (now - date) / (1000 * 60 * 60);
     
@@ -265,6 +288,10 @@ document.addEventListener('DOMContentLoaded', function () {
             
             const data = await response.json();
             
+            if (!data.success) {
+                throw new Error(data.error || 'Error loading chat');
+            }
+            
             // Update UI for chat
             const chatHeader = chatMain.querySelector('.chat-header');
             if (chatHeader && data.user) {
@@ -287,15 +314,19 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             // Update messages
-            chatMessages.innerHTML = data.messages.map(message => `
-                <div class="message ${message.isFromSupport ? 'sent' : 'received'}">
-                    <div class="message-content">${escapeHtml(message.message)}</div>
-                    <div class="message-info">
-                        <span class="sender">${escapeHtml(message.senderName)}</span>
-                        <span class="time">${formatTime(message.timestamp)}</span>
+            if (data.messages && Array.isArray(data.messages)) {
+                chatMessages.innerHTML = data.messages.map(message => `
+                    <div class="message ${message.isFromSupport ? 'sent' : 'received'}">
+                        <div class="message-content">${escapeHtml(message.message)}</div>
+                        <div class="message-info">
+                            <span class="sender">${escapeHtml(message.senderName)}</span>
+                            <span class="time">${formatTime(message.timestamp)}</span>
+                        </div>
                     </div>
-                </div>
-            `).join('');
+                `).join('');
+            } else {
+                chatMessages.innerHTML = '<div class="no-messages">No messages found</div>';
+            }
 
             // Scroll to last message
             chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -435,14 +466,23 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Function for showing user information
+    // Function for showing/hiding user information
     async function handleShowUserInfo() {
         if (!currentUserId) return;
         
         const userInfoPanel = document.getElementById('userInfoPanel');
-        userInfoPanel.style.display = 'block';
-        setTimeout(() => userInfoPanel.classList.add('active'), 10);
-        loadUserInfo(currentUserId);
+        
+        // Check if panel is already active
+        if (userInfoPanel.classList.contains('active')) {
+            // Close the panel
+            userInfoPanel.classList.remove('active');
+            setTimeout(() => userInfoPanel.style.display = 'none', 300);
+        } else {
+            // Open the panel
+            userInfoPanel.style.display = 'block';
+            setTimeout(() => userInfoPanel.classList.add('active'), 10);
+            loadUserInfo(currentUserId);
+        }
     }
 
     function loadUserInfo(userId) {
@@ -451,10 +491,42 @@ document.addEventListener('DOMContentLoaded', function () {
         fetch(`/Chat/GetUserInfo/${userId}`)
             .then(response => response.json())
             .then(data => {
-                document.getElementById('firstMessageDate').textContent = 
-                    data.firstMessageDate ? new Date(data.firstMessageDate).toLocaleString('bg-BG') : '-';
-                document.getElementById('totalMessages').textContent = data.totalMessages;
+                if (data.success) {
+                    const firstMessageDateElement = document.getElementById('firstMessageDate');
+                    const totalMessagesElement = document.getElementById('totalMessages');
+                    
+                    if (firstMessageDateElement) {
+                        firstMessageDateElement.textContent = 
+                            data.firstMessageDate ? new Date(data.firstMessageDate).toLocaleString('bg-BG') : '-';
+                    }
+                    
+                    if (totalMessagesElement) {
+                        totalMessagesElement.textContent = data.totalMessages || 0;
+                    }
+                } else {
+                    console.error('Error loading user info:', data.error);
+                    const firstMessageDateElement = document.getElementById('firstMessageDate');
+                    const totalMessagesElement = document.getElementById('totalMessages');
+                    
+                    if (firstMessageDateElement) {
+                        firstMessageDateElement.textContent = '-';
+                    }
+                    if (totalMessagesElement) {
+                        totalMessagesElement.textContent = '0';
+                    }
+                }
             })
-            .catch(err => console.error('Error loading user info:', err));
+            .catch(err => {
+                console.error('Error loading user info:', err);
+                const firstMessageDateElement = document.getElementById('firstMessageDate');
+                const totalMessagesElement = document.getElementById('totalMessages');
+                
+                if (firstMessageDateElement) {
+                    firstMessageDateElement.textContent = '-';
+                }
+                if (totalMessagesElement) {
+                    totalMessagesElement.textContent = '0';
+                }
+            });
     }
 }); 

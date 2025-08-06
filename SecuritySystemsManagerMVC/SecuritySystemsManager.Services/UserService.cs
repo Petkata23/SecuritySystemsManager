@@ -66,8 +66,8 @@ namespace SecuritySystemsManager.Services
                     LastName = userDto.LastName,
                     ProfileImage = userDto.ProfileImage,
                     RoleId = userDto.RoleId,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now
                 };
                 
                 var result = await _userManager.CreateAsync(user, password);
@@ -104,7 +104,7 @@ namespace SecuritySystemsManager.Services
                     user.LastName = userDto.LastName;
                     user.ProfileImage = userDto.ProfileImage;
                     user.RoleId = userDto.RoleId;
-                    user.UpdatedAt = DateTime.UtcNow;
+                    user.UpdatedAt = DateTime.Now;
                     
                     var result = await _userManager.UpdateAsync(user);
                     if (!result.Succeeded)

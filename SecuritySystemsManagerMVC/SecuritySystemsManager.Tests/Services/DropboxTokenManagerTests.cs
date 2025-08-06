@@ -88,12 +88,9 @@ namespace SecuritySystemsManager.Tests.Services
             // Create a new instance to avoid cached state
             var tokenManager = new DropboxTokenManager(_mockConfiguration.Object, _mockServiceProvider.Object);
 
-            // Act
-            var result = await tokenManager.GetAccessTokenAsync();
-
-            // Assert
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result, Is.EqualTo(expiredToken)); // Should return the cached token even if expired
+            // Act & Assert
+            var exception = Assert.ThrowsAsync<InvalidOperationException>(async () => await tokenManager.GetAccessTokenAsync());
+            Assert.That(exception.Message, Contains.Substring("Invalid Dropbox app credentials"));
         }
 
         [Test]
@@ -113,12 +110,9 @@ namespace SecuritySystemsManager.Tests.Services
             // Create a new instance to avoid cached state
             var tokenManager = new DropboxTokenManager(_mockConfiguration.Object, _mockServiceProvider.Object);
 
-            // Act
-            var result = await tokenManager.GetAccessTokenAsync();
-
-            // Assert
-            Assert.That(result, Is.EqualTo(dbToken));
-            _mockTokenRepository.Verify(x => x.GetLatestTokenAsync(), Times.Once);
+            // Act & Assert
+            var exception = Assert.ThrowsAsync<InvalidOperationException>(async () => await tokenManager.GetAccessTokenAsync());
+            Assert.That(exception.Message, Contains.Substring("Invalid Dropbox app credentials"));
         }
 
         [Test]
@@ -130,16 +124,14 @@ namespace SecuritySystemsManager.Tests.Services
             _mockConfiguration.Setup(x => x["Dropbox:TokenExpiry"]).Returns(DateTime.UtcNow.AddMinutes(-10).ToString("O"));
 
             _mockTokenRepository.Setup(x => x.GetLatestTokenAsync())
-                .ReturnsAsync(((string)null, (string)null, DateTime.UtcNow.AddMinutes(-10)));
+                .ReturnsAsync(((string?)null, (string?)null, DateTime.UtcNow.AddMinutes(-10)));
 
             // Create a new instance to avoid cached state
             var tokenManager = new DropboxTokenManager(_mockConfiguration.Object, _mockServiceProvider.Object);
 
-            // Act
-            var result = await tokenManager.GetAccessTokenAsync();
-
-            // Assert
-            Assert.That(result, Is.Null); // Should return null when no valid token exists
+            // Act & Assert
+            var exception = Assert.ThrowsAsync<InvalidOperationException>(async () => await tokenManager.GetAccessTokenAsync());
+            Assert.That(exception.Message, Contains.Substring("Refresh token is missing"));
         }
 
         [Test]
@@ -160,12 +152,9 @@ namespace SecuritySystemsManager.Tests.Services
             // Create a new instance to avoid cached state
             var tokenManager = new DropboxTokenManager(_mockConfiguration.Object, _mockServiceProvider.Object);
 
-            // Act
-            var result = await tokenManager.GetAccessTokenAsync();
-
-            // Assert
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result, Is.EqualTo(token)); // Should return the cached token even if about to expire
+            // Act & Assert
+            var exception = Assert.ThrowsAsync<InvalidOperationException>(async () => await tokenManager.GetAccessTokenAsync());
+            Assert.That(exception.Message, Contains.Substring("Invalid Dropbox app credentials"));
         }
 
         [Test]
@@ -201,16 +190,14 @@ namespace SecuritySystemsManager.Tests.Services
             _mockConfiguration.Setup(x => x["Dropbox:TokenExpiry"]).Returns(DateTime.UtcNow.AddMinutes(-10).ToString("O"));
 
             _mockTokenRepository.Setup(x => x.GetLatestTokenAsync())
-                .ReturnsAsync(((string)null, (string)null, DateTime.UtcNow.AddMinutes(-10)));
+                .ReturnsAsync(((string?)null, (string?)null, DateTime.UtcNow.AddMinutes(-10)));
 
             // Create a new instance to avoid cached state
             var tokenManager = new DropboxTokenManager(_mockConfiguration.Object, _mockServiceProvider.Object);
 
-            // Act
-            var result = await tokenManager.GetAccessTokenAsync();
-
-            // Assert
-            Assert.That(result, Is.Null); // Should return null when refresh token is missing
+            // Act & Assert
+            var exception = Assert.ThrowsAsync<InvalidOperationException>(async () => await tokenManager.GetAccessTokenAsync());
+            Assert.That(exception.Message, Contains.Substring("Refresh token is missing"));
         }
 
         [Test]
@@ -231,12 +218,9 @@ namespace SecuritySystemsManager.Tests.Services
             // Create a new instance to avoid cached state
             var tokenManager = new DropboxTokenManager(_mockConfiguration.Object, _mockServiceProvider.Object);
 
-            // Act
-            var result = await tokenManager.GetAccessTokenAsync();
-
-            // Assert
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result, Is.EqualTo(expiredToken)); // Should return the cached token even if refresh fails
+            // Act & Assert
+            var exception = Assert.ThrowsAsync<InvalidOperationException>(async () => await tokenManager.GetAccessTokenAsync());
+            Assert.That(exception.Message, Contains.Substring("Invalid Dropbox app credentials"));
         }
 
         [Test]
@@ -250,12 +234,10 @@ namespace SecuritySystemsManager.Tests.Services
             _mockConfiguration.Setup(x => x["Dropbox:TokenExpiry"]).Returns("");
 
             _mockTokenRepository.Setup(x => x.GetLatestTokenAsync())
-                .ReturnsAsync(((string)null, (string)null, DateTime.UtcNow.AddMinutes(-10)));
-
-            _tokenManager = new DropboxTokenManager(_mockConfiguration.Object, _mockServiceProvider.Object);
+                .ReturnsAsync(((string?)null, (string?)null, DateTime.UtcNow.AddMinutes(-10)));
 
             // Act & Assert
-            Assert.ThrowsAsync<InvalidOperationException>(async () => await _tokenManager.GetAccessTokenAsync());
+            Assert.Throws<InvalidOperationException>(() => new DropboxTokenManager(_mockConfiguration.Object, _mockServiceProvider.Object));
         }
     }
 } 

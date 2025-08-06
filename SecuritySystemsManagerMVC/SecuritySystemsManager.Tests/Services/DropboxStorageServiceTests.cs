@@ -130,7 +130,7 @@ namespace SecuritySystemsManager.Tests.Services
                 .ReturnsAsync(("test_token", "test_refresh_token", DateTime.UtcNow.AddHours(1)));
 
             // Act & Assert
-            Assert.ThrowsAsync<Dropbox.Api.BadInputException>(async () => await _storageService.UploadFileAsync(mockFile.Object, "test-folder"));
+            Assert.ThrowsAsync<InvalidOperationException>(async () => await _storageService.UploadFileAsync(mockFile.Object, "test-folder"));
         }
 
         [Test]
@@ -215,7 +215,7 @@ namespace SecuritySystemsManager.Tests.Services
                 .ReturnsAsync(("test_token", "test_refresh_token", DateTime.UtcNow.AddHours(1)));
 
             // Act & Assert
-            Assert.ThrowsAsync<Dropbox.Api.BadInputException>(async () => await _storageService.UploadFileAsync(mockFile.Object, null));
+            Assert.ThrowsAsync<InvalidOperationException>(async () => await _storageService.UploadFileAsync(mockFile.Object, null));
         }
 
         [Test]
@@ -232,7 +232,7 @@ namespace SecuritySystemsManager.Tests.Services
                 .ReturnsAsync(("test_token", "test_refresh_token", DateTime.UtcNow.AddHours(1)));
 
             // Act & Assert
-            Assert.ThrowsAsync<Dropbox.Api.BadInputException>(async () => await _storageService.UploadFileAsync(mockFile.Object, ""));
+            Assert.ThrowsAsync<InvalidOperationException>(async () => await _storageService.UploadFileAsync(mockFile.Object, ""));
         }
 
         [Test]
@@ -249,7 +249,7 @@ namespace SecuritySystemsManager.Tests.Services
                 .ReturnsAsync(("test_token", "test_refresh_token", DateTime.UtcNow.AddHours(1)));
 
             // Act & Assert
-            Assert.ThrowsAsync<Dropbox.Api.BadInputException>(async () => await _storageService.UploadFileAsync(mockFile.Object, "test-folder"));
+            Assert.ThrowsAsync<InvalidOperationException>(async () => await _storageService.UploadFileAsync(mockFile.Object, "test-folder"));
         }
 
         [Test]
@@ -266,7 +266,7 @@ namespace SecuritySystemsManager.Tests.Services
                 .ReturnsAsync(("test_token", "test_refresh_token", DateTime.UtcNow.AddHours(1)));
 
             // Act & Assert
-            Assert.ThrowsAsync<Dropbox.Api.BadInputException>(async () => await _storageService.UploadFileAsync(mockFile.Object, "test-folder"));
+            Assert.ThrowsAsync<InvalidOperationException>(async () => await _storageService.UploadFileAsync(mockFile.Object, "test-folder"));
         }
 
         [Test]

@@ -112,7 +112,7 @@ namespace SecuritySystemsManagerMVC.Hubs
                 senderId = userId, 
                 senderName = user.Username,
                 message = message,
-                timestamp = DateTime.UtcNow,
+                timestamp = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                 isFromSupport = false,
                 recipientId = (int?)null
             };
@@ -152,7 +152,7 @@ namespace SecuritySystemsManagerMVC.Hubs
                 senderName = sender.Username,
                 recipientId = recipientId,
                 message = message,
-                timestamp = DateTime.UtcNow,
+                timestamp = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                 isFromSupport = true
             };
 
@@ -193,7 +193,7 @@ namespace SecuritySystemsManagerMVC.Hubs
                     senderId = senderIdInt, 
                     senderName = senderName,
                     message = messageDto.Message,
-                    timestamp = DateTime.UtcNow,
+                    timestamp = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                     isFromSupport = false,
                     recipientId = messageDto.RecipientId
                 };
@@ -205,7 +205,7 @@ namespace SecuritySystemsManagerMVC.Hubs
                 senderId = senderIdInt, 
                 senderName = senderName,
                 message = messageDto.Message,
-                timestamp = DateTime.UtcNow,
+                timestamp = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                 isFromSupport = false,
                 recipientId = messageDto.RecipientId
             };

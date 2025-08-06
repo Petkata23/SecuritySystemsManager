@@ -16,7 +16,7 @@ namespace SecuritySystemsManagerMVC.ViewModels.Chat
         public string Username { get; set; } = string.Empty;
         public string UserRole { get; set; } = string.Empty;
         public string LastMessage { get; set; } = string.Empty;
-        public DateTime LastMessageTime { get; set; }
+        public DateTime LastMessageTime { get; set; } = DateTime.Now;
         public bool HasUnreadMessages { get; set; }
         public int UnreadCount { get; set; }
         public bool IsOnline { get; set; }

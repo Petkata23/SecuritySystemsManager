@@ -282,10 +282,25 @@ namespace SecuritySystemsManager.Tests.Services
             int recipientId = 2;
             string message = "Support message";
             var sender = new UserDto { Id = senderId, FirstName = "Support", LastName = "User" };
+            var recipient = new UserDto { Id = recipientId, FirstName = "Client", LastName = "User" };
+            var savedMessage = new ChatMessageDto
+            {
+                Id = 1,
+                SenderId = senderId,
+                RecipientId = recipientId,
+                Message = message,
+                Timestamp = DateTime.Now,
+                IsFromSupport = true,
+                IsRead = false
+            };
+            
             _mockUserService.Setup(s => s.GetByIdIfExistsAsync(senderId)).ReturnsAsync(sender);
+            _mockUserService.Setup(s => s.GetByIdIfExistsAsync(recipientId)).ReturnsAsync(recipient);
             _mockUserService.Setup(s => s.ExistsByIdAsync(senderId)).ReturnsAsync(true);
             _mockUserService.Setup(s => s.ExistsByIdAsync(recipientId)).ReturnsAsync(true);
             _mockRepository.Setup(r => r.SaveAsync(It.IsAny<ChatMessageDto>())).Returns(Task.CompletedTask);
+            _mockRepository.Setup(r => r.GetMessagesByUserIdAsync(recipientId))
+                .ReturnsAsync(new List<ChatMessageDto> { savedMessage });
 
             // Act
             var result = await _service.ProcessSupportMessageAsync(senderId, recipientId, message);
@@ -297,6 +312,7 @@ namespace SecuritySystemsManager.Tests.Services
             Assert.That(result.Message, Is.EqualTo(message));
             Assert.That(result.IsFromSupport, Is.True);
             _mockUserService.Verify(s => s.GetByIdIfExistsAsync(senderId), Times.Once);
+            _mockUserService.Verify(s => s.GetByIdIfExistsAsync(recipientId), Times.Once);
             _mockRepository.Verify(r => r.SaveAsync(It.IsAny<ChatMessageDto>()), Times.Once);
         }
 

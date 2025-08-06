@@ -64,7 +64,7 @@ namespace SecuritySystemsManager.Services
                 {
                     RecipientId = clientId,
                     Message = message,
-                    DateSent = DateTime.UtcNow,
+                    DateSent = DateTime.Now,
                     IsRead = false
                 };
                 

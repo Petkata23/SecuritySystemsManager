@@ -16,7 +16,7 @@
             <i class="bi bi-chat-dots"></i>
         </div>
         <div class="stat-info">
-            <h3 id="activeChatsCount">@Model.ActiveChats?.Count() ?? 0</h3>
+            <h3 id="activeChatsCount">0</h3>
             <p>Active Chats</p>
         </div>
     </div>
@@ -25,7 +25,7 @@
             <i class="bi bi-bell"></i>
         </div>
         <div class="stat-info">
-            <h3 id="unreadCount">@Model.ActiveChats?.Count(c => c.HasUnreadMessages) ?? 0</h3>
+            <h3 id="unreadCount">0</h3>
             <p>Unread</p>
         </div>
     </div>

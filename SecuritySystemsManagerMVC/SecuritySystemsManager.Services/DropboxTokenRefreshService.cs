@@ -62,12 +62,19 @@ namespace SecuritySystemsManager.Services
                     var (accessToken, refreshToken, expiryTime) = await tokenRepository.GetLatestTokenAsync();
 
                     // Check if token exists and is about to expire (within 1 hour)
-                    if (!string.IsNullOrEmpty(refreshToken) && DateTime.UtcNow.AddHours(1) >= expiryTime)
+                    if (!string.IsNullOrEmpty(refreshToken) && DateTime.Now.AddHours(1) >= expiryTime)
                     {
                         _logger.LogInformation("Dropbox access token is about to expire. Refreshing token...");
 
                         var appKey = _configuration["Dropbox:AppKey"];
                         var appSecret = _configuration["Dropbox:AppSecret"];
+
+                        // Validate configuration
+                        if (string.IsNullOrEmpty(appKey) || string.IsNullOrEmpty(appSecret))
+                        {
+                            _logger.LogError("Dropbox AppKey and AppSecret are not configured. Please check your appsettings.json file.");
+                            return;
+                        }
 
                         var content = new FormUrlEncodedContent(new[]
                         {
@@ -85,7 +92,7 @@ namespace SecuritySystemsManager.Services
                             var tokenData = JsonSerializer.Deserialize<TokenResponse>(jsonResponse);
 
                             // Calculate new expiry time
-                            var newExpiryTime = DateTime.UtcNow.AddSeconds(tokenData.ExpiresIn);
+                            var newExpiryTime = DateTime.Now.AddSeconds(tokenData.ExpiresIn);
                             
                             // Save the new token to the database
                             await tokenRepository.SaveTokenAsync(tokenData.AccessToken, refreshToken, newExpiryTime);
@@ -95,8 +102,25 @@ namespace SecuritySystemsManager.Services
                         else
                         {
                             var errorContent = await response.Content.ReadAsStringAsync();
-                            _logger.LogError("Failed to refresh Dropbox token. Status: {Status}, Error: {Error}", 
-                                response.StatusCode, errorContent);
+                            
+                            // Provide more specific error messages
+                            if (errorContent.Contains("invalid_client"))
+                            {
+                                _logger.LogError("Invalid Dropbox app credentials. Please check your Dropbox AppKey and AppSecret in the configuration. The app may have been deleted or the credentials may be incorrect.");
+                            }
+                            else if (errorContent.Contains("invalid_grant"))
+                            {
+                                _logger.LogError("Invalid refresh token. The token may have expired or been revoked. Please re-authenticate with Dropbox.");
+                            }
+                            else if (errorContent.Contains("invalid_request"))
+                            {
+                                _logger.LogError("Invalid request to Dropbox API. Please check your configuration and try again.");
+                            }
+                            else
+                            {
+                                _logger.LogError("Failed to refresh Dropbox token. Status: {Status}, Error: {Error}", 
+                                    response.StatusCode, errorContent);
+                            }
                         }
                     }
                     else

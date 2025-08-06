@@ -105,7 +105,7 @@ namespace SecuritySystemsManager.Services
             }
 
             invoice.IsPaid = true;
-            invoice.UpdatedAt = DateTime.UtcNow;
+            invoice.UpdatedAt = DateTime.Now;
             await _repository.SaveAsync(invoice);
 
             return invoice;
@@ -120,7 +120,7 @@ namespace SecuritySystemsManager.Services
             }
 
             invoice.IsPaid = false;
-            invoice.UpdatedAt = DateTime.UtcNow;
+            invoice.UpdatedAt = DateTime.Now;
             await _repository.SaveAsync(invoice);
 
             return invoice;
@@ -139,11 +139,11 @@ namespace SecuritySystemsManager.Services
             var invoice = new InvoiceDto
             {
                 SecuritySystemOrderId = orderId,
-                IssuedOn = DateTime.UtcNow,
+                IssuedOn = DateTime.Now,
                 TotalAmount = totalAmount,
                 IsPaid = false,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
             };
 
             // Save the invoice

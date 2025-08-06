@@ -159,8 +159,8 @@ namespace SecuritySystemsManager.Services
                 }
 
                 // Set timestamps
-                locationDto.CreatedAt = DateTime.UtcNow;
-                locationDto.UpdatedAt = DateTime.UtcNow;
+                locationDto.CreatedAt = DateTime.Now;
+                locationDto.UpdatedAt = DateTime.Now;
 
                 // Save the location
                 await SaveAsync(locationDto);

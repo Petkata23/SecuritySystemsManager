@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
         fetch('/Chat/GetChatMessages/' + otherUserId)
             .then(response => response.json())
             .then(data => {
-                if (data.messages && data.messages.length > 0) {
+                if (data.success && data.messages && data.messages.length > 0) {
                     data.messages.forEach(message => {
                         chatHistory.push({
                             message: message.message,
@@ -176,7 +176,46 @@ document.addEventListener('DOMContentLoaded', function () {
             .replace(/'/g, "&#039;");
     }
 
-    function formatTime(date) {
-        return new Date(date).toLocaleTimeString('bg-BG', { hour: '2-digit', minute: '2-digit' });
+    function formatTime(timestamp) {
+        // Handle both string and Date objects
+        let date;
+        if (typeof timestamp === 'string') {
+            // Check if it's already in a formatted string (dd/MM/yyyy HH:mm)
+            if (timestamp.includes('/')) {
+                // Parse Bulgarian date format
+                const parts = timestamp.split(' ');
+                const dateParts = parts[0].split('/');
+                const timeParts = parts[1].split(':');
+                date = new Date(
+                    parseInt(dateParts[2]), // year
+                    parseInt(dateParts[1]) - 1, // month (0-based)
+                    parseInt(dateParts[0]), // day
+                    parseInt(timeParts[0]), // hour
+                    parseInt(timeParts[1]) // minute
+                );
+            } else {
+                // If it's a string, parse it as local time
+                date = new Date(timestamp);
+            }
+        } else {
+            date = new Date(timestamp);
+        }
+        
+        const now = new Date();
+        const diffInHours = (now - date) / (1000 * 60 * 60);
+        
+        if (diffInHours < 24) {
+            return date.toLocaleTimeString('bg-BG', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+        } else {
+            return date.toLocaleDateString('bg-BG', { 
+                day: '2-digit',
+                month: '2-digit',
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+        }
     }
 }); 

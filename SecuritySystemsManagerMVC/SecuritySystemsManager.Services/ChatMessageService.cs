@@ -79,7 +79,7 @@ namespace SecuritySystemsManager.Services
                 SenderId = senderId,
                 RecipientId = recipientId,
                 Message = message,
-                Timestamp = DateTime.UtcNow,
+                Timestamp = DateTime.Now,
                 IsFromSupport = isFromSupport || senderId == SYSTEM_USER_ID,
                 IsRead = false
             };
@@ -117,7 +117,7 @@ namespace SecuritySystemsManager.Services
             {
                 SenderId = userId,
                 Message = message,
-                Timestamp = DateTime.UtcNow,
+                Timestamp = DateTime.Now,
                 IsFromSupport = false,
                 IsRead = false
             };
@@ -126,8 +126,16 @@ namespace SecuritySystemsManager.Services
         public async Task<ChatMessageDto> ProcessSupportMessageAsync(int senderId, int recipientId, string message)
         {
             var sender = await _userService.GetByIdIfExistsAsync(senderId);
+            if (sender == null)
+            {
+                throw new UnauthorizedAccessException("Support user not found");
+            }
 
             var recipient = await _userService.GetByIdIfExistsAsync(recipientId);
+            if (recipient == null)
+            {
+                throw new ArgumentException("Recipient user not found");
+            }
 
             // Send the message
             await SendMessageAsync(senderId, recipientId, message, true);

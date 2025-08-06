@@ -3,6 +3,7 @@ using NUnit.Framework;
 using SecuritySystemsManager.Services;
 using SecuritySystemsManager.Shared.Dtos;
 using SecuritySystemsManager.Shared.Repos.Contracts;
+using SecuritySystemsManager.Shared.Services.Contracts;
 using SecuritySystemsManager.Shared.Enums;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -13,18 +14,20 @@ namespace SecuritySystemsManager.Tests.Services
     public class SecuritySystemOrderServiceTests : BaseServiceTests<SecuritySystemOrderDto, ISecuritySystemOrderRepository, SecuritySystemOrderService>
     {
         private Mock<IUserRepository> _mockUserRepository;
+        private Mock<IInvoiceService> _mockInvoiceService;
 
         [SetUp]
         public override void Setup()
         {
             base.Setup();
             _mockUserRepository = new Mock<IUserRepository>();
-            _service = new SecuritySystemOrderService(_mockRepository.Object, _mockUserRepository.Object);
+            _mockInvoiceService = new Mock<IInvoiceService>();
+            _service = new SecuritySystemOrderService(_mockRepository.Object, _mockUserRepository.Object, _mockInvoiceService.Object);
         }
 
         protected override SecuritySystemOrderService CreateService(ISecuritySystemOrderRepository repository)
         {
-            return new SecuritySystemOrderService(repository, _mockUserRepository?.Object ?? new Mock<IUserRepository>().Object);
+            return new SecuritySystemOrderService(repository, _mockUserRepository?.Object ?? new Mock<IUserRepository>().Object, _mockInvoiceService?.Object ?? new Mock<IInvoiceService>().Object);
         }
 
         protected override SecuritySystemOrderDto CreateTestModel(int id = 1)

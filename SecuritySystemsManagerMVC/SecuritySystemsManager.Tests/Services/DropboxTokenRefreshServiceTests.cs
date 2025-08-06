@@ -142,9 +142,9 @@ namespace SecuritySystemsManager.Tests.Services
 
             // Assert
             _mockLogger.Verify(x => x.Log(
-                LogLevel.Debug,
+                LogLevel.Error,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("still valid")),
+                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Invalid Dropbox app credentials")),
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.Once);
         }

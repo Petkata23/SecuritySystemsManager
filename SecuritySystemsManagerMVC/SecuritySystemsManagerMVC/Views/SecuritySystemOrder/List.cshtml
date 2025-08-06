@@ -8,11 +8,12 @@
     bool isTechnician = User.IsInRole("Technician");
     bool canCreateOrder = !isTechnician; // Technicians cannot create orders
     
-    var pendingCount = Model.Count(o => o.Status == OrderStatus.Pending);
-    var inProgressCount = Model.Count(o => o.Status == OrderStatus.InProgress);
-    var completedCount = Model.Count(o => o.Status == OrderStatus.Completed);
-    var cancelledCount = Model.Count(o => o.Status == OrderStatus.Cancelled);
-    var totalCount = Model.Count();
+    var hasOrders = Model != null && Model.Any();
+    var pendingCount = hasOrders ? Model.Count(o => o.Status == OrderStatus.Pending) : 0;
+    var inProgressCount = hasOrders ? Model.Count(o => o.Status == OrderStatus.InProgress) : 0;
+    var completedCount = hasOrders ? Model.Count(o => o.Status == OrderStatus.Completed) : 0;
+    var cancelledCount = hasOrders ? Model.Count(o => o.Status == OrderStatus.Cancelled) : 0;
+    var totalCount = hasOrders ? Model.Count() : 0;
 }
 
 @section Styles {
@@ -26,7 +27,7 @@
             <div class="banner-text">
                 <h1 class="banner-title">Security System Orders</h1>
                 <p class="banner-description">
-                    @if (Model.Any())
+                    @if (hasOrders)
                     {
                         <span>Manage and track all your security system installations and maintenance orders.</span>
                     }
@@ -43,7 +44,7 @@
                         <i class="bi bi-plus-lg me-2"></i>New Order
                     </a>
                 }
-                @if (Model.Any())
+                @if (hasOrders)
                 {
                     <div class="order-counts">
                         <div class="count-item">
@@ -66,7 +67,7 @@
         </div>
     </div>
 
-    @if (Model.Any())
+    @if (hasOrders)
     {
         <!-- Filter Card -->
         <div class="card filter-card">
@@ -114,6 +115,23 @@
         <!-- Orders Table Card -->
         <div class="card orders-card" id="ordersTableContainer">
             @await Html.PartialAsync("_OrdersTable", Model)
+        </div>
+    }
+    else
+    {
+        <!-- Empty State -->
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="bi bi-shield-check"></i>
+            </div>
+            <h4>No Orders Yet</h4>
+            <p>You haven't created any security system orders yet. Start by creating your first order to secure your properties.</p>
+            @if (canCreateOrder)
+            {
+                <a asp-action="Create" class="btn btn-primary btn-create-first">
+                    <i class="bi bi-plus-lg me-2"></i>Create Your First Order
+                </a>
+            }
         </div>
     }
 </div>
