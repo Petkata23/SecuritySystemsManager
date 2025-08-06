@@ -49,10 +49,20 @@
 
         @if (!Model.Any())
         {
-            <div class="alert alert-info" role="alert">
-                <i class="bi bi-info-circle me-2"></i> No maintenance logs found. Click the "New Maintenance Log" button to create one.
-            </div>
+            if (User.IsInRole("Admin") || User.IsInRole("Manager") || User.IsInRole("Technician"))
+            {
+                <div class="alert alert-info" role="alert">
+                    <i class="bi bi-info-circle me-2"></i> No maintenance logs found. Click the "New Maintenance Log" button to create one.
+                </div>
+            }
+            else if (User.IsInRole("Client"))
+            {
+                <div class="alert alert-warning" role="alert">
+                    <i class="bi bi-exclamation-circle me-2"></i> You currently have no maintenance records.
+                </div>
+            }
         }
+
         else
         {
             <div class="row" id="maintenanceLogsList">
