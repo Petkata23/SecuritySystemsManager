@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
+using SecuritySystemsManager.Data;
 using SecuritySystemsManager.Data.Entities;
 using SecuritySystemsManager.Shared.Attributes;
 using SecuritySystemsManager.Shared.Dtos;
@@ -17,14 +19,69 @@ namespace SecuritySystemsManager.Services
     public class UserService : BaseCrudService<UserDto, IUserRepository>, IUserService
     {
         private readonly IFileStorageService _fileStorageService;
-        private readonly UserManager<User>? _userManager;
+        private readonly UserManager<User> _userManager;
+        private readonly SecuritySystemsManagerDbContext _dbContext;
         private readonly UrlEncoder _urlEncoder;
 
-        public UserService(IUserRepository repository, IFileStorageService fileStorageService, UserManager<User>? userManager = null, UrlEncoder? urlEncoder = null) : base(repository)
+        public UserService(
+            IUserRepository repository,
+            IFileStorageService fileStorageService,
+            UserManager<User> userManager,
+            SecuritySystemsManagerDbContext dbContext,
+            UrlEncoder? urlEncoder = null) : base(repository)
         {
             _fileStorageService = fileStorageService;
             _userManager = userManager;
+            _dbContext = dbContext;
             _urlEncoder = urlEncoder ?? UrlEncoder.Default;
+        }
+
+        public override async Task DeleteAsync(int id)
+        {
+            var user = await _userManager.FindByIdAsync(id.ToString());
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+
+            // Check for dependencies that block deletion (excluding chat messages)
+            int ordersAsClientCount = await _dbContext.Orders.CountAsync(o => o.ClientId == id);
+            int installedDevicesCount = await _dbContext.InstalledDevices.CountAsync(d => d.InstalledById == id);
+            int maintenanceLogsCount = await _dbContext.MaintenanceLogs.CountAsync(m => m.TechnicianId == id);
+
+            if (ordersAsClientCount > 0 || installedDevicesCount > 0 || maintenanceLogsCount > 0)
+            {
+                var reasons = new List<string>();
+                if (ordersAsClientCount > 0) reasons.Add($"has {ordersAsClientCount} orders as client");
+                if (installedDevicesCount > 0) reasons.Add($"has {installedDevicesCount} installations as technician");
+                if (maintenanceLogsCount > 0) reasons.Add($"has {maintenanceLogsCount} maintenance logs as technician");
+
+                string message = "User cannot be deleted: " + string.Join(", ", reasons) + ". Please remove or reassign these dependencies first.";
+                throw new InvalidOperationException(message);
+            }
+
+            // 1) Delete chat messages (sent and received)
+            var sentMessages = _dbContext.ChatMessages.Where(m => m.SenderId == id);
+            var receivedMessages = _dbContext.ChatMessages.Where(m => m.RecipientId == id);
+            _dbContext.ChatMessages.RemoveRange(sentMessages);
+            _dbContext.ChatMessages.RemoveRange(receivedMessages);
+
+            // 2) Remove roles/logins/claims via UserManager to avoid FK issues
+            var roles = await _userManager.GetRolesAsync(user);
+            if (roles.Any())
+            {
+                await _userManager.RemoveFromRolesAsync(user, roles);
+            }
+
+            // 3) Persist message deletions before deleting the user
+            await _dbContext.SaveChangesAsync();
+
+            // 4) Delete the user via UserManager (cleans up AspNet* dependencies)
+            var result = await _userManager.DeleteAsync(user);
+            if (!result.Succeeded)
+            {
+                throw new InvalidOperationException($"Failed to delete user: {string.Join(", ", result.Errors.Select(e => e.Description))}");
+            }
         }
 
         public async Task<bool> CanUserLoginAsync(string username, string password)
@@ -37,11 +94,8 @@ namespace SecuritySystemsManager.Services
             }
 
             // If we have UserManager, use it for password validation
-            if (_userManager != null)
-            {
-                var userEntity = await _userManager.FindByNameAsync(username);
-                return userEntity != null && await _userManager.CheckPasswordAsync(userEntity, password);
-            }
+            var userEntity = await _userManager.FindByNameAsync(username);
+            return userEntity != null && await _userManager.CheckPasswordAsync(userEntity, password);
 
             // Fall back to the legacy password verification
             return PasswordHasher.VerifyPassword(password, user.Password);
@@ -91,7 +145,6 @@ namespace SecuritySystemsManager.Services
         public async Task<UserDto> UpdateUserWithPasswordAsync(UserDto userDto, string? password = null)
         {
             // If we have UserManager and password is provided, use it for password hashing
-            if (_userManager != null)
             {
                 var user = await _userManager.FindByIdAsync(userDto.Id.ToString());
                 if (user != null)

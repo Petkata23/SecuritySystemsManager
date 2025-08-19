@@ -48,7 +48,7 @@ namespace SecuritySystemsManager.Data
         private static void SeedUsers(ModelBuilder modelBuilder)
         {
             var passwordHasher = new PasswordHasher<User>();
-            
+
             var users = new List<User>
             {
                 new User
@@ -476,4 +476,4 @@ namespace SecuritySystemsManager.Data
             );
         }
     }
-} 
+}

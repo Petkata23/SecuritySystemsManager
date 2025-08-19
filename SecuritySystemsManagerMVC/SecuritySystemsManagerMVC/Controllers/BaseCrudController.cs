@@ -216,6 +216,11 @@ namespace SecuritySystemsManagerMVC.Controllers
 
                 return await List();
             }
+            catch (InvalidOperationException ex)
+            {
+                TempData["Error"] = ex.Message;
+                return RedirectToAction(nameof(List));
+            }
             catch (Exception ex)
             {
                 TempData["Error"] = "An error occurred during deletion. Please try again.";
