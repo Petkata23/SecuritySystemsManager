@@ -1151,7 +1151,7 @@ section {
 
     .feature-icon i {
         font-size: 2rem;
-        color: var(--primary-color);
+        /* color: var(--primary-color); */
     }
 
 .feature-card h3 {

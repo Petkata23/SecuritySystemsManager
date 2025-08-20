@@ -3,6 +3,10 @@
     Layout = "_Layout";
 }
 
+@section Styles {
+    <link rel="stylesheet" href="~/css/home.css" />
+}
+
 <!-- Hero Section -->
 <section class="hero-section">
     <div class="container-fluid">
@@ -258,7 +262,7 @@
                         <p>"Security Systems Hristovi provided an excellent service from consultation to installation. Their team was professional and knowledgeable, and the system works flawlessly."</p>
                     </div>
                     <div class="testimonial-author">
-                        <img src="https://via.placeholder.com/80x80" alt="Client" class="testimonial-avatar">
+                        <img src="/img/demo-avatars/demo-avatar-man.jpg" alt="Client" class="testimonial-avatar">
                         <div class="testimonial-info">
                             <h4>Ivan Petrov</h4>
                             <p>Business Owner</p>
@@ -279,7 +283,7 @@
                         <p>"We've been using their services for over 5 years now. Their maintenance team is always prompt and efficient. I highly recommend their 24/7 monitoring service."</p>
                     </div>
                     <div class="testimonial-author">
-                        <img src="https://via.placeholder.com/80x80" alt="Client" class="testimonial-avatar">
+                        <img src="/img/demo-avatars/demo-avatar-woman.jpg" alt="Client" class="testimonial-avatar">
                         <div class="testimonial-info">
                             <h4>Maria Dimitrova</h4>
                             <p>Homeowner</p>
@@ -300,7 +304,7 @@
                         <p>"The smart home security system they installed has given us peace of mind. The mobile app is user-friendly, and their customer support is exceptional."</p>
                     </div>
                     <div class="testimonial-author">
-                        <img src="https://via.placeholder.com/80x80" alt="Client" class="testimonial-avatar">
+                        <img src="/img/demo-avatars/demo-avatar-man-2.jpg" alt="Client" class="testimonial-avatar">
                         <div class="testimonial-info">
                             <h4>Stefan Georgiev</h4>
                             <p>Property Manager</p>
@@ -339,230 +343,4 @@
         </div>
     </div>
 </section>
-
-<style>
-    /* Hero Section Styles */
-    .hero-section {
-        padding: 120px 0;
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .hero-title {
-        font-size: 3.5rem;
-        font-weight: 700;
-        margin-bottom: 1.5rem;
-        background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        text-fill-color: transparent;
-        line-height: 1.2;
-    }
-    
-    .hero-text {
-        font-size: 1.2rem;
-        margin-bottom: 2rem;
-        color: var(--text-color);
-        max-width: 90%;
-    }
-    
-    .hero-image-container {
-        position: relative;
-    }
-    
-    .hero-image {
-        position: relative;
-        z-index: 2;
-        animation: float 6s ease-in-out infinite;
-        filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
-    }
-    
-    .hero-shape-1 {
-        position: absolute;
-        top: -50px;
-        right: -50px;
-        width: 200px;
-        height: 200px;
-        border-radius: 50%;
-        background: linear-gradient(45deg, var(--primary-color), transparent);
-        opacity: 0.3;
-        filter: blur(30px);
-        z-index: 1;
-    }
-    
-    .hero-shape-2 {
-        position: absolute;
-        bottom: -30px;
-        left: -30px;
-        width: 150px;
-        height: 150px;
-        border-radius: 50%;
-        background: linear-gradient(45deg, var(--secondary-color), transparent);
-        opacity: 0.3;
-        filter: blur(30px);
-        z-index: 1;
-    }
-    
-    .hero-stats {
-        border-top: 1px solid var(--border-color);
-        padding-top: 20px;
-    }
-    
-    .stat-item {
-        text-align: center;
-    }
-    
-    .stat-number {
-        font-size: 2rem;
-        font-weight: 700;
-        color: var(--accent-color);
-    }
-    
-    .stat-label {
-        font-size: 0.9rem;
-        color: var(--muted-color);
-    }
-    
-    @@keyframes float {
-        0% { transform: translateY(0px); }
-        50% { transform: translateY(-20px); }
-        100% { transform: translateY(0px); }
-    }
-    
-    /* Feature Cards */
-    .feature-card {
-        text-align: center;
-        height: 100%;
-    }
-    
-    .feature-icon {
-        margin: 0 auto 20px;
-    }
-    
-    /* Service Cards */
-    .service-card {
-        margin-bottom: 30px;
-    }
-    
-    .service-image {
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .service-image img {
-        width: 100%;
-        height: 200px;
-        object-fit: cover;
-        transition: transform 0.5s ease;
-    }
-    
-    .service-card:hover .service-image img {
-        transform: scale(1.1);
-    }
-    
-    .service-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-        display: flex;
-        align-items: flex-end;
-        justify-content: flex-end;
-        padding: 20px;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-    
-    .service-overlay i {
-        font-size: 2.5rem;
-        color: white;
-    }
-    
-    .service-card:hover .service-overlay {
-        opacity: 1;
-    }
-    
-    /* Process Section */
-    .process-section {
-        padding: 80px 0;
-        background-color: var(--body-bg);
-        position: relative;
-    }
-    
-    .process-timeline {
-        margin-top: 50px;
-        position: relative;
-    }
-    
-    .process-step {
-        text-align: center;
-        position: relative;
-        z-index: 1;
-    }
-    
-    .process-number {
-        width: 40px;
-        height: 40px;
-        background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-        color: white;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 700;
-        font-size: 1.2rem;
-        margin: 0 auto 20px;
-    }
-    
-    .process-icon {
-        width: 80px;
-        height: 80px;
-        background-color: var(--card-bg);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 20px;
-        font-size: 2rem;
-        color: var(--primary-color);
-        box-shadow: var(--card-shadow);
-        border: 1px solid var(--border-color);
-    }
-    
-    .process-step h3 {
-        margin-bottom: 10px;
-    }
-    
-    /* Testimonial Rating */
-    .testimonial-rating {
-        color: #ffc107;
-        margin-top: 5px;
-    }
-    
-    /* Responsive */
-    @@media (max-width: 991.98px) {
-        .hero-title {
-            font-size: 2.5rem;
-        }
-        
-        .hero-image {
-            margin-top: 40px;
-        }
-    }
-    
-    @@media (max-width: 767.98px) {
-        .hero-title {
-            font-size: 2rem;
-        }
-        
-        .hero-section {
-            padding: 80px 0;
-        }
-    }
-</style>
-
-
 

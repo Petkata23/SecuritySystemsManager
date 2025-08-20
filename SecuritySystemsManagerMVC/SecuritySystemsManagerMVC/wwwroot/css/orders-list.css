@@ -19,6 +19,26 @@
     }
 }
 
+/* Date Input Calendar Icon Styles */
+.filter-card input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+
+.filter-card input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    filter: invert(1) brightness(1.2);
+}
+
+/* Firefox calendar icon */
+.filter-card input[type="date"]::-moz-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+
+.filter-card input[type="date"]::-moz-calendar-picker-indicator:hover {
+    filter: invert(1) brightness(1.2);
+}
+
 /* Enhanced Banner */
 .orders-banner {
     background: linear-gradient(135deg, #2b5876 0%, #4e4376 100%);
@@ -750,60 +770,60 @@
         margin-bottom: 1rem;
     }
 
-    .filter-card .card-header {
-        padding: 0.75rem 1rem;
-    }
+        .filter-card .card-header {
+            padding: 0.75rem 1rem;
+        }
 
-    .filter-card .card-body {
-        padding: 1rem;
-    }
+        .filter-card .card-body {
+            padding: 1rem;
+        }
 
-    .filter-card .form-group {
-        margin-bottom: 1rem;
-    }
+        .filter-card .form-group {
+            margin-bottom: 1rem;
+        }
 
-    .filter-card .row > div {
-        margin-bottom: 1rem;
-    }
+        .filter-card .row > div {
+            margin-bottom: 1rem;
+        }
 
     /* Orders table adjustments */
     .orders-card {
         margin-bottom: 1rem;
     }
 
-    .orders-card .card-header {
-        padding: 0.75rem 1rem;
-        flex-direction: column;
-        align-items: flex-start !important;
-    }
+        .orders-card .card-header {
+            padding: 0.75rem 1rem;
+            flex-direction: column;
+            align-items: flex-start !important;
+        }
 
-    .orders-card .card-header h5 {
-        margin-bottom: 0.75rem;
-        width: 100%;
-    }
+            .orders-card .card-header h5 {
+                margin-bottom: 0.75rem;
+                width: 100%;
+            }
 
     .view-toggle {
         width: 100%;
         display: flex;
     }
 
-    .view-toggle .btn {
-        flex: 1;
-    }
+        .view-toggle .btn {
+            flex: 1;
+        }
 
     .orders-card .table {
         min-width: 600px;
     }
 
-    .orders-card .table th,
-    .orders-card .table td {
-        padding: 0.75rem 1rem;
-        font-size: 0.85rem;
-    }
+        .orders-card .table th,
+        .orders-card .table td {
+            padding: 0.75rem 1rem;
+            font-size: 0.85rem;
+        }
 
-    .orders-card .table .btn-group .btn {
-        padding: 0.25rem 0.5rem;
-    }
+        .orders-card .table .btn-group .btn {
+            padding: 0.25rem 0.5rem;
+        }
 
     /* Card view adjustments */
     .order-card-item {
@@ -824,10 +844,10 @@
         gap: 0.5rem;
     }
 
-    .order-card-footer .btn {
-        width: 100%;
-        text-align: center;
-    }
+        .order-card-footer .btn {
+            width: 100%;
+            text-align: center;
+        }
 
     /* Pagination adjustments */
     .pagination-container {
@@ -868,23 +888,23 @@
         width: 100%;
         padding: 0.6rem 1.5rem;
     }
-    
+
     /* Adjust card layout */
     .order-card {
         margin-bottom: 0.75rem;
     }
 
-    .order-card .card-header {
-        padding: 0.6rem 0.8rem;
-    }
+        .order-card .card-header {
+            padding: 0.6rem 0.8rem;
+        }
 
-    .order-card .card-body {
-        padding: 0.8rem;
-    }
+        .order-card .card-body {
+            padding: 0.8rem;
+        }
 
-    .order-card .card-footer {
-        padding: 0.6rem 0.8rem;
-    }
+        .order-card .card-footer {
+            padding: 0.6rem 0.8rem;
+        }
 
     /* Adjust filters */
     .order-filters {
@@ -892,11 +912,11 @@
         margin-bottom: 1rem;
     }
 
-    .order-filters .form-control,
-    .order-filters .form-select {
-        font-size: 0.85rem;
-        padding: 0.4rem 0.6rem;
-    }
+        .order-filters .form-control,
+        .order-filters .form-select {
+            font-size: 0.85rem;
+            padding: 0.4rem 0.6rem;
+        }
 
     /* Adjust buttons */
     .btn {
@@ -959,10 +979,10 @@
         align-items: flex-start !important;
     }
 
-    .filter-card .card-header h5 {
-        margin-bottom: 0.5rem;
-        width: 100%;
-    }
+        .filter-card .card-header h5 {
+            margin-bottom: 0.5rem;
+            width: 100%;
+        }
 
     .btn-filter-toggle {
         width: 100%;
@@ -983,15 +1003,15 @@
         flex-direction: column;
     }
 
-    .input-group > * {
-        width: 100%;
-        border-radius: 0.375rem !important;
-        margin-bottom: 0.5rem;
-    }
+        .input-group > * {
+            width: 100%;
+            border-radius: 0.375rem !important;
+            margin-bottom: 0.5rem;
+        }
 
-    .input-group > *:last-child {
-        margin-bottom: 0;
-    }
+            .input-group > *:last-child {
+                margin-bottom: 0;
+            }
 
     .input-group-text {
         justify-content: center;
@@ -1038,15 +1058,15 @@
     .empty-state p {
         font-size: 0.85rem;
     }
-    
+
     /* Stack filter elements */
     .order-filters .row > div {
         margin-bottom: 0.5rem;
     }
 
-    .order-filters .row > div:last-child {
-        margin-bottom: 0;
-    }
+        .order-filters .row > div:last-child {
+            margin-bottom: 0;
+        }
 
     /* Adjust card content */
     .order-card .card-title {
@@ -1070,5 +1090,9 @@
     /* Adjust pagination */
     .pagination .page-item:not(.active):not(:first-child):not(:last-child) {
         display: none;
+    }
+
+    .filter {
+        width: 370px !important;
     }
 }
