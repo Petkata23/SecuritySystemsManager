@@ -423,37 +423,125 @@
 
 /* Mobile Responsive Improvements */
 @media (max-width: 768px) {
+    /* General layout improvements */
+    .container-fluid {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    
+    .row {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    
+    .col-lg-8, .col-lg-4 {
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+    }
+    
+    /* Order information container */
     .order-information-container {
-        padding: 1rem;
-        margin: 0 0.5rem;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
     }
 
+    /* Order overview card */
+    .order-overview-card {
+        margin-bottom: 1rem;
+    }
+    
     .order-overview-card .card-header {
         padding: 1.5rem;
     }
-
+    
+    .card-body.p-0 .row.g-0 {
+        flex-direction: column;
+    }
+    
+    .card-body.p-0 .col-lg-8, 
+    .card-body.p-0 .col-lg-6,
+    .card-body.p-0 .col-lg-4 {
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: 0 0 100% !important;
+    }
+    
+    .order-details-section, 
+    .client-info-card,
+    .location-details-section,
+    .map-container {
+        padding: 1.25rem !important;
+    }
+    
+    /* Client section */
+    .client-section {
+        border-left: none;
+        border-top: 1px solid var(--border-color);
+    }
+    
+    /* Location map */
     .location-map {
         height: 200px;
         margin-top: 1rem;
     }
 
+    /* Description text */
     .description-text {
         padding: 1rem;
-        margin: 0 0.25rem;
+        margin: 0;
     }
 
+    /* Location info */
     .location-info {
         padding: 0.75rem;
     }
+    
+    .location-info-item {
+        padding: 1rem;
+        gap: 1rem;
+    }
 
+    /* Action buttons */
     .location-actions .btn {
         font-size: 0.8rem;
         padding: 0.3rem 0.6rem;
+    }
+    
+    .action-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        width: 100%;
+        margin-top: 0.75rem;
+    }
+    
+    .action-buttons .btn {
+        width: 100%;
+    }
+    
+    .card .d-flex.justify-content-between {
+        flex-direction: column;
+    }
+    
+    .card .d-flex.justify-content-between a:first-child {
+        margin-bottom: 0.75rem;
     }
 
     /* Adjust card layout */
     .card {
         margin-bottom: 1rem;
+        border-radius: 8px;
+    }
+    
+    .card-header {
+        padding: 1rem !important;
+    }
+    
+    .card-body {
+        padding: 1rem !important;
     }
 
     /* Adjust profile images */
@@ -461,6 +549,17 @@
     .client-initials, .tech-initials {
         width: 36px;
         height: 36px;
+    }
+    
+    .client-avatar-large img {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .client-initials-large {
+        width: 80px;
+        height: 80px;
+        font-size: 1.5rem;
     }
 
     /* Adjust icon sizes */
@@ -473,15 +572,14 @@
         padding-left: 25px;
     }
 
-    /* Removed vertical line from timeline */
-    /* .timeline:before {
-            left: 12px;
-        } */
-
     .timeline-marker {
         left: -25px;
         width: 12px;
         height: 12px;
+    }
+    
+    .timeline-item {
+        padding-bottom: 20px;
     }
 
     /* Adjust buttons in action areas */
@@ -491,22 +589,173 @@
     }
 
     /* Adjust tables */
+    .table-responsive {
+        margin: 0 -1rem;
+        width: calc(100% + 2rem);
+    }
+    
     .table th, .table td {
         padding: 0.5rem;
+        font-size: 0.85rem;
+    }
+    
+    .table .btn-group .btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+    }
+    
+    /* Adjust list groups */
+    .list-group-item {
+        padding: 0.75rem;
+    }
+    
+    /* Adjust modal dialogs */
+    .custom-modal-container {
+        width: 95%;
+        max-width: 95%;
     }
 }
 
 /* Small mobile devices */
 @media (max-width: 576px) {
+    /* General layout improvements */
+    .container-fluid {
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+    }
+    
+    .col-lg-8, .col-lg-4 {
+        padding-left: 5px !important;
+        padding-right: 5px !important;
+    }
+    
+    /* Order overview card */
+    .order-overview-card .card-header {
+        padding: 1.25rem !important;
+    }
+    
+    /* Order details */
+    .order-details-section, 
+    .client-info-card,
+    .location-details-section,
+    .map-container {
+        padding: 1rem !important;
+    }
+    
+    /* Section titles */
+    .section-title {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    /* Info items */
+    .info-item {
+        margin-bottom: 1.5rem;
+        padding: 0;
+    }
+    
+    .info-label {
+        font-size: 0.8rem;
+        margin-bottom: 0.3rem;
+    }
+    
+    .info-value {
+        font-size: 0.9rem;
+    }
+    
+    /* Description text */
+    .description-text {
+        padding: 0.75rem;
+        font-size: 0.9rem;
+    }
+    
+    /* Client profile */
+    .client-profile {
+        padding: 1.5rem 0;
+    }
+    
+    .client-avatar-large img {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .client-initials-large {
+        width: 60px;
+        height: 60px;
+        font-size: 1.2rem;
+    }
+    
+    .client-name {
+        font-size: 1.1rem;
+    }
+    
+    .client-email {
+        font-size: 0.85rem;
+    }
+    
+    /* Location info */
+    .location-info-item {
+        padding: 0.75rem;
+        gap: 0.75rem;
+    }
+    
+    .info-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 0.8rem;
+    }
+    
+    /* Location actions */
+    .location-actions {
+        padding: 1rem;
+    }
+    
+    .location-actions .btn {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    
+    .location-actions .btn:last-child {
+        margin-bottom: 0;
+    }
+    
+    /* Map container */
+    .location-map {
+        height: 180px;
+    }
+    
+    /* Timeline */
+    .timeline {
+        padding-left: 20px;
+    }
+    
+    .timeline-marker {
+        left: -20px;
+        width: 10px;
+        height: 10px;
+    }
+    
+    .timeline-item {
+        padding-bottom: 15px;
+    }
+    
+    /* Tables */
+    .table th, .table td {
+        padding: 0.4rem;
+        font-size: 0.8rem;
+    }
+    
     /* Stack buttons in action areas */
     .d-flex.justify-content-between {
         flex-direction: column;
         gap: 0.75rem;
     }
 
-        .d-flex.justify-content-between .btn {
-            width: 100%;
-        }
+    .d-flex.justify-content-between .btn {
+        width: 100%;
+    }
 
     /* Adjust card headers */
     .card-header {
@@ -514,9 +763,9 @@
         align-items: flex-start !important;
     }
 
-        .card-header h5 {
-            margin-bottom: 0.5rem;
-        }
+    .card-header h5 {
+        margin-bottom: 0.5rem;
+    }
 
     /* Adjust button groups */
     .btn-group {
@@ -524,9 +773,9 @@
         width: 100%;
     }
 
-        .btn-group .btn {
-            flex: 1;
-        }
+    .btn-group .btn {
+        flex: 1;
+    }
 
     /* Adjust client information layout */
     .client-avatar {
@@ -543,9 +792,27 @@
         display: block;
     }
 
-        dl.row dt, dl.row dd {
-            width: 100%;
-            text-align: left;
-            padding-left: 0;
-        }
+    dl.row dt, dl.row dd {
+        width: 100%;
+        text-align: left;
+        padding-left: 0;
+    }
+    
+    /* Modal adjustments */
+    .custom-modal-container {
+        width: 98%;
+        max-width: 98%;
+    }
+    
+    .custom-modal-header {
+        padding: 0.75rem !important;
+    }
+    
+    .custom-modal-body {
+        padding: 0.75rem !important;
+    }
+    
+    .custom-modal-footer {
+        padding: 0.75rem !important;
+    }
 }

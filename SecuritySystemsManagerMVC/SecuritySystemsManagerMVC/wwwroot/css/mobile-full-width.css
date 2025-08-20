@@ -1,0 +1,652 @@
+/* Mobile Full Width Layout CSS */
+/* This file ensures mobile devices use the full screen width instead of collapsed layout */
+
+/* Critical fix: Force all content to be properly aligned by default */
+* {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    left: 0 !important;
+    right: auto !important;
+    position: relative !important;
+    transform: none !important;
+    float: none !important;
+    clear: both !important;
+}
+
+/* Base mobile responsive rules */
+@media (max-width: 991.98px) {
+    /* Ensure all containers use full width and are centered */
+    .container-fluid,
+    .container,
+    .container-sm,
+    .container-md,
+    .container-lg,
+    .container-xl,
+    .container-xxl {
+        max-width: 100% !important;
+        width: 100% !important;
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        position: relative !important;
+    }
+
+    /* Main content full width and centered */
+    .main-content {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        position: relative !important;
+    }
+
+    /* Content container full width and centered */
+    .content-container {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        position: relative !important;
+    }
+
+    /* Page title section full width and centered */
+    .page-title-section {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        position: relative !important;
+    }
+
+    .page-title-section .container-fluid {
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        position: relative !important;
+    }
+
+    /* Ensure all rows use full width and are centered */
+    .row {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        left: 0 !important;
+        right: 0 !important;
+        position: relative !important;
+    }
+
+    /* Ensure all columns use proper spacing and are centered */
+    .col, .col-1, .col-2, .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9, .col-10, .col-11, .col-12,
+    .col-sm, .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12,
+    .col-md, .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12 {
+        padding-left: 7.5px !important;
+        padding-right: 7.5px !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        position: relative !important;
+    }
+
+    /* Cards and content elements full width and centered */
+    .card,
+    .alert,
+    .form-group,
+    .btn-group {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        position: relative !important;
+    }
+
+    /* Fix any potential overflow issues and ensure centering */
+    body, html {
+        overflow-x: hidden !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        position: relative !important;
+    }
+
+    /* Ensure modals use full width and are centered */
+    .modal-dialog {
+        margin: 0.5rem auto !important;
+        max-width: calc(100% - 1rem) !important;
+        width: calc(100% - 1rem) !important;
+        left: 0 !important;
+        right: 0 !important;
+        position: relative !important;
+    }
+
+    /* Navbar full width and centered */
+    .navbar .container-fluid {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        position: relative !important;
+    }
+
+    /* Top bar full width and centered */
+    .top-bar .container-fluid {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        position: relative !important;
+    }
+
+    /* Footer full width and centered */
+    .footer .container-fluid {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        position: relative !important;
+    }
+}
+
+/* Medium mobile devices (tablets, 768px and down) */
+@media (max-width: 768px) {
+    /* Further optimize for medium mobile */
+    .container-fluid,
+    .container,
+    .container-sm,
+    .container-md,
+    .container-lg,
+    .container-xl,
+    .container-xxl {
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+    }
+
+    .content-container {
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+    }
+
+    .page-title-section .container-fluid {
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+    }
+
+    .navbar .container-fluid,
+    .top-bar .container-fluid,
+    .footer .container-fluid {
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+    }
+
+    /* Adjust column padding */
+    .col, .col-1, .col-2, .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9, .col-10, .col-11, .col-12,
+    .col-sm, .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12,
+    .col-md, .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12 {
+        padding-left: 6px !important;
+        padding-right: 6px !important;
+    }
+}
+
+/* Small mobile devices (phones, 576px and down) */
+@media (max-width: 576px) {
+    /* Optimize for small mobile */
+    .container-fluid,
+    .container,
+    .container-sm,
+    .container-md,
+    .container-lg,
+    .container-xl,
+    .container-xxl {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        left: 0 !important;
+        right: auto !important;
+        position: relative !important;
+    }
+
+    .content-container {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        left: 0 !important;
+        right: auto !important;
+        position: relative !important;
+    }
+
+    .page-title-section .container-fluid {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        left: 0 !important;
+        right: auto !important;
+        position: relative !important;
+    }
+
+    .navbar .container-fluid,
+    .top-bar .container-fluid,
+    .footer .container-fluid {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        left: 0 !important;
+        right: auto !important;
+        position: relative !important;
+    }
+
+    /* Adjust column padding for small screens */
+    .col, .col-1, .col-2, .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9, .col-10, .col-11, .col-12,
+    .col-sm, .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12,
+    .col-md, .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12 {
+        padding-left: 5px !important;
+        padding-right: 5px !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        left: 0 !important;
+        right: auto !important;
+        position: relative !important;
+    }
+
+    /* Ensure buttons and forms use full width */
+    .btn {
+        width: 100% !important;
+        margin-bottom: 0.5rem !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        left: 0 !important;
+        right: auto !important;
+        position: relative !important;
+    }
+
+    .btn + .btn {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    .form-control,
+    .form-select {
+        width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        left: 0 !important;
+        right: auto !important;
+        position: relative !important;
+    }
+
+    /* Critical fix for small screens: Force left alignment */
+    * {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        left: 0 !important;
+        right: auto !important;
+        position: relative !important;
+        transform: none !important;
+        float: none !important;
+        clear: both !important;
+    }
+}
+
+/* Extra small devices (phones, 480px and down) */
+@media (max-width: 480px) {
+    /* Further optimize for very small screens */
+    .container-fluid,
+    .container,
+    .container-sm,
+    .container-md,
+    .container-lg,
+    .container-xl,
+    .container-xxl {
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        left: 0 !important;
+        right: auto !important;
+        position: relative !important;
+    }
+
+    .content-container {
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        left: 0 !important;
+        right: auto !important;
+        position: relative !important;
+    }
+
+    .page-title-section .container-fluid {
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        left: 0 !important;
+        right: auto !important;
+        position: relative !important;
+    }
+
+    .navbar .container-fluid,
+    .top-bar .container-fluid,
+    .footer .container-fluid {
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        left: 0 !important;
+        right: auto !important;
+        position: relative !important;
+    }
+
+    /* Adjust column padding for very small screens */
+    .col, .col-1, .col-2, .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9, .col-10, .col-11, .col-12,
+    .col-sm, .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12,
+    .col-md, .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12 {
+        padding-left: 4px !important;
+        padding-right: 4px !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        left: 0 !important;
+        right: auto !important;
+        position: relative !important;
+    }
+
+    /* Optimize spacing for very small screens */
+    .card-body,
+    .card-header {
+        padding: 0.75rem !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        left: 0 !important;
+        right: auto !important;
+        position: relative !important;
+    }
+
+    .page-title {
+        font-size: 1.1rem !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        left: 0 !important;
+        right: auto !important;
+        position: relative !important;
+    }
+
+    .breadcrumb {
+        font-size: 0.8rem !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        left: 0 !important;
+        right: auto !important;
+        position: relative !important;
+    }
+
+    /* Critical fix for very small screens: Force left alignment */
+    * {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        left: 0 !important;
+        right: auto !important;
+        position: relative !important;
+        transform: none !important;
+        float: none !important;
+        clear: both !important;
+    }
+}
+
+/* Force full width for all screen sizes - override any conflicting rules */
+@media (max-width: 1200px) {
+    .container-fluid {
+        max-width: 100% !important;
+        width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        position: relative !important;
+    }
+}
+
+/* Override Bootstrap's default container widths */
+@media (max-width: 1400px) {
+    .container-fluid {
+        max-width: 100% !important;
+        width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        position: relative !important;
+    }
+}
+
+@media (max-width: 1200px) {
+    .container-fluid {
+        max-width: 100% !important;
+        width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        position: relative !important;
+    }
+}
+
+@media (max-width: 992px) {
+    .container-fluid {
+        max-width: 100% !important;
+        width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        position: relative !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .container-fluid {
+        max-width: 100% !important;
+        width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        position: relative !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .container-fluid {
+        max-width: 100% !important;
+        width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        position: relative !important;
+    }
+}
+
+/* Ensure proper box-sizing for all elements */
+* {
+    box-sizing: border-box !important;
+}
+
+/* Fix any potential margin/padding issues and ensure centering */
+body, html {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    left: 0 !important;
+    right: 0 !important;
+    position: relative !important;
+}
+
+/* Additional centering rules to prevent right offset */
+@media (max-width: 768px) {
+    /* Ensure all elements are properly centered */
+    .main-content,
+    .container-fluid,
+    .container,
+    .row,
+    .col,
+    .card,
+    .alert,
+    section,
+    .navbar,
+    .top-bar,
+    .footer,
+    .page-title-section,
+    .orders-container,
+    .order-information-container {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        position: relative !important;
+        transform: none !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    /* Ensure no unwanted positioning */
+    * {
+        left: auto !important;
+        right: auto !important;
+        transform: none !important;
+    }
+
+    /* Force centering for all content */
+    .main-content > div,
+    .main-content > * {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        position: relative !important;
+        transform: none !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    /* Ensure proper alignment for all grid elements */
+    .row > * {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        position: relative !important;
+        transform: none !important;
+    }
+    
+    /* Specific fixes for Orders pages */
+    .orders-container,
+    .order-information-container {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    /* Critical fix: Force all content to start from left edge */
+body,
+html,
+.main-content,
+.container-fluid,
+.container,
+.row,
+.col,
+.card,
+.alert,
+section,
+.navbar,
+.top-bar,
+.footer,
+.page-title-section,
+.hero-section,
+.features-section,
+.services-section,
+.about-section,
+.contact-section,
+.orders-container,
+.order-information-container,
+.orders-banner,
+.filter-card,
+.orders-card,
+.order-overview-card,
+.location-card {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    left: 0 !important;
+    right: auto !important;
+    position: relative !important;
+    transform: none !important;
+    float: none !important;
+    clear: both !important;
+}
+
+    /* Ensure containers have proper padding but no margins */
+    .container-fluid,
+    .container {
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    /* Force all content to be left-aligned */
+    .text-center,
+    .text-start,
+    .text-end {
+        text-align: left !important;
+    }
+
+    /* Ensure no unwanted centering that could cause offset */
+    .mx-auto,
+    .ms-auto,
+    .me-auto {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+}
+
+
