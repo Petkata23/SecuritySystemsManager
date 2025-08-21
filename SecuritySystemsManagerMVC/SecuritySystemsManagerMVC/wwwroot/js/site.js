@@ -261,6 +261,23 @@ function highlightActiveNavItem() {
 
 // Back to top button
 function initBackToTop() {
+    // Check if chat widget is present and adjust back-to-top button position
+    function adjustBackToTopPosition() {
+        const chatWidget = document.getElementById('chatWidget');
+        const backToTopButton = document.querySelector('.back-to-top');
+        
+        if (chatWidget && backToTopButton) {
+            // Chat widget is present, keep default position (above chat widget)
+            backToTopButton.classList.remove('no-chat-widget');
+        } else if (backToTopButton) {
+            // Chat widget is not present, position at bottom
+            backToTopButton.classList.add('no-chat-widget');
+        }
+    }
+    
+    // Check position on page load
+    adjustBackToTopPosition();
+    
     $(window).scroll(function() {
         if ($(this).scrollTop() > 200) {
             $('.back-to-top').addClass('active');

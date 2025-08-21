@@ -436,6 +436,11 @@ main.main-content {
         visibility: visible;
     }
 
+/* Back to top button when chat widget is not present */
+.back-to-top.no-chat-widget {
+    bottom: 20px;
+}
+
 /* Cards */
 .card {
     border: none;
