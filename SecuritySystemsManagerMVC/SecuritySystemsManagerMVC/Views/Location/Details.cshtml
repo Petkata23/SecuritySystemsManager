@@ -2,7 +2,7 @@
 @using SecuritySystemsManager.Shared.Enums
 
 @{
-    ViewData["Title"] = "Location Details";
+    ViewData["Title"] = "Детайли за локация";
 }
 
 @section Styles {
@@ -11,19 +11,19 @@
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="h3 mb-0">Location Details</h1>
+    <h1 class="h3 mb-0">Детайли за локация</h1>
     <div>
         @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
         {
             <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
-                <i class="bi bi-pencil me-2"></i>Edit
+                <i class="bi bi-pencil me-2"></i>Редактирай
             </a>
             <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">
-                <i class="bi bi-trash me-2"></i>Delete
+                <i class="bi bi-trash me-2"></i>Изтрий
             </a>
         }
         <a asp-action="List" class="btn btn-secondary">
-            <i class="bi bi-arrow-left me-2"></i>Back to List
+            <i class="bi bi-arrow-left me-2"></i>Обратно към списъка
         </a>
     </div>
 </div>
@@ -32,28 +32,28 @@
     <div class="col-md-5">
         <div class="card mb-4">
             <div class="card-header">
-                <h5 class="mb-0">Location Information</h5>
+                <h5 class="mb-0">Информация за локацията</h5>
             </div>
             <div class="card-body">
                 <div class="mb-3">
-                    <h6 class="text-muted mb-1">Name</h6>
+                    <h6 class="text-muted mb-1">Име</h6>
                     <p class="fs-5">@Model.Name</p>
                 </div>
                 <div class="mb-3">
-                    <h6 class="text-muted mb-1">Address</h6>
+                    <h6 class="text-muted mb-1">Адрес</h6>
                     <p>@Model.Address</p>
                 </div>
                 <div class="mb-3">
-                    <h6 class="text-muted mb-1">Coordinates</h6>
+                    <h6 class="text-muted mb-1">Координати</h6>
                     <p>
-                        <span class="badge bg-info me-2">Lat: @Model.Latitude</span>
-                        <span class="badge bg-info">Long: @Model.Longitude</span>
+                        <span class="badge bg-info me-2">Ширина: @Model.Latitude</span>
+                        <span class="badge bg-info">Дължина: @Model.Longitude</span>
                     </p>
                 </div>
                 @if (!string.IsNullOrEmpty(Model.Description))
                 {
                     <div class="mb-3">
-                        <h6 class="text-muted mb-1">Description</h6>
+                        <h6 class="text-muted mb-1">Описание</h6>
                         <p>@Model.Description</p>
                     </div>
                 }
@@ -64,16 +64,16 @@
         {
             <div class="card">
                 <div class="card-header">
-                    <h5 class="mb-0">Orders at this Location</h5>
+                    <h5 class="mb-0">Поръчки на тази локация</h5>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-hover mb-0">
                             <thead>
                                 <tr>
-                                    <th>Order ID</th>
-                                    <th>Status</th>
-                                    <th>Date</th>
+                                    <th>ID на поръчка</th>
+                                    <th>Статус</th>
+                                    <th>Дата</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -104,7 +104,7 @@
         else
         {
             <div class="alert alert-info">
-                <i class="bi bi-info-circle me-2"></i>No orders associated with this location.
+                <i class="bi bi-info-circle me-2"></i>Няма поръчки, свързани с тази локация.
             </div>
         }
     </div>
@@ -112,7 +112,7 @@
     <div class="col-md-7">
         <div class="card">
             <div class="card-header">
-                <h5 class="mb-0">Location Map</h5>
+                <h5 class="mb-0">Карта на локацията</h5>
             </div>
             <div class="card-body p-0">
                 <div id="locationDetailsMap" 
@@ -151,7 +151,7 @@
     {
         return status switch
         {
-            OrderStatus.InProgress => "In Progress",
+            OrderStatus.InProgress => "В процес",
             _ => status.ToString()
         };
     }

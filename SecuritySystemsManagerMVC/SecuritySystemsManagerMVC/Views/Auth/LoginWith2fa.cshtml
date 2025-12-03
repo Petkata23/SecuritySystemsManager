@@ -1,7 +1,7 @@
 @model SecuritySystemsManagerMVC.ViewModels.LoginWith2faViewModel
 
 @{
-    ViewData["Title"] = "Two-factor authentication";
+    ViewData["Title"] = "Двуфакторна автентикация";
 }
 
 <div class="container py-5">
@@ -12,7 +12,7 @@
                     <h4 class="mb-0">@ViewData["Title"]</h4>
                 </div>
                 <div class="card-body p-4">
-                    <p>Your login is protected with an authenticator app. Enter your authenticator code below.</p>
+                    <p>Входът ви е защитен с приложение за автентикация. Въведете вашия код за автентикация по-долу.</p>
                     <form method="post" asp-route-returnUrl="@ViewData["ReturnUrl"]">
                         <input asp-for="RememberMe" type="hidden" />
                         <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
@@ -26,7 +26,7 @@
                             <label asp-for="RememberMachine" class="form-check-label"></label>
                         </div>
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-primary">Log in</button>
+                            <button type="submit" class="btn btn-primary">Вход</button>
                         </div>
                     </form>
                 </div>

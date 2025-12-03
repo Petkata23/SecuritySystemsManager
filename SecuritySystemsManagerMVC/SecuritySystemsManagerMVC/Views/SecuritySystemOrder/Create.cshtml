@@ -3,7 +3,7 @@
 @using System.Security.Claims
 
 @{
-    ViewData["Title"] = "Create Order";
+    ViewData["Title"] = "Създаване на поръчка";
     bool isClient = User.IsInRole("Client");
     bool isAdminOrManager = User.IsInRole("Admin") || User.IsInRole("Manager");
 }
@@ -13,8 +13,8 @@
         <div class="col-12">
             <div class="card bg-gradient-primary text-white">
                 <div class="card-body py-4">
-                    <h1 class="h3 mb-2"><i class="bi bi-shield-plus me-2"></i>Create Security System Order</h1>
-                    <p class="mb-0">Fill out the form below to request a new security system installation for your property.</p>
+                    <h1 class="h3 mb-2"><i class="bi bi-shield-plus me-2"></i>Създаване на поръчка за система за сигурност</h1>
+                    <p class="mb-0">Попълнете формуляра по-долу, за да заявите нова инсталация на система за сигурност за вашия имот.</p>
                 </div>
             </div>
         </div>
@@ -24,7 +24,7 @@
         <div class="col-lg-8">
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-transparent">
-                    <h5 class="mb-0"><i class="bi bi-plus-circle me-2"></i>Order Details</h5>
+                    <h5 class="mb-0"><i class="bi bi-plus-circle me-2"></i>Детайли на поръчката</h5>
                 </div>
                 <div class="card-body">
                     <form asp-action="Create" method="post">

@@ -1,6 +1,6 @@
 @model IEnumerable<SecuritySystemsManager.Shared.Dtos.NotificationDto>
 @{
-    ViewData["Title"] = "Notifications";
+    ViewData["Title"] = "Известия";
 }
 
 <div class="container animate-fade-in py-4">
@@ -8,11 +8,11 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">All Notifications</h5>
+                    <h5 class="mb-0">Всички известия</h5>
                     @if (Model.Any(n => !n.IsRead))
                     {
                         <button id="markAllAsRead" class="btn btn-sm btn-primary">
-                            <i class="bi bi-check-all me-2"></i>Mark All as Read
+                            <i class="bi bi-check-all me-2"></i>Маркирай всички като прочетени
                         </button>
                     }
                 </div>

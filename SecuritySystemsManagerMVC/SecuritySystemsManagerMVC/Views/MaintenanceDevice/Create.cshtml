@@ -1,7 +1,7 @@
 @model SecuritySystemsManagerMVC.ViewModels.MaintenanceDeviceEditVm
 
 @{
-    ViewData["Title"] = "Add Maintenance Record";
+    ViewData["Title"] = "Добавяне на запис за поддръжка";
 }
 
 <div class="container-fluid px-4">
@@ -9,24 +9,24 @@
         <h1 class="h3 mb-0">
             @if (ViewBag.IsFromMaintenanceLog == true)
             {
-                <text>Add Device to Maintenance Log</text>
+                <text>Добави устройство към дневник за поддръжка</text>
             }
             else
             {
-                <text>Add Maintenance Record</text>
+                <text>Добави запис за поддръжка</text>
             }
         </h1>
         <div>
             @if (ViewBag.IsFromMaintenanceLog == true)
             {
                 <a asp-controller="MaintenanceLog" asp-action="Details" asp-route-id="@ViewBag.LogId" class="btn btn-secondary">
-                    <i class="bi bi-arrow-left me-2"></i>Back to Maintenance Log
+                    <i class="bi bi-arrow-left me-2"></i>Обратно към дневника за поддръжка
                 </a>
             }
             else
             {
                 <a asp-controller="InstalledDevice" asp-action="Details" asp-route-id="@ViewBag.DeviceId" class="btn btn-secondary">
-                    <i class="bi bi-arrow-left me-2"></i>Back to Device
+                    <i class="bi bi-arrow-left me-2"></i>Обратно към устройството
                 </a>
             }
         </div>
@@ -38,11 +38,11 @@
                 <div class="card-header bg-transparent">
                     @if (ViewBag.IsFromMaintenanceLog == true)
                     {
-                        <h5 class="mb-0">Maintenance Log: @ViewBag.LogDate</h5>
+                        <h5 class="mb-0">Дневник за поддръжка: @ViewBag.LogDate</h5>
                     }
                     else
                     {
-                        <h5 class="mb-0">Device: @ViewBag.DeviceInfo</h5>
+                        <h5 class="mb-0">Устройство: @ViewBag.DeviceInfo</h5>
                     }
                 </div>
                 <div class="card-body">
@@ -54,28 +54,28 @@
                             <input type="hidden" asp-for="MaintenanceLogId" value="@ViewBag.LogId" />
 
                             <div class="mb-3">
-                                <label asp-for="InstalledDeviceId" class="form-label">Select Device</label>
+                                <label asp-for="InstalledDeviceId" class="form-label">Избери устройство</label>
                                 <select asp-for="InstalledDeviceId" asp-items="Model.AllInstalledDevices" class="form-select">
-                                    <option value="">-- Select Device --</option>
+                                    <option value="">-- Избери устройство --</option>
                                 </select>
                                 <span asp-validation-for="InstalledDeviceId" class="text-danger"></span>
                             </div>
 
                             <div class="mb-3">
-                                <label asp-for="Notes" class="form-label">Notes</label>
+                                <label asp-for="Notes" class="form-label">Бележки</label>
                                 <textarea asp-for="Notes" class="form-control" rows="4"></textarea>
                                 <span asp-validation-for="Notes" class="text-danger"></span>
                             </div>
 
                             <div class="form-check mb-3">
                                 <input asp-for="IsFixed" class="form-check-input" />
-                                <label asp-for="IsFixed" class="form-check-label">Fixed</label>
+                                <label asp-for="IsFixed" class="form-check-label">Поправено</label>
                                 <span asp-validation-for="IsFixed" class="text-danger"></span>
                             </div>
 
                             <div class="d-flex justify-content-end">
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="bi bi-save me-2"></i>Save
+                                    <i class="bi bi-save me-2"></i>Запази
                                 </button>
                             </div>
                         </form>
@@ -88,28 +88,28 @@
                             <input type="hidden" asp-for="InstalledDeviceId" value="@ViewBag.DeviceId" />
 
                             <div class="mb-3">
-                                <label asp-for="MaintenanceLogId" class="form-label">Maintenance Log</label>
+                                <label asp-for="MaintenanceLogId" class="form-label">Дневник за поддръжка</label>
                                 <select asp-for="MaintenanceLogId" asp-items="Model.AllMaintenanceLogs" class="form-select">
-                                    <option value="">-- Select Maintenance Log --</option>
+                                    <option value="">-- Избери дневник за поддръжка --</option>
                                 </select>
                                 <span asp-validation-for="MaintenanceLogId" class="text-danger"></span>
                             </div>
 
                             <div class="mb-3">
-                                <label asp-for="Notes" class="form-label">Notes</label>
+                                <label asp-for="Notes" class="form-label">Бележки</label>
                                 <textarea asp-for="Notes" class="form-control" rows="4"></textarea>
                                 <span asp-validation-for="Notes" class="text-danger"></span>
                             </div>
 
                             <div class="form-check mb-3">
                                 <input asp-for="IsFixed" class="form-check-input" />
-                                <label asp-for="IsFixed" class="form-check-label">Fixed</label>
+                                <label asp-for="IsFixed" class="form-check-label">Поправено</label>
                                 <span asp-validation-for="IsFixed" class="text-danger"></span>
                             </div>
 
                             <div class="d-flex justify-content-end">
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="bi bi-save me-2"></i>Save
+                                    <i class="bi bi-save me-2"></i>Запази
                                 </button>
                             </div>
                         </form>

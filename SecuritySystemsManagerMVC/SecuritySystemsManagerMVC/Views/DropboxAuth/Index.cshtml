@@ -1,17 +1,17 @@
 @{
-    ViewData["Title"] = "Dropbox Authentication";
+    ViewData["Title"] = "Dropbox Удостоверяване";
 }
 
 <div class="container mt-4">
-    <h2>Dropbox Authentication</h2>
+    <h2>Dropbox Удостоверяване</h2>
     
     <div class="alert alert-warning">
-        <h4>Important!</h4>
-        <p>Before proceeding, make sure to add the following Redirect URI to your Dropbox App Console:</p>
+        <h4>Важно!</h4>
+        <p>Преди да продължите, уверете се, че сте добавили следния URI за пренасочване към конзолата на Dropbox приложението:</p>
         <div class="input-group mb-3">
             <input type="text" id="redirectUri" class="form-control" value="@ViewBag.RedirectUri" readonly>
             <div class="input-group-append">
-                <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard('redirectUri')">Copy</button>
+                <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard('redirectUri')">Копирай</button>
             </div>
         </div>
         <p>
@@ -25,8 +25,8 @@
         </p>
     </div>
     
-    <p>Click the button below to authorize the application to access your Dropbox account.</p>
-    <p>This will generate a refresh token that you can use in your application settings.</p>
+    <p>Кликнете бутона по-долу, за да оторизирате приложението да има достъп до вашия Dropbox акаунт.</p>
+    <p>Това ще генерира токен за обновяване, който можете да използвате в настройките на приложението.</p>
     
     <div class="mt-4">
         <a href="@ViewBag.AuthUrl" class="btn btn-primary">Authorize with Dropbox</a>

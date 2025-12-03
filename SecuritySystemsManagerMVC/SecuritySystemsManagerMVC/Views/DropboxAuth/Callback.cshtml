@@ -1,65 +1,65 @@
 @{
-    ViewData["Title"] = "Dropbox Authentication Complete";
+    ViewData["Title"] = "Dropbox Удостоверяване Завършено";
 }
 
 <div class="container mt-4">
-    <h2>Dropbox Authentication Complete</h2>
+    <h2>Dropbox Удостоверяване Завършено</h2>
     <div class="alert alert-success">
-        <p>Authentication successful! Your tokens have been generated and saved to the configuration file.</p>
+        <p>Удостоверяването е успешно! Вашите токени са генерирани и запазени във файла с конфигурация.</p>
     </div>
     
     <div class="card mt-4">
         <div class="card-header">
-            <h4>Refresh Token</h4>
+            <h4>Токен за обновяване</h4>
         </div>
         <div class="card-body">
-            <p>Your refresh token has been saved to the configuration file:</p>
+            <p>Вашият токен за обновяване е запазен във файла с конфигурация:</p>
             <div class="input-group">
                 <input type="text" id="refreshToken" class="form-control" value="@ViewBag.RefreshToken" readonly>
                 <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard('refreshToken')">Copy</button>
+                    <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard('refreshToken')">Копирай</button>
                 </div>
             </div>
-            <small class="form-text text-muted">This refresh token does not expire and can be used to generate new access tokens.</small>
+            <small class="form-text text-muted">Този токен за обновяване не изтича и може да се използва за генериране на нови токени за достъп.</small>
         </div>
     </div>
     
     <div class="card mt-4">
         <div class="card-header">
-            <h4>Access Token</h4>
+            <h4>Токен за достъп</h4>
         </div>
         <div class="card-body">
-            <p>Current access token:</p>
+            <p>Текущ токен за достъп:</p>
             <div class="input-group">
                 <input type="text" id="accessToken" class="form-control" value="@ViewBag.AccessToken" readonly>
                 <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard('accessToken')">Copy</button>
+                    <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard('accessToken')">Копирай</button>
                 </div>
             </div>
             <div class="mt-3">
-                <strong>Expires in:</strong> @ViewBag.ExpiresIn seconds
+                <strong>Изтича след:</strong> @ViewBag.ExpiresIn секунди
             </div>
             <div>
-                <strong>Expiry time:</strong> @(ViewBag.ExpiryTime != null ? ((DateTime)ViewBag.ExpiryTime).ToString("yyyy-MM-dd HH:mm:ss") + " UTC" : "Unknown")
+                <strong>Време на изтичане:</strong> @(ViewBag.ExpiryTime != null ? ((DateTime)ViewBag.ExpiryTime).ToString("yyyy-MM-dd HH:mm:ss") + " UTC" : "Неизвестно")
             </div>
-            <small class="form-text text-muted mt-2">This access token will expire. The system will automatically refresh it when needed.</small>
+            <small class="form-text text-muted mt-2">Този токен за достъп ще изтече. Системата автоматично ще го обнови, когато е необходимо.</small>
         </div>
     </div>
     
     <div class="card mt-4">
         <div class="card-header">
-            <h4>Test Token Refresh</h4>
+            <h4>Тест на обновяване на токен</h4>
         </div>
         <div class="card-body">
-            <p>You can test the token refresh functionality using the button below:</p>
-            <button id="testRefreshBtn" class="btn btn-primary">Test Token Refresh</button>
+            <p>Можете да тествате функционалността за обновяване на токен, като използвате бутона по-долу:</p>
+            <button id="testRefreshBtn" class="btn btn-primary">Тест на обновяване на токен</button>
             <div id="refreshResult" class="mt-3"></div>
         </div>
     </div>
     
     <div class="alert alert-info mt-4">
-        <h5>All Done!</h5>
-        <p>Your Dropbox integration is now set up. The system will automatically refresh the access token when needed.</p>
+        <h5>Готово!</h5>
+        <p>Интеграцията ви с Dropbox е настроена. Системата автоматично ще обновява токена за достъп, когато е необходимо.</p>
     </div>
 </div>
 

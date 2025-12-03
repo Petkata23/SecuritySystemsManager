@@ -2,21 +2,21 @@
 @using SecuritySystemsManager.Shared.Enums
 
 @{
-    ViewData["Title"] = "Device Details";
+    ViewData["Title"] = "Детайли за устройство";
 }
 
 <div class="container-fluid px-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0">Device Details</h1>
+        <h1 class="h3 mb-0">Детайли за устройство</h1>
         <div>
             <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
-                <i class="bi bi-pencil me-2"></i>Edit
+                <i class="bi bi-pencil me-2"></i>Редактирай
             </a>
             <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">
-                <i class="bi bi-trash me-2"></i>Delete
+                <i class="bi bi-trash me-2"></i>Изтрий
             </a>
             <a asp-controller="SecuritySystemOrder" asp-action="Details" asp-route-id="@ViewBag.OrderId" class="btn btn-secondary">
-                <i class="bi bi-arrow-left me-2"></i>Back to Order
+                <i class="bi bi-arrow-left me-2"></i>Обратно към поръчката
             </a>
         </div>
     </div>
@@ -25,29 +25,29 @@
         <div class="col-md-8">
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-transparent">
-                    <h5 class="mb-0">Device Information</h5>
+                    <h5 class="mb-0">Информация за устройството</h5>
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
                             <dl class="row mb-0">
-                                <dt class="col-sm-4">Device Type</dt>
+                                <dt class="col-sm-4">Тип устройство</dt>
                                 <dd class="col-sm-8">
                                     <span class="badge bg-@GetDeviceTypeBadgeClass(Model.DeviceType)">
                                         @Model.DeviceType.ToString()
                                     </span>
                                 </dd>
 
-                                <dt class="col-sm-4">Brand</dt>
+                                <dt class="col-sm-4">Марка</dt>
                                 <dd class="col-sm-8">@Model.Brand</dd>
 
-                                <dt class="col-sm-4">Model</dt>
+                                <dt class="col-sm-4">Модел</dt>
                                 <dd class="col-sm-8">@Model.Model</dd>
 
-                                <dt class="col-sm-4">Quantity</dt>
+                                <dt class="col-sm-4">Количество</dt>
                                 <dd class="col-sm-8">@Model.Quantity</dd>
 
-                                <dt class="col-sm-4">Installation Date</dt>
+                                <dt class="col-sm-4">Дата на инсталация</dt>
                                 <dd class="col-sm-8">@Model.DateInstalled.ToShortDateString()</dd>
 
                                 <dt class="col-sm-4">Installed By</dt>

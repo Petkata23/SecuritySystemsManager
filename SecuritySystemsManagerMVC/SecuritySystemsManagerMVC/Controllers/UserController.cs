@@ -79,7 +79,7 @@ namespace SecuritySystemsManagerMVC.Controllers
 
             if (!ModelState.IsValid)
             {
-                TempData["ErrorMessage"] = "Please check the form for errors.";
+                TempData["ErrorMessage"] = "Моля, проверете формуляра за грешки.";
                 editVM = await PrePopulateVMAsync(editVM);
                 return View(editVM);
             }
@@ -93,14 +93,14 @@ namespace SecuritySystemsManagerMVC.Controllers
                 // Validate passwords
                 if (string.IsNullOrEmpty(password))
                 {
-                    ModelState.AddModelError("Password", "Password is required");
+                    ModelState.AddModelError("Password", "Паролата е задължителна");
                     editVM = await PrePopulateVMAsync(editVM);
                     return View(editVM);
                 }
                 
                 if (password != confirmPassword)
                 {
-                    ModelState.AddModelError("ConfirmPassword", "Passwords do not match");
+                    ModelState.AddModelError("ConfirmPassword", "Паролите не съвпадат");
                     editVM = await PrePopulateVMAsync(editVM);
                     return View(editVM);
                 }
@@ -114,12 +114,12 @@ namespace SecuritySystemsManagerMVC.Controllers
                 // Use the service to create the user with all details
                 await _service.CreateUserWithDetailsAsync(userDto, password, profileImage);
 
-                TempData["SuccessMessage"] = "User created successfully!";
+                TempData["SuccessMessage"] = "Потребителят беше успешно създаден!";
                 return RedirectToAction(nameof(List));
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = $"Error creating user: {ex.Message}";
+                TempData["ErrorMessage"] = $"Грешка при създаване на потребител: {ex.Message}";
                 ModelState.AddModelError("", ex.Message);
                 editVM = await PrePopulateVMAsync(editVM);
                 return View(editVM);
@@ -172,12 +172,12 @@ namespace SecuritySystemsManagerMVC.Controllers
                 // Update user with optional password change
                 await _service.UpdateUserWithPasswordAsync(userDto, password);
                 
-                TempData["SuccessMessage"] = "User updated successfully!";
+                TempData["SuccessMessage"] = "Потребителят беше успешно актуализиран!";
                 return RedirectToAction(nameof(List));
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = $"Error updating user: {ex.Message}";
+                TempData["ErrorMessage"] = $"Грешка при актуализиране на потребител: {ex.Message}";
                 ModelState.AddModelError("", ex.Message);
                 editVM = await PrePopulateVMAsync(editVM);
                 return View(editVM);

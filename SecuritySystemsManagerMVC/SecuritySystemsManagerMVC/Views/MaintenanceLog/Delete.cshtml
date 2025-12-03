@@ -1,6 +1,6 @@
 @model SecuritySystemsManagerMVC.ViewModels.MaintenanceLogDetailsVm
 @{
-    ViewData["Title"] = "Delete Maintenance Log";
+    ViewData["Title"] = "Изтриване на дневник за поддръжка";
 }
 
 @section Styles {
@@ -10,13 +10,13 @@
 <div class="maintenance-section">
     <div class="maintenance-header">
         <div class="d-flex justify-content-between align-items-center">
-            <h2 class="mb-0"><i class="bi bi-trash me-2"></i>Delete Maintenance Log</h2>
+            <h2 class="mb-0"><i class="bi bi-trash me-2"></i>Изтриване на дневник за поддръжка</h2>
             <div>
                 <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-primary">
-                    <i class="bi bi-eye me-1"></i> View Details
+                    <i class="bi bi-eye me-1"></i> Виж детайли
                 </a>
                 <a asp-action="List" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left me-1"></i> Back to List
+                    <i class="bi bi-arrow-left me-1"></i> Обратно към списъка
                 </a>
             </div>
         </div>

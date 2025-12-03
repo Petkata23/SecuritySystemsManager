@@ -1,24 +1,24 @@
 @model SecuritySystemsManagerMVC.ViewModels.UserDetailsVm
 
 @{
-    ViewData["Title"] = "User Details";
+    ViewData["Title"] = "Детайли за потребител";
 }
 
 <div class="container-fluid px-4 animate-fade-in">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1 class="h3 mb-2 text-gray-800">User Details</h1>
-            <p class="mb-0">View detailed information about this user</p>
+            <h1 class="h3 mb-2 text-gray-800">Детайли за потребител</h1>
+            <p class="mb-0">Прегледай подробна информация за този потребител</p>
         </div>
         <div>
             <a asp-action="List" class="btn btn-secondary me-2">
-                <i class="bi bi-arrow-left me-2"></i>Back to List
+                <i class="bi bi-arrow-left me-2"></i>Обратно към списъка
             </a>
             <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary me-2">
-                <i class="bi bi-pencil me-2"></i>Edit
+                <i class="bi bi-pencil me-2"></i>Редактирай
             </a>
             <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">
-                <i class="bi bi-trash me-2"></i>Delete
+                <i class="bi bi-trash me-2"></i>Изтрий
             </a>
         </div>
     </div>
@@ -42,7 +42,7 @@
                     <span class="badge bg-primary px-3 py-2 fs-6 mb-3">@Model.RoleName</span>
                     <div class="d-grid mt-3">
                         <a href="mailto:@Model.Email" class="btn btn-outline-primary">
-                            <i class="bi bi-envelope me-2"></i>Send Email
+                            <i class="bi bi-envelope me-2"></i>Изпрати имейл
                         </a>
                     </div>
                 </div>
@@ -52,27 +52,27 @@
         <div class="col-lg-8">
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-transparent">
-                    <h5 class="mb-0">Personal Information</h5>
+                    <h5 class="mb-0">Лична информация</h5>
                 </div>
                 <div class="card-body">
                     <div class="row mb-3">
-                        <div class="col-md-4 fw-bold">Username</div>
+                        <div class="col-md-4 fw-bold">Потребителско име</div>
                         <div class="col-md-8">@Model.Username</div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-md-4 fw-bold">First Name</div>
+                        <div class="col-md-4 fw-bold">Име</div>
                         <div class="col-md-8">@Model.FirstName</div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-md-4 fw-bold">Last Name</div>
+                        <div class="col-md-4 fw-bold">Фамилия</div>
                         <div class="col-md-8">@Model.LastName</div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-md-4 fw-bold">Email</div>
+                        <div class="col-md-4 fw-bold">Имейл</div>
                         <div class="col-md-8">@Model.Email</div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4 fw-bold">Role</div>
+                        <div class="col-md-4 fw-bold">Роля</div>
                         <div class="col-md-8">@Model.RoleName</div>
                     </div>
                 </div>
@@ -82,18 +82,18 @@
             {
                 <div class="card shadow-sm mb-4">
                     <div class="card-header bg-transparent">
-                        <h5 class="mb-0">Orders as Client</h5>
+                        <h5 class="mb-0">Поръчки като клиент</h5>
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
                             <table class="table table-hover mb-0">
                                 <thead>
                                     <tr>
-                                        <th>Order #</th>
-                                        <th>Title</th>
-                                        <th>Status</th>
-                                        <th>Date</th>
-                                        <th>Actions</th>
+                                        <th>Поръчка #</th>
+                                        <th>Заглавие</th>
+                                        <th>Статус</th>
+                                        <th>Дата</th>
+                                        <th>Действия</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -124,18 +124,18 @@
             {
                 <div class="card shadow-sm mb-4">
                     <div class="card-header bg-transparent">
-                        <h5 class="mb-0">Assigned Orders (as Technician)</h5>
+                        <h5 class="mb-0">Назначени поръчки (като техник)</h5>
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
                             <table class="table table-hover mb-0">
                                 <thead>
                                     <tr>
-                                        <th>Order #</th>
-                                        <th>Title</th>
-                                        <th>Status</th>
-                                        <th>Date</th>
-                                        <th>Actions</th>
+                                        <th>Поръчка #</th>
+                                        <th>Заглавие</th>
+                                        <th>Статус</th>
+                                        <th>Дата</th>
+                                        <th>Действия</th>
                                     </tr>
                                 </thead>
                                 <tbody>

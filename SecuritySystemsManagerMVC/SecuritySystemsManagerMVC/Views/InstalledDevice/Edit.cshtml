@@ -2,13 +2,13 @@
 @using SecuritySystemsManager.Shared.Enums
 
 @{
-    ViewData["Title"] = "Edit Device";
+    ViewData["Title"] = "Редактиране на устройство";
 }
 
 <div class="container-fluid px-4">
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">Edit Device</h5>
+            <h5 class="mb-0">Редактиране на устройство</h5>
         </div>
         <div class="card-body">
             <form asp-action="Edit" method="post" enctype="multipart/form-data">
@@ -18,7 +18,7 @@
                 <div class="mb-3">
                     <label asp-for="SecuritySystemOrderId" class="form-label"></label>
                     <select asp-for="SecuritySystemOrderId" class="form-select" asp-items="Model.AllOrders">
-                        <option value="">-- Select Order --</option>
+                        <option value="">-- Избери поръчка --</option>
                     </select>
                     <span asp-validation-for="SecuritySystemOrderId" class="text-danger"></span>
                 </div>

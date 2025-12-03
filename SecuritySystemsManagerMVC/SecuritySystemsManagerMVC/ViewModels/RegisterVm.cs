@@ -6,42 +6,42 @@ namespace SecuritySystemsManagerMVC.ViewModels
 {
     public class RegisterVm 
     {
-        [Required(ErrorMessage = "Username is required")]
+        [Required(ErrorMessage = "Потребителското име е задължително")]
         [StringLength(50)]
-        [DisplayName("Username")]
+        [DisplayName("Потребителско име")]
         public string Username { get; set; }
 
-        [Required(ErrorMessage = "Password is required")]
+        [Required(ErrorMessage = "Паролата е задължителна")]
         [DataType(DataType.Password)]
-        [StringLength(100, MinimumLength = 6, ErrorMessage = "Password must be at least 6 characters")]
-        [DisplayName("Password")]
+        [StringLength(100, MinimumLength = 6, ErrorMessage = "Паролата трябва да бъде поне 6 символа")]
+        [DisplayName("Парола")]
         public string Password { get; set; }
 
-        [Required(ErrorMessage = "Confirm Password is required")]
+        [Required(ErrorMessage = "Потвърждението на паролата е задължително")]
         [DataType(DataType.Password)]
-        [Compare("Password", ErrorMessage = "Passwords do not match")]
-        [DisplayName("Confirm Password")]
+        [Compare("Password", ErrorMessage = "Паролите не съвпадат")]
+        [DisplayName("Потвърди парола")]
         public string ConfirmPassword { get; set; }
 
-        [Required(ErrorMessage = "First name is required")]
+        [Required(ErrorMessage = "Името е задължително")]
         [StringLength(50)]
-        [DisplayName("First Name")]
+        [DisplayName("Име")]
         public string FirstName { get; set; }
 
-        [Required(ErrorMessage = "Last name is required")]
+        [Required(ErrorMessage = "Фамилията е задължителна")]
         [StringLength(50)]
-        [DisplayName("Last Name")]
+        [DisplayName("Фамилия")]
         public string LastName { get; set; }
 
-        [Required(ErrorMessage = "Email is required")]
-        [EmailAddress(ErrorMessage = "Invalid email address")]
-        [DisplayName("Email")]
+        [Required(ErrorMessage = "Имейлът е задължителен")]
+        [EmailAddress(ErrorMessage = "Невалиден имейл адрес")]
+        [DisplayName("Имейл")]
         public string Email { get; set; }
 
-        [DisplayName("Profile Image")]
+        [DisplayName("Профилна снимка")]
         public IFormFile? ProfileImageFile { get; set; }
 
-        [DisplayName("Profile Image URL")]
+        [DisplayName("URL на профилна снимка")]
         public string? ProfileImage { get; set; }
     }
 }

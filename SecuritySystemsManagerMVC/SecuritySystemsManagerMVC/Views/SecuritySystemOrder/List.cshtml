@@ -2,7 +2,7 @@
 @using SecuritySystemsManager.Shared.Enums
 
 @{
-    ViewData["Title"] = "Orders";
+    ViewData["Title"] = "Поръчки";
     bool isClient = User.IsInRole("Client");
     bool isAdminOrManager = User.IsInRole("Admin") || User.IsInRole("Manager");
     bool isTechnician = User.IsInRole("Technician");
@@ -25,15 +25,15 @@
     <div class="orders-banner">
         <div class="banner-content">
             <div class="banner-text">
-                <h1 class="banner-title">Security System Orders</h1>
+                <h1 class="banner-title">Поръчки за системи за сигурност</h1>
                 <p class="banner-description">
                     @if (hasOrders)
                     {
-                        <span>Manage and track all your security system installations and maintenance orders.</span>
+                        <span>Управлявай и проследявай всички поръчки за инсталации и поддръжка на системи за сигурност.</span>
                     }
                     else
                     {
-                        <span>Start securing your properties by creating your first security system order.</span>
+                        <span>Започни да защитаваш имотите си, като създадеш първата си поръчка за система за сигурност.</span>
                     }
                 </p>
             </div>
@@ -41,7 +41,7 @@
                 @if (canCreateOrder)
                 {
                     <a asp-action="Create" class="btn btn-primary btn-create-banner">
-                        <i class="bi bi-plus-lg me-2"></i>New Order
+                        <i class="bi bi-plus-lg me-2"></i>Нова поръчка
                     </a>
                 }
                 @if (hasOrders)

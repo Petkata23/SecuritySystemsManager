@@ -5,16 +5,16 @@ namespace SecuritySystemsManagerMVC.ViewModels
 {
     public class LoginVm
     {
-        [Required(ErrorMessage = "Username is required")]
-        [Display(Name = "Username")]
+        [Required(ErrorMessage = "Потребителското име е задължително")]
+        [Display(Name = "Потребителско име")]
         public string Username { get; set; }
 
-        [Required(ErrorMessage = "Password is required")]
+        [Required(ErrorMessage = "Паролата е задължителна")]
         [DataType(DataType.Password)]
-        [Display(Name = "Password")]
+        [Display(Name = "Парола")]
         public string Password { get; set; }
         
-        [Display(Name = "Remember me")]
+        [Display(Name = "Запомни ме")]
         public bool RememberMe { get; set; }
     }
 }

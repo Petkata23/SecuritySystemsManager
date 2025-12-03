@@ -1,18 +1,18 @@
 @model SecuritySystemsManagerMVC.ViewModels.RoleEditVm
 
 @{
-    ViewData["Title"] = "Edit Role";
+    ViewData["Title"] = "Редактиране на роля";
 }
 
 <div class="container-fluid animate-fade-in px-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0">Edit Role</h1>
+        <h1 class="h3 mb-0">Редактиране на роля</h1>
         <div>
             <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-info">
-                <i class="bi bi-info-circle me-2"></i>Details
+                <i class="bi bi-info-circle me-2"></i>Детайли
             </a>
             <a asp-action="List" class="btn btn-secondary">
-                <i class="bi bi-arrow-left me-2"></i>Back to List
+                <i class="bi bi-arrow-left me-2"></i>Обратно към списъка
             </a>
         </div>
     </div>
@@ -21,7 +21,7 @@
         <div class="col-lg-8">
             <div class="card shadow-sm">
                 <div class="card-header bg-transparent">
-                    <h5 class="mb-0"><i class="bi bi-pencil-square me-2"></i>Edit Role</h5>
+                    <h5 class="mb-0"><i class="bi bi-pencil-square me-2"></i>Редактиране на роля</h5>
                 </div>
                 <div class="card-body">
                     <form asp-action="Edit" method="post">
@@ -32,14 +32,14 @@
                             <div class="col-md-6">
                                 <div class="form-floating mb-3">
                                     <input asp-for="Name" class="form-control" placeholder="Role Name" />
-                                    <label asp-for="Name">Role Name</label>
+                                    <label asp-for="Name">Име на роля</label>
                                     <span asp-validation-for="Name" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
                                     <select asp-for="RoleType" asp-items="Model.RoleTypeOptions" class="form-select"></select>
-                                    <label asp-for="RoleType">Role Type</label>
+                                    <label asp-for="RoleType">Тип роля</label>
                                     <span asp-validation-for="RoleType" class="text-danger"></span>
                                 </div>
                             </div>
@@ -51,7 +51,7 @@
                             </div>
                             <div class="d-grid gap-2 col-lg-6 mx-auto">
                                 <button type="submit" class="btn btn-primary btn-lg">
-                                    <i class="bi bi-save me-2"></i>Save Changes
+                                    <i class="bi bi-save me-2"></i>Запази промените
                                 </button>
                             </div>
                         </div>

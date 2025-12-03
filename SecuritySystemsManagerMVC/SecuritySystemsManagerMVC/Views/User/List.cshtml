@@ -1,18 +1,18 @@
 @model IEnumerable<SecuritySystemsManagerMVC.ViewModels.UserDetailsVm>
 
 @{
-    ViewData["Title"] = "User Management";
+    ViewData["Title"] = "Управление на потребители";
 }
 
 <div class="container-fluid px-4 animate-fade-in">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1 class="h3 mb-2 text-gray-800">User Management</h1>
-            <p class="mb-0">Manage system users and their roles</p>
+            <h1 class="h3 mb-2 text-gray-800">Управление на потребители</h1>
+            <p class="mb-0">Управлявай системните потребители и техните роли</p>
         </div>
         <div>
             <a asp-action="Create" class="btn btn-primary">
-                <i class="bi bi-plus-lg me-2"></i>Create New User
+                <i class="bi bi-plus-lg me-2"></i>Създай нов потребител
             </a>
         </div>
     </div>
@@ -21,11 +21,11 @@
         <div class="card-header py-3 bg-transparent">
             <div class="row align-items-center">
                 <div class="col">
-                    <h6 class="m-0 font-weight-bold">All Users</h6>
+                    <h6 class="m-0 font-weight-bold">Всички потребители</h6>
                 </div>
                 <div class="col-auto">
                     <div class="input-group">
-                        <input type="text" id="userSearch" class="form-control" placeholder="Search users...">
+                        <input type="text" id="userSearch" class="form-control" placeholder="Търси потребители...">
                         <button class="btn btn-outline-secondary" type="button">
                             <i class="bi bi-search"></i>
                         </button>
@@ -38,10 +38,10 @@
                 <table class="table table-hover mb-0 align-middle">
                     <thead>
                         <tr>
-                            <th>User</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>Actions</th>
+                            <th>Потребител</th>
+                            <th>Имейл</th>
+                            <th>Роля</th>
+                            <th>Действия</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -95,7 +95,7 @@
                                     <div class="mb-3">
                                         <i class="bi bi-people text-muted" style="font-size: 2.5rem;"></i>
                                     </div>
-                                    <p class="text-muted mb-0">No users found</p>
+                                    <p class="text-muted mb-0">Няма намерени потребители</p>
                                 </td>
                             </tr>
                         }

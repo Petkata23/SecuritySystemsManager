@@ -1,6 +1,6 @@
 @model SecuritySystemsManagerMVC.ViewModels.MaintenanceDeviceDetailsVm
 @{
-    ViewData["Title"] = "Maintenance Device Details";
+    ViewData["Title"] = "Детайли за устройство за поддръжка";
 }
 
 @section Styles {
@@ -12,22 +12,22 @@
         <div class="maintenance-device-details-header">
             <div>
                 <h2 class="mb-0">
-                    <i class="bi bi-cpu me-2"></i>Maintenance Device Details
+                    <i class="bi bi-cpu me-2"></i>Детайли за устройство за поддръжка
                 </h2>
-                <p class="text-muted mt-2">Details for device maintenance record</p>
+                <p class="text-muted mt-2">Детайли за записа за поддръжка на устройството</p>
             </div>
             <div class="maintenance-device-actions">
                 @if (User.IsInRole("Admin") || User.IsInRole("Manager") || User.IsInRole("Technician"))
                 {
                     <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary">
-                        <i class="bi bi-pencil me-1"></i> Edit
+                        <i class="bi bi-pencil me-1"></i> Редактирай
                     </a>
                     <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger">
-                        <i class="bi bi-trash me-1"></i> Delete
+                        <i class="bi bi-trash me-1"></i> Изтрий
                     </a>
                 }
                 <a asp-action="List" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left me-1"></i> Back to List
+                    <i class="bi bi-arrow-left me-1"></i> Обратно към списъка
                 </a>
                 <button onclick="window.print()" class="btn btn-outline-dark">
                     <i class="bi bi-printer me-1"></i> Print

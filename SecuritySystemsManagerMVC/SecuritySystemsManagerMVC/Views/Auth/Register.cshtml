@@ -4,7 +4,7 @@
 @model SecuritySystemsManagerMVC.ViewModels.RegisterVm
 
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "Регистрация";
 }
 
 <div class="container-fluid animate-fade-in px-4">
@@ -12,7 +12,7 @@
         <div class="col-md-8 col-lg-6">
             <div class="card shadow-sm border-0 mt-4 mb-4">
                 <div class="card-header bg-gradient-primary text-white text-center py-4">
-                    <h4 class="mb-0"><i class="bi bi-person-plus me-2"></i>Create Account</h4>
+                    <h4 class="mb-0"><i class="bi bi-person-plus me-2"></i>Създаване на акаунт</h4>
                 </div>
                 <div class="card-body p-4">
                     @if (ViewData["ErrorMessage"] != null)
@@ -80,18 +80,18 @@
                             <label asp-for="ProfileImageFile" class="form-label">Profile Image</label>
                             <input asp-for="ProfileImageFile" class="form-control" type="file" accept="image/*" />
                             <span asp-validation-for="ProfileImageFile" class="text-danger"></span>
-                            <div class="form-text">Upload a profile image (optional)</div>
+                            <div class="form-text">Качи профилна снимка (незадължително)</div>
                         </div>
                         
                         <div class="d-grid">
                             <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="bi bi-person-plus me-2"></i>Register
+                                <i class="bi bi-person-plus me-2"></i>Регистрирай се
                             </button>
                         </div>
                     </form>
                 </div>
                 <div class="card-footer bg-transparent text-center py-3">
-                    <p class="mb-0">Already have an account? <a asp-action="Login" class="text-primary">Login</a></p>
+                    <p class="mb-0">Вече имате акаунт? <a asp-action="Login" class="text-primary">Вход</a></p>
                 </div>
             </div>
         </div>

@@ -1,7 +1,7 @@
 @model SecuritySystemsManagerMVC.ViewModels.UserProfileViewModel
 
 @{
-    ViewData["Title"] = "My Profile";
+    ViewData["Title"] = "Моят профил";
 }
 
 <div class="container py-5">
@@ -23,14 +23,14 @@
                         <h5 class="my-3">@Model.FirstName @Model.LastName</h5>
                         <p class="text-muted mb-1">@Model.Username</p>
                         <div class="d-flex justify-content-center mb-2 mt-4">
-                            <a asp-action="EditProfile" class="btn btn-primary me-2">Edit Profile</a>
-                            <a asp-action="ChangePassword" class="btn btn-outline-primary ms-1">Change Password</a>
+                            <a asp-action="EditProfile" class="btn btn-primary me-2">Редактирай профил</a>
+                            <a asp-action="ChangePassword" class="btn btn-outline-primary ms-1">Смени парола</a>
                         </div>
                     </div>
                 </div>
                 <div class="card security-settings-card">
                     <div class="card-header">
-                        <h5 class="mb-0">Security Settings</h5>
+                        <h5 class="mb-0">Настройки за сигурност</h5>
                     </div>
                     <div class="card-body p-0">
                         <div class="security-settings-list">
@@ -38,10 +38,10 @@
                                 <li class="list-group-item d-flex justify-content-between align-items-center p-3">
                                     <div>
                                         <i class="bi bi-shield-lock me-2 text-primary"></i>
-                                        <span>Two-Factor Authentication</span>
+                                        <span>Двуфакторна автентикация</span>
                                     </div>
                                     <span class="badge @(Model.TwoFactorEnabled ? "bg-success" : "bg-danger") rounded-pill">
-                                        @(Model.TwoFactorEnabled ? "Enabled" : "Disabled")
+                                        @(Model.TwoFactorEnabled ? "Активирана" : "Деактивирана")
                                     </span>
                                 </li>
                             </ul>

@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="bg">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -59,7 +59,7 @@
                     <ul class="list-inline top-bar-info mb-0">
                         <li class="list-inline-item"><i class="bi bi-envelope"></i> info@securityhristovi.com</li>
                         <li class="list-inline-item"><i class="bi bi-phone"></i> +359 888 123 456</li>
-                        <li class="list-inline-item"><i class="bi bi-clock"></i> Mon-Fri: 9:00 - 18:00</li>
+                        <li class="list-inline-item"><i class="bi bi-clock"></i> Пн-Пт: 9:00 - 18:00</li>
                     </ul>
                 </div>
                 <div class="col-md-4">
@@ -88,10 +88,10 @@
                     <ul class="navbar-nav w-100 justify-content-between">
                         <!-- Main navigation group -->
                         <li class="nav-item">
-                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")" asp-controller="Home" asp-action="Index"><i class="bi bi-house-door me-2"></i>Home</a>
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")" asp-controller="Home" asp-action="Index"><i class="bi bi-house-door me-2"></i>Начало</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Privacy" ? "active" : "")" asp-controller="Home" asp-action="Privacy"><i class="bi bi-shield-lock me-2"></i>Privacy</a>
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Privacy" ? "active" : "")" asp-controller="Home" asp-action="Privacy"><i class="bi bi-shield-lock me-2"></i>Поверителност</a>
                         </li>
                         
                         <!-- Separator between navigation groups -->
@@ -108,19 +108,19 @@
                             <!-- Business Operations Dropdown Menu -->
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle @(ViewContext.RouteData.Values["controller"]?.ToString() == "SecuritySystemOrder" || ViewContext.RouteData.Values["controller"]?.ToString() == "Invoice" || ViewContext.RouteData.Values["controller"]?.ToString() == "MaintenanceLog" ? "active" : "")" href="#" id="businessOperationsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-briefcase me-2"></i> Order Operations
+                                    <i class="bi bi-briefcase me-2"></i> Поръчки
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="businessOperationsDropdown">
-                                    <li><a class="dropdown-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "SecuritySystemOrder" ? "active" : "")" asp-controller="SecuritySystemOrder" asp-action="List"><i class="bi bi-cart me-2"></i>Orders</a></li>
-                                    <li><a class="dropdown-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Invoice" ? "active" : "")" asp-controller="Invoice" asp-action="List"><i class="bi bi-receipt me-2"></i>Invoices</a></li>
-                                    <li><a class="dropdown-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "MaintenanceLog" ? "active" : "")" asp-controller="MaintenanceLog" asp-action="List"><i class="bi bi-tools me-2"></i>Maintenance</a></li>
+                                    <li><a class="dropdown-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "SecuritySystemOrder" ? "active" : "")" asp-controller="SecuritySystemOrder" asp-action="List"><i class="bi bi-cart me-2"></i>Поръчки</a></li>
+                                    <li><a class="dropdown-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Invoice" ? "active" : "")" asp-controller="Invoice" asp-action="List"><i class="bi bi-receipt me-2"></i>Фактури</a></li>
+                                    <li><a class="dropdown-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "MaintenanceLog" ? "active" : "")" asp-controller="MaintenanceLog" asp-action="List"><i class="bi bi-tools me-2"></i>Поддръжка</a></li>
                                 </ul>
                             </li>
                         }
                         @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Location" asp-action="List"><i class="bi bi-geo-alt me-2"></i>My Locations</a>
+                                <a class="nav-link" asp-controller="Location" asp-action="List"><i class="bi bi-geo-alt me-2"></i>Моите локации</a>
                             </li>
                         }
                         @if (User.IsInRole("Admin"))
@@ -128,12 +128,12 @@
                             <!-- Administration Dropdown Menu -->
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle @(ViewContext.RouteData.Values["controller"]?.ToString() == "User" || ViewContext.RouteData.Values["controller"]?.ToString() == "Role" || ViewContext.RouteData.Values["controller"]?.ToString() == "Chat" ? "active" : "")" href="#" id="administrationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-gear me-2"></i>Administration
+                                    <i class="bi bi-gear me-2"></i>Администрация
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="administrationDropdown">
-                                    <li><a class="dropdown-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "User" ? "active" : "")" asp-controller="User" asp-action="List"><i class="bi bi-people me-2"></i>Users</a></li>
-                                    <li><a class="dropdown-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Role" ? "active" : "")" asp-controller="Role" asp-action="List"><i class="bi bi-person-badge me-2"></i>Roles</a></li>
-                                    <li><a class="dropdown-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Chat" ? "active" : "")" asp-controller="Chat" asp-action="Admin"><i class="bi bi-chat-dots me-2"></i>Chat Administration</a></li>
+                                    <li><a class="dropdown-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "User" ? "active" : "")" asp-controller="User" asp-action="List"><i class="bi bi-people me-2"></i>Потребители</a></li>
+                                    <li><a class="dropdown-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Role" ? "active" : "")" asp-controller="Role" asp-action="List"><i class="bi bi-person-badge me-2"></i>Роли</a></li>
+                                    <li><a class="dropdown-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Chat" ? "active" : "")" asp-controller="Chat" asp-action="Admin"><i class="bi bi-chat-dots me-2"></i>Администрация на чат</a></li>
                                 </ul>
                             </li>
                         }
@@ -172,7 +172,7 @@
                         <h1 class="page-title">@ViewData["Title"]</h1>
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index"><i class="bi bi-house-door me-1"></i>Home</a></li>
+                                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index"><i class="bi bi-house-door me-1"></i>Начало</a></li>
                                 @{
                                     var controller = ViewContext.RouteData.Values["controller"]?.ToString();
                                     var action = ViewContext.RouteData.Values["action"]?.ToString();
@@ -182,18 +182,18 @@
                                         var controllerName = controller.Replace("Controller", "");
                                         var controllerDisplayName = controllerName switch
                                         {
-                                            "SecuritySystemOrder" => "Orders",
-                                            "MaintenanceLog" => "Maintenance",
-                                            "MaintenanceDevice" => "Maintenance Devices",
-                                            "InstalledDevice" => "Devices",
-                                            "User" => "Users",
-                                            "Role" => "Roles",
-                                            "Invoice" => "Invoices",
-                                            "Location" => "Locations",
-                                            "Chat" => "Chat",
-                                            "Notification" => "Notifications",
-                                            "Account" => "Account",
-                                            "Auth" => "Authentication",
+                                            "SecuritySystemOrder" => "Поръчки",
+                                            "MaintenanceLog" => "Поддръжка",
+                                            "MaintenanceDevice" => "Устройства за поддръжка",
+                                            "InstalledDevice" => "Устройства",
+                                            "User" => "Потребители",
+                                            "Role" => "Роли",
+                                            "Invoice" => "Фактури",
+                                            "Location" => "Локации",
+                                            "Chat" => "Чат",
+                                            "Notification" => "Известия",
+                                            "Account" => "Профил",
+                                            "Auth" => "Удостоверяване",
                                             "DropboxAuth" => "Dropbox",
                                             _ => controllerName
                                         };
@@ -226,7 +226,7 @@
             {
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     <i class="bi bi-check-circle-fill me-2"></i> @TempData["Success"]
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Затвори"></button>
                 </div>
             }
             
@@ -234,7 +234,7 @@
             {
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["Error"]
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Затвори"></button>
                 </div>
             }
             
@@ -242,7 +242,7 @@
             {
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["ErrorMessage"]
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Затвори"></button>
                 </div>
             }
             
@@ -257,9 +257,9 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="copyright">
-                            &copy; @DateTime.Now.Year <strong><span>Security Systems Hristovi</span></strong>. All Rights Reserved
+                            &copy; @DateTime.Now.Year <strong><span>Security Systems Hristovi</span></strong>. Всички права запазени
                             <div class="mt-2">
-                                <a asp-controller="Home" asp-action="Privacy" class="text-muted text-decoration-none">Privacy Policy</a>
+                                <a asp-controller="Home" asp-action="Privacy" class="text-muted text-decoration-none">Политика за поверителност</a>
                             </div>
                         </div>
                     </div>

@@ -1,18 +1,18 @@
 @model SecuritySystemsManagerMVC.ViewModels.UserEditVm
 
 @{
-    ViewData["Title"] = "Create User";
+    ViewData["Title"] = "Създаване на потребител";
 }
 
 <div class="container-fluid px-4 animate-fade-in">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1 class="h3 mb-2 text-gray-800">Create User</h1>
-            <p class="mb-0">Add a new user to the system</p>
+            <h1 class="h3 mb-2 text-gray-800">Създаване на потребител</h1>
+            <p class="mb-0">Добави нов потребител в системата</p>
         </div>
         <div>
             <a asp-action="List" class="btn btn-secondary">
-                <i class="bi bi-arrow-left me-2"></i>Back to List
+                <i class="bi bi-arrow-left me-2"></i>Обратно към списъка
             </a>
         </div>
     </div>
@@ -21,7 +21,7 @@
         <div class="col-lg-8">
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">User Information</h5>
+                    <h5 class="mb-0">Информация за потребителя</h5>
                 </div>
                 <div class="card-body">
                     <form asp-action="Create" method="post" enctype="multipart/form-data">
@@ -66,16 +66,16 @@
                                 <div class="form-group">
                                     <label asp-for="RoleId" class="form-label"></label>
                                     <select asp-for="RoleId" class="form-select" asp-items="Model.AvailableRoles">
-                                        <option value="">-- Select Role --</option>
+                                        <option value="">-- Избери роля --</option>
                                     </select>
                                     <span asp-validation-for="RoleId" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label asp-for="ProfileImage" class="form-label">Profile Image</label>
+                                    <label asp-for="ProfileImage" class="form-label">Профилна снимка</label>
                                     <input type="file" name="profileImageFile" class="form-control" accept="image/*" />
-                                    <small class="form-text text-muted">Upload a profile image (optional)</small>
+                                    <small class="form-text text-muted">Качи профилна снимка (незадължително)</small>
                                 </div>
                             </div>
                         </div>
@@ -83,13 +83,13 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Password</label>
+                                    <label class="form-label">Парола</label>
                                     <input type="password" name="Password" class="form-control" required />
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Confirm Password</label>
+                                    <label class="form-label">Потвърди парола</label>
                                     <input type="password" name="ConfirmPassword" class="form-control" required />
                                 </div>
                             </div>
@@ -97,7 +97,7 @@
                         
                         <div class="d-flex justify-content-end mt-4">
                             <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-save me-2"></i>Create User
+                                <i class="bi bi-save me-2"></i>Създай потребител
                             </button>
                         </div>
                     </form>
@@ -108,10 +108,10 @@
         <div class="col-lg-4">
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-info text-white">
-                    <h5 class="mb-0">Information</h5>
+                    <h5 class="mb-0">Информация</h5>
                 </div>
                 <div class="card-body">
-                    <h6 class="mb-3">Role Permissions</h6>
+                    <h6 class="mb-3">Права на ролите</h6>
                     <ul class="list-group mb-4">
                         <li class="list-group-item d-flex align-items-center">
                             <div class="me-3">
@@ -119,7 +119,7 @@
                             </div>
                             <div>
                                 <h6 class="mb-0">Admin</h6>
-                                <small class="text-muted">Full system access</small>
+                                <small class="text-muted">Пълен достъп до системата</small>
                             </div>
                         </li>
                         <li class="list-group-item d-flex align-items-center">
@@ -128,7 +128,7 @@
                             </div>
                             <div>
                                 <h6 class="mb-0">Manager</h6>
-                                <small class="text-muted">Manage orders and technicians</small>
+                                <small class="text-muted">Управлява поръчки и техници</small>
                             </div>
                         </li>
                         <li class="list-group-item d-flex align-items-center">
@@ -137,7 +137,7 @@
                             </div>
                             <div>
                                 <h6 class="mb-0">Technician</h6>
-                                <small class="text-muted">Handle assigned orders</small>
+                                <small class="text-muted">Обработва назначени поръчки</small>
                             </div>
                         </li>
                         <li class="list-group-item d-flex align-items-center">
@@ -146,14 +146,14 @@
                             </div>
                             <div>
                                 <h6 class="mb-0">Client</h6>
-                                <small class="text-muted">Create and view own orders</small>
+                                <small class="text-muted">Създава и преглежда собствени поръчки</small>
                             </div>
                         </li>
                     </ul>
                     
                     <div class="alert alert-info mb-0">
                         <i class="bi bi-info-circle me-2"></i>
-                        <span>User credentials must be provided to the user manually after creation.</span>
+                        <span>Идентификационните данни на потребителя трябва да бъдат предоставени ръчно след създаването.</span>
                     </div>
                 </div>
             </div>

@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Home";
+    ViewData["Title"] = "Начало";
     Layout = "_Layout";
 }
 
@@ -12,17 +12,17 @@
     <div class="container-fluid">
         <div class="row align-items-center">
             <div class="col-lg-6">
-                <h1 class="hero-title">Advanced Security Systems for Modern Protection</h1>
-                <p class="hero-text">Security Systems Hristovi delivers cutting-edge security solutions for businesses and homes. Our integrated systems provide complete protection and peace of mind.</p>
+                <h1 class="hero-title">Модерни системи за сигурност за съвременна защита</h1>
+                <p class="hero-text">Security Systems Hristovi предлага иновативни решения за сигурност за бизнеси и домове. Нашите интегрирани системи осигуряват пълна защита и спокойствие.</p>
                 <div class="hero-buttons">
-                    <a href="#services" class="btn btn-primary btn-lg">Explore Solutions</a>
+                    <a href="#services" class="btn btn-primary btn-lg">Разгледай решения</a>
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <a asp-controller="SecuritySystemOrder" asp-action="Create" class="btn btn-outline-secondary btn-lg">Create Order</a>
+                        <a asp-controller="SecuritySystemOrder" asp-action="Create" class="btn btn-outline-secondary btn-lg">Създай поръчка</a>
                     }
                     else
                     {
-                        <a asp-controller="Auth" asp-action="Login" class="btn btn-outline-secondary btn-lg">Contact Us</a>
+                        <a asp-controller="Auth" asp-action="Login" class="btn btn-outline-secondary btn-lg">Свържи се с нас</a>
                     }
                 </div>
                 <div class="hero-stats mt-5">
@@ -30,19 +30,19 @@
                         <div class="col-4">
                             <div class="stat-item">
                                 <div class="stat-number">15+</div>
-                                <div class="stat-label">Years Experience</div>
+                                <div class="stat-label">Години опит</div>
                             </div>
                         </div>
                         <div class="col-4">
                             <div class="stat-item">
                                 <div class="stat-number">5000+</div>
-                                <div class="stat-label">Installations</div>
+                                <div class="stat-label">Инсталации</div>
                             </div>
                         </div>
                         <div class="col-4">
                             <div class="stat-item">
                                 <div class="stat-number">24/7</div>
-                                <div class="stat-label">Support</div>
+                                <div class="stat-label">Поддръжка</div>
                             </div>
                         </div>
                     </div>
@@ -63,8 +63,8 @@
 <section class="features-section" id="features">
     <div class="container-fluid">
         <div class="section-header text-center">
-            <h2>Why Choose Us</h2>
-            <p>We deliver comprehensive security solutions with advanced technology and expert service</p>
+            <h2>Защо да ни изберете</h2>
+            <p>Предлагаме цялостни решения за сигурност с модерна технология и експертен сервиз</p>
         </div>
         <div class="row">
             <div class="col-md-4 mb-4">
@@ -72,8 +72,8 @@
                     <div class="feature-icon">
                         <i class="bi bi-shield-check"></i>
                     </div>
-                    <h3>Advanced Technology</h3>
-                    <p>Our systems use the latest security technology with AI-powered analytics and smart detection capabilities.</p>
+                    <h3>Модерна технология</h3>
+                    <p>Нашите системи използват най-новите технологии за сигурност с аналитика, задвижвана от изкуствен интелект, и интелигентни възможности за откриване.</p>
                 </div>
             </div>
             <div class="col-md-4 mb-4">
@@ -81,8 +81,8 @@
                     <div class="feature-icon">
                         <i class="bi bi-phone"></i>
                     </div>
-                    <h3>Remote Monitoring</h3>
-                    <p>Control and monitor your security systems from anywhere using our mobile app with real-time alerts.</p>
+                    <h3>Дистанционно наблюдение</h3>
+                    <p>Контролирайте и наблюдавайте вашите системи за сигурност от всяко място чрез нашето мобилно приложение с известия в реално време.</p>
                 </div>
             </div>
             <div class="col-md-4 mb-4">
@@ -90,8 +90,8 @@
                     <div class="feature-icon">
                         <i class="bi bi-headset"></i>
                     </div>
-                    <h3>Expert Support</h3>
-                    <p>Our professional team provides 24/7 technical support and rapid response to all security concerns.</p>
+                    <h3>Експертна поддръжка</h3>
+                    <p>Нашият професионален екип осигурява техническа поддръжка 24/7 и бърза реакция на всички проблеми със сигурността.</p>
                 </div>
             </div>
         </div>
@@ -102,8 +102,8 @@
 <section class="services-section" id="services">
     <div class="container-fluid">
         <div class="section-header text-center">
-            <h2>Our Security Solutions</h2>
-            <p>Comprehensive protection for residential and commercial properties</p>
+            <h2>Нашите решения за сигурност</h2>
+            <p>Цялостна защита за жилищни и търговски имоти</p>
         </div>
         <div class="row">
             <div class="col-lg-4 col-md-6 mb-4">
@@ -115,8 +115,8 @@
                         </div>
                     </div>
                     <div class="service-content">
-                        <h3>CCTV Systems</h3>
-                        <p>High-definition surveillance cameras with advanced motion detection and night vision capabilities.</p>
+                        <h3>Видеонаблюдение</h3>
+                        <p>Камери за наблюдение с висока резолюция с напреднали възможности за откриване на движение и нощно виждане.</p>
                     </div>
                 </div>
             </div>
@@ -129,8 +129,8 @@
                         </div>
                     </div>
                     <div class="service-content">
-                        <h3>Alarm Systems</h3>
-                        <p>Advanced intrusion detection with immediate alerts and integrated response protocols.</p>
+                        <h3>Алармни системи</h3>
+                        <p>Напреднало откриване на проникване с незабавни известия и интегрирани протоколи за реакция.</p>
                     </div>
                 </div>
             </div>
@@ -143,8 +143,8 @@
                         </div>
                     </div>
                     <div class="service-content">
-                        <h3>Access Control</h3>
-                        <p>Secure entry systems with biometric authentication and mobile access management.</p>
+                        <h3>Контрол на достъпа</h3>
+                        <p>Сигурни системи за вход с биометрично удостоверяване и мобилно управление на достъпа.</p>
                     </div>
                 </div>
             </div>
@@ -157,8 +157,8 @@
                         </div>
                     </div>
                     <div class="service-content">
-                        <h3>Fire Detection</h3>
-                        <p>Early warning systems with heat and smoke sensors for comprehensive fire protection.</p>
+                        <h3>Пожарна сигнализация</h3>
+                        <p>Системи за ранно предупреждение с сензори за топлина и дим за цялостна противопожарна защита.</p>
                     </div>
                 </div>
             </div>
@@ -171,8 +171,8 @@
                         </div>
                     </div>
                     <div class="service-content">
-                        <h3>Smart Home Security</h3>
-                        <p>Integrated solutions with automation features for complete home protection and control.</p>
+                        <h3>Умна домашна сигурност</h3>
+                        <p>Интегрирани решения с функции за автоматизация за пълна защита и контрол на дома.</p>
                     </div>
                 </div>
             </div>
@@ -185,8 +185,8 @@
                         </div>
                     </div>
                     <div class="service-content">
-                        <h3>Maintenance Services</h3>
-                        <p>Regular system checks and preventative maintenance to ensure optimal security performance.</p>
+                        <h3>Услуги за поддръжка</h3>
+                        <p>Редовни проверки на системите и превантивна поддръжка за осигуряване на оптимална производителност на сигурността.</p>
                     </div>
                 </div>
             </div>
@@ -198,8 +198,8 @@
 <section class="process-section">
     <div class="container-fluid">
         <div class="section-header text-center">
-            <h2>How We Work</h2>
-            <p>Our streamlined process ensures a seamless security solution implementation</p>
+            <h2>Как работим</h2>
+            <p>Нашият оптимизиран процес осигурява безпроблемна реализация на решенията за сигурност</p>
         </div>
         <div class="process-timeline">
             <div class="row">
@@ -209,8 +209,8 @@
                         <div class="process-icon">
                             <i class="bi bi-chat-dots"></i>
                         </div>
-                        <h3>Consultation</h3>
-                        <p>We assess your security needs and provide expert recommendations.</p>
+                        <h3>Консултация</h3>
+                        <p>Оценяваме вашите нужди за сигурност и предоставяме експертни препоръки.</p>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6 mb-4">
@@ -219,8 +219,8 @@
                         <div class="process-icon">
                             <i class="bi bi-clipboard-check"></i>
                         </div>
-                        <h3>Design</h3>
-                        <p>Our team creates a customized security system design for your property.</p>
+                        <h3>Проектиране</h3>
+                        <p>Нашият екип създава персонализиран дизайн на система за сигурност за вашия имот.</p>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6 mb-4">
@@ -229,8 +229,8 @@
                         <div class="process-icon">
                             <i class="bi bi-gear"></i>
                         </div>
-                        <h3>Installation</h3>
-                        <p>Professional installation by our certified technicians.</p>
+                        <h3>Инсталация</h3>
+                        <p>Професионална инсталация от нашите сертифицирани техници.</p>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6 mb-4">
@@ -239,8 +239,8 @@
                         <div class="process-icon">
                             <i class="bi bi-shield-check"></i>
                         </div>
-                        <h3>Support</h3>
-                        <p>Ongoing maintenance and 24/7 technical support.</p>
+                        <h3>Поддръжка</h3>
+                        <p>Постоянна поддръжка и техническа помощ 24/7.</p>
                     </div>
                 </div>
             </div>
@@ -252,8 +252,8 @@
 <section class="testimonials-section">
     <div class="container-fluid">
         <div class="section-header text-center">
-            <h2>What Our Clients Say</h2>
-            <p>Trusted by businesses and homeowners across Bulgaria</p>
+            <h2>Какво казват нашите клиенти</h2>
+            <p>Доверени от бизнеси и собственици на домове в цяла България</p>
         </div>
         <div class="row">
             <div class="col-lg-4 mb-4">
@@ -265,7 +265,7 @@
                         <img src="/img/demo-avatars/demo-avatar-man.jpg" alt="Client" class="testimonial-avatar">
                         <div class="testimonial-info">
                             <h4>Ivan Petrov</h4>
-                            <p>Business Owner</p>
+                            <p>Собственик на бизнес</p>
                             <div class="testimonial-rating">
                                 <i class="bi bi-star-fill"></i>
                                 <i class="bi bi-star-fill"></i>
@@ -286,7 +286,7 @@
                         <img src="/img/demo-avatars/demo-avatar-woman.jpg" alt="Client" class="testimonial-avatar">
                         <div class="testimonial-info">
                             <h4>Maria Dimitrova</h4>
-                            <p>Homeowner</p>
+                            <p>Собственик на дом</p>
                             <div class="testimonial-rating">
                                 <i class="bi bi-star-fill"></i>
                                 <i class="bi bi-star-fill"></i>
@@ -307,7 +307,7 @@
                         <img src="/img/demo-avatars/demo-avatar-man-2.jpg" alt="Client" class="testimonial-avatar">
                         <div class="testimonial-info">
                             <h4>Stefan Georgiev</h4>
-                            <p>Property Manager</p>
+                            <p>Управител на имоти</p>
                             <div class="testimonial-rating">
                                 <i class="bi bi-star-fill"></i>
                                 <i class="bi bi-star-fill"></i>
@@ -327,18 +327,18 @@
 <section class="cta-section">
     <div class="container-fluid">
         <div class="cta-content">
-            <h2 class="cta-title">Ready to Enhance Your Security?</h2>
-            <p class="cta-text">Contact us today for a free consultation and personalized security assessment.</p>
+            <h2 class="cta-title">Готови ли сте да подобрите сигурността си?</h2>
+            <p class="cta-text">Свържете се с нас днес за безплатна консултация и персонализирана оценка на сигурността.</p>
             <div class="cta-buttons">
                 @if (User.Identity.IsAuthenticated)
                 {
-                    <a asp-controller="SecuritySystemOrder" asp-action="Create" class="btn btn-cta-primary">Create Order</a>
+                    <a asp-controller="SecuritySystemOrder" asp-action="Create" class="btn btn-cta-primary">Създай поръчка</a>
                 }
                 else
                 {
-                    <a asp-controller="Auth" asp-action="Login" class="btn btn-cta-primary">Get Started</a>
+                    <a asp-controller="Auth" asp-action="Login" class="btn btn-cta-primary">Започни</a>
                 }
-                <a href="#" class="btn btn-cta-secondary">Learn More</a>
+                <a href="#" class="btn btn-cta-secondary">Научи повече</a>
             </div>
         </div>
     </div>

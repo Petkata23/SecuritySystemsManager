@@ -116,13 +116,13 @@ namespace SecuritySystemsManagerMVC.Controllers
                 var model = _mapper.Map<TModel>(editVM);
                 await _service.SaveAsync(model);
 
-                TempData["Success"] = $"{typeof(TModel).Name.ToFriendlyName()} was successfully created!";
+                TempData["Success"] = $"{typeof(TModel).Name.ToFriendlyName()} беше успешно създаден!";
 
                 return RedirectToAction(nameof(List));
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", "An error occurred during creation. Please try again.");
+                ModelState.AddModelError("", "Възникна грешка при създаването. Моля, опитайте отново.");
                 editVM = await PrePopulateVMAsync(editVM);
                 return View(editVM);
             }
@@ -168,13 +168,13 @@ namespace SecuritySystemsManagerMVC.Controllers
                 var mappedModel = _mapper.Map<TModel>(editVM);
                 await this._service.SaveAsync(mappedModel);
 
-                TempData["Success"] = $"{typeof(TModel).Name.ToFriendlyName()} was successfully updated!";
+                TempData["Success"] = $"{typeof(TModel).Name.ToFriendlyName()} беше успешно актуализиран!";
 
                 return await List();
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", "An error occurred during editing. Please try again.");
+                ModelState.AddModelError("", "Възникна грешка при редактирането. Моля, опитайте отново.");
                 return View(editVM);
             }
         }
@@ -212,7 +212,7 @@ namespace SecuritySystemsManagerMVC.Controllers
                 }
                 await this._service.DeleteAsync(id);
 
-                TempData["Success"] = $"{typeof(TModel).Name.ToFriendlyName()} was successfully deleted!";
+                TempData["Success"] = $"{typeof(TModel).Name.ToFriendlyName()} беше успешно изтрит!";
 
                 return await List();
             }
@@ -223,7 +223,7 @@ namespace SecuritySystemsManagerMVC.Controllers
             }
             catch (Exception ex)
             {
-                TempData["Error"] = "An error occurred during deletion. Please try again.";
+                TempData["Error"] = "Възникна грешка при изтриването. Моля, опитайте отново.";
                 return RedirectToAction(nameof(List));
             }
         }

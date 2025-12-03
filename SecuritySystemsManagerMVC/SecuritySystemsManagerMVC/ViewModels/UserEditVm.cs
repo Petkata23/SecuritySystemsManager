@@ -6,30 +6,30 @@ namespace SecuritySystemsManagerMVC.ViewModels
 {
     public class UserEditVm : BaseVm
     {
-        [Required(ErrorMessage = "Username is required")]
-        [StringLength(50, ErrorMessage = "Username must be up to 50 characters")]
-        [DisplayName("Username")]
+        [Required(ErrorMessage = "Потребителското име е задължително")]
+        [StringLength(50, ErrorMessage = "Потребителското име трябва да бъде до 50 символа")]
+        [DisplayName("Потребителско име")]
         public string Username { get; set; }
 
-        [Required(ErrorMessage = "First name is required")]
-        [StringLength(50, ErrorMessage = "First name must be up to 50 characters")]
-        [DisplayName("First Name")]
+        [Required(ErrorMessage = "Името е задължително")]
+        [StringLength(50, ErrorMessage = "Името трябва да бъде до 50 символа")]
+        [DisplayName("Име")]
         public string FirstName { get; set; }
 
-        [Required(ErrorMessage = "Last name is required")]
-        [StringLength(50, ErrorMessage = "Last name must be up to 50 characters")]
-        [DisplayName("Last Name")]
+        [Required(ErrorMessage = "Фамилията е задължителна")]
+        [StringLength(50, ErrorMessage = "Фамилията трябва да бъде до 50 символа")]
+        [DisplayName("Фамилия")]
         public string LastName { get; set; }
 
-        [Required(ErrorMessage = "Email is required")]
-        [EmailAddress(ErrorMessage = "Invalid Email Address")]
+        [Required(ErrorMessage = "Имейлът е задължителен")]
+        [EmailAddress(ErrorMessage = "Невалиден имейл адрес")]
         public string Email { get; set; }
 
-        [DisplayName("Profile Image")]
+        [DisplayName("Профилна снимка")]
         public string? ProfileImage { get; set; }
 
-        [Required(ErrorMessage = "Role is required")]
-        [DisplayName("Role")]
+        [Required(ErrorMessage = "Ролята е задължителна")]
+        [DisplayName("Роля")]
         public int RoleId { get; set; }
 
         public IEnumerable<SelectListItem> AvailableRoles { get; set; }

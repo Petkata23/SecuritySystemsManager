@@ -1,7 +1,7 @@
 @model SecuritySystemsManagerMVC.ViewModels.TwoFactorAuthenticationViewModel
 
 @{
-    ViewData["Title"] = "Two-factor Authentication";
+    ViewData["Title"] = "Двуфакторна автентикация";
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -10,14 +10,14 @@
 {
     <div class="alert alert-warning" role="alert">
         <p><strong>@TempData["Message"]</strong></p>
-        <p>Here are your recovery codes:</p>
+        <p>Ето вашите кодове за възстановяване:</p>
         <pre class="recovery-codes">@TempData["RecoveryCodes"]</pre>
-        <p>Store these codes in a secure location. If you lose your device and don't have the recovery codes you will lose access to your account.</p>
+        <p>Запазете тези кодове на сигурно място. Ако загубите устройството си и нямате кодовете за възстановяване, ще загубите достъп до акаунта си.</p>
     </div>
 }
 
 <div>
-    <h4>Two-factor authentication status</h4>
+    <h4>Статус на двуфакторната автентикация</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-3">
@@ -26,7 +26,7 @@
         <dd class="col-sm-9">
             @if (Model.Is2faEnabled)
             {
-                <span class="badge bg-success">Enabled</span>
+                <span class="badge bg-success">Активирана</span>
             }
             else
             {

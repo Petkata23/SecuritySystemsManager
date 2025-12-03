@@ -2,13 +2,13 @@
 @using SecuritySystemsManager.Shared.Enums
 
 @{
-    ViewData["Title"] = ViewBag.IsAddingToOrder ? "Add Device to Order" : "Create Device";
+    ViewData["Title"] = ViewBag.IsAddingToOrder ? "Добави устройство към поръчка" : "Създаване на устройство";
 }
 
 <div class="container-fluid px-4">
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">@(ViewBag.IsAddingToOrder ? "Add Device to Order" : "Create Device")</h5>
+            <h5 class="mb-0">@(ViewBag.IsAddingToOrder ? "Добави устройство към поръчка" : "Създаване на устройство")</h5>
         </div>
         <div class="card-body">
             <form asp-action="@(ViewBag.IsAddingToOrder ? "AddToOrder" : "Create")" method="post" enctype="multipart/form-data">
@@ -19,7 +19,7 @@
                     <div class="mb-3">
                         <label asp-for="SecuritySystemOrderId" class="form-label"></label>
                         <select asp-for="SecuritySystemOrderId" class="form-select" asp-items="Model.AllOrders">
-                            <option value="">-- Select Order --</option>
+                            <option value="">-- Избери поръчка --</option>
                         </select>
                         <span asp-validation-for="SecuritySystemOrderId" class="text-danger"></span>
                     </div>
@@ -34,7 +34,7 @@
                         <div class="mb-3">
                             <label asp-for="DeviceType" class="form-label"></label>
                             <select asp-for="DeviceType" class="form-select" asp-items="Model.DeviceTypeOptions">
-                                <option value="">-- Select Device Type --</option>
+                                <option value="">-- Избери тип устройство --</option>
                             </select>
                             <span asp-validation-for="DeviceType" class="text-danger"></span>
                         </div>
@@ -43,7 +43,7 @@
                         <div class="mb-3">
                             <label asp-for="InstalledById" class="form-label"></label>
                             <select asp-for="InstalledById" class="form-select" asp-items="Model.AllTechnicians">
-                                <option value="">-- Select Technician --</option>
+                                <option value="">-- Избери техник --</option>
                             </select>
                             <span asp-validation-for="InstalledById" class="text-danger"></span>
                         </div>

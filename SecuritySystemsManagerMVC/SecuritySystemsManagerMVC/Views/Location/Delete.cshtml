@@ -2,7 +2,7 @@
 @using SecuritySystemsManager.Shared.Enums
 
 @{
-    ViewData["Title"] = "Delete Location";
+    ViewData["Title"] = "Изтриване на локация";
 }
 
 @section Styles {
@@ -12,35 +12,35 @@
 
 <div class="card">
     <div class="card-header bg-danger text-white">
-        <h5 class="mb-0"><i class="bi bi-exclamation-triangle me-2"></i>Delete Location</h5>
+        <h5 class="mb-0"><i class="bi bi-exclamation-triangle me-2"></i>Изтриване на локация</h5>
     </div>
     <div class="card-body">
         <div class="alert alert-warning">
             <i class="bi bi-exclamation-triangle me-2"></i>
-            <strong>Warning:</strong> Are you sure you want to delete this location? This action cannot be undone.
+            <strong>Предупреждение:</strong> Сигурни ли сте, че искате да изтриете тази локация? Това действие не може да бъде отменено.
         </div>
         
         <div class="row mb-4">
             <div class="col-md-6">
                 <div class="mb-3">
-                    <h6 class="text-muted mb-1">Name</h6>
+                    <h6 class="text-muted mb-1">Име</h6>
                     <p class="fs-5">@Model.Name</p>
                 </div>
                 <div class="mb-3">
-                    <h6 class="text-muted mb-1">Address</h6>
+                    <h6 class="text-muted mb-1">Адрес</h6>
                     <p>@Model.Address</p>
                 </div>
                 <div class="mb-3">
-                    <h6 class="text-muted mb-1">Coordinates</h6>
+                    <h6 class="text-muted mb-1">Координати</h6>
                     <p>
-                        <span class="badge bg-info me-2">Lat: @Model.Latitude</span>
-                        <span class="badge bg-info">Long: @Model.Longitude</span>
+                        <span class="badge bg-info me-2">Ширина: @Model.Latitude</span>
+                        <span class="badge bg-info">Дължина: @Model.Longitude</span>
                     </p>
                 </div>
                 @if (!string.IsNullOrEmpty(Model.Description))
                 {
                     <div class="mb-3">
-                        <h6 class="text-muted mb-1">Description</h6>
+                        <h6 class="text-muted mb-1">Описание</h6>
                         <p>@Model.Description</p>
                     </div>
                 }
@@ -62,16 +62,16 @@
         {
             <div class="alert alert-danger mb-4">
                 <i class="bi bi-exclamation-circle me-2"></i>
-                <strong>Warning:</strong> This location has @Model.Orders.Count associated orders. Deleting this location may affect these orders.
+                <strong>Предупреждение:</strong> Тази локация има @Model.Orders.Count свързани поръчки. Изтриването на тази локация може да засегне тези поръчки.
             </div>
             
             <div class="table-responsive mb-4">
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>Order ID</th>
-                            <th>Status</th>
-                            <th>Date</th>
+                            <th>ID на поръчка</th>
+                            <th>Статус</th>
+                            <th>Дата</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -96,10 +96,10 @@
             <input type="hidden" asp-for="Id" />
             <div class="d-flex justify-content-between">
                 <a asp-action="List" class="btn btn-secondary">
-                    <i class="bi bi-arrow-left me-2"></i>Back to List
+                    <i class="bi bi-arrow-left me-2"></i>Обратно към списъка
                 </a>
                 <button type="submit" class="btn btn-danger">
-                    <i class="bi bi-trash me-2"></i>Delete
+                    <i class="bi bi-trash me-2"></i>Изтрий
                 </button>
             </div>
         </form>
@@ -129,7 +129,7 @@
     {
         return status switch
         {
-            OrderStatus.InProgress => "In Progress",
+            OrderStatus.InProgress => "В процес",
             _ => status.ToString()
         };
     }

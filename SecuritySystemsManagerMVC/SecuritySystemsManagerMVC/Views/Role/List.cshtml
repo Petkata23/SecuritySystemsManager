@@ -1,14 +1,14 @@
 @model IEnumerable<SecuritySystemsManagerMVC.ViewModels.RoleDetailsVm>
 
 @{
-    ViewData["Title"] = "Roles";
+    ViewData["Title"] = "Роли";
 }
 
 <div class="container-fluid animate-fade-in px-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0">Roles</h1>
+        <h1 class="h3 mb-0">Роли</h1>
         <a asp-action="Create" class="btn btn-primary">
-            <i class="bi bi-plus-lg me-2"></i>Add New Role
+            <i class="bi bi-plus-lg me-2"></i>Добави нова роля
         </a>
     </div>
 
@@ -17,11 +17,11 @@
             <div class="card shadow-sm">
                 <div class="card-header bg-transparent">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">All Roles</h5>
+                        <h5 class="mb-0">Всички роли</h5>
                         @if (Model.Any())
                         {
                             <div class="input-group" style="width: 300px;">
-                                <input type="text" id="roleSearch" class="form-control" placeholder="Search roles...">
+                                <input type="text" id="roleSearch" class="form-control" placeholder="Търси роли...">
                                 <button class="btn btn-outline-secondary" type="button">
                                     <i class="bi bi-search"></i>
                                 </button>
@@ -36,10 +36,10 @@
                             <table class="table table-hover align-middle mb-0" id="rolesTable">
                                 <thead>
                                     <tr>
-                                        <th>Name</th>
-                                        <th>Role Type</th>
-                                        <th>Users</th>
-                                        <th>Actions</th>
+                                        <th>Име</th>
+                                        <th>Тип роля</th>
+                                        <th>Потребители</th>
+                                        <th>Действия</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -67,7 +67,7 @@
                                                 }
                                                 else
                                                 {
-                                                    <span class="badge bg-secondary">No Users</span>
+                                                    <span class="badge bg-secondary">Няма потребители</span>
                                                 }
                                             </td>
                                             <td>
@@ -95,10 +95,10 @@
                             <div class="mb-3">
                                 <i class="bi bi-shield-lock text-muted" style="font-size: 3rem;"></i>
                             </div>
-                            <h5>No Roles Found</h5>
-                            <p class="text-muted">Start by adding your first role</p>
+                            <h5>Няма намерени роли</h5>
+                            <p class="text-muted">Започнете като добавите първата си роля</p>
                             <a asp-action="Create" class="btn btn-primary">
-                                <i class="bi bi-plus-lg me-2"></i>Add Role
+                                <i class="bi bi-plus-lg me-2"></i>Добави роля
                             </a>
                         </div>
                     }

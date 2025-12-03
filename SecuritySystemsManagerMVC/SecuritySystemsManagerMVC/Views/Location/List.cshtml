@@ -2,7 +2,7 @@
 @using SecuritySystemsManager.Shared.Enums
 
 @{
-    ViewData["Title"] = "Locations";
+    ViewData["Title"] = "Локации";
 }
 
 @section Styles {
@@ -17,11 +17,11 @@
 
 <div class="container-fluid animate-fade-in px-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0">Locations</h1>
+        <h1 class="h3 mb-0">Локации</h1>
         @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
         {
             <a asp-action="Create" class="btn btn-primary">
-                <i class="bi bi-plus-lg me-2"></i>Add New Location
+                <i class="bi bi-plus-lg me-2"></i>Добави нова локация
             </a>
         }
     </div>
@@ -34,10 +34,10 @@
                 <div class="card shadow-sm">
                     <div class="card-header bg-transparent">
                         <div class="d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0">Location Map</h5>
+                            <h5 class="mb-0">Карта на локациите</h5>
                             <div class="map-controls-toggle">
                                 <button class="btn btn-sm btn-outline-primary" id="toggleMapSize">
-                                    <i class="bi bi-arrows-angle-expand"></i> Expand
+                                    <i class="bi bi-arrows-angle-expand"></i> Разшири
                                 </button>
                             </div>
                         </div>
@@ -63,8 +63,8 @@
                             <div class="mb-3">
                                 <i class="bi bi-map text-muted" style="font-size: 3rem;"></i>
                             </div>
-                            <h5>No Locations to Display on Map</h5>
-                            <p class="text-muted">Add your first location to see it on the map</p>
+                            <h5>Няма локации за показване на картата</h5>
+                            <p class="text-muted">Добавете първата си локация, за да я видите на картата</p>
                         </div>
                     </div>
                 </div>
@@ -77,11 +77,11 @@
             <div class="card shadow-sm">
                 <div class="card-header bg-transparent">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">All Locations</h5>
+                        <h5 class="mb-0">Всички локации</h5>
                         @if (Model.Any())
                         {
                             <div class="input-group" style="width: 300px;">
-                                <input type="text" id="locationSearch" class="form-control" placeholder="Search locations...">
+                                <input type="text" id="locationSearch" class="form-control" placeholder="Търси локации...">
                                 <button class="btn btn-outline-secondary" type="button">
                                     <i class="bi bi-search"></i>
                                 </button>
@@ -96,10 +96,10 @@
                             <table class="table table-hover align-middle mb-0" id="locationsTable">
                                 <thead>
                                     <tr>
-                                        <th>Name</th>
-                                        <th>Address</th>
-                                        <th>Orders</th>
-                                        <th>Actions</th>
+                                        <th>Име</th>
+                                        <th>Адрес</th>
+                                        <th>Поръчки</th>
+                                        <th>Действия</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -149,7 +149,7 @@
                                                 }
                                                 else
                                                 {
-                                                    <span class="badge bg-secondary">No Orders</span>
+                                                    <span class="badge bg-secondary">Няма поръчки</span>
                                                 }
                                             </td>
                                             <td>
@@ -180,12 +180,12 @@
                             <div class="mb-3">
                                 <i class="bi bi-geo-alt text-muted" style="font-size: 3rem;"></i>
                             </div>
-                            <h5>No Locations Found</h5>
-                            <p class="text-muted">Start by adding your first location</p>
+                            <h5>Няма намерени локации</h5>
+                            <p class="text-muted">Започнете като добавите първата си локация</p>
                             @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
                             {
                                 <a asp-action="Create" class="btn btn-primary">
-                                    <i class="bi bi-plus-lg me-2"></i>Add Location
+                                    <i class="bi bi-plus-lg me-2"></i>Добави локация
                                 </a>
                             }
                         </div>

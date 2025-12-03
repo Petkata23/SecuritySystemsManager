@@ -60,7 +60,7 @@ function initializeFormValidations() {
     
     // Add confirmation for delete forms
     $('form[action*="Delete"]').on('submit', function(e) {
-        if (!confirm('Are you sure you want to delete this maintenance device record? This action cannot be undone.')) {
+        if (!confirm('Сигурни ли сте, че искате да изтриете този запис за устройство за поддръжка? Това действие не може да бъде отменено.')) {
             e.preventDefault();
         }
     });
@@ -75,7 +75,7 @@ function initializeStatusToggle() {
         const $btn = $(this);
         const $form = $btn.closest('form');
         
-        $btn.prop('disabled', true).html('<i class="bi bi-hourglass-split me-2"></i> Updating...');
+        $btn.prop('disabled', true).html('<i class="bi bi-hourglass-split me-2"></i> Актуализиране...');
         
         // Submit the form via AJAX
         $.ajax({
@@ -92,21 +92,21 @@ function initializeStatusToggle() {
                 
                 if (newStatus) {
                     $btn.removeClass('btn-outline-success').addClass('btn-outline-warning');
-                    $btn.html('<i class="bi bi-x-circle me-2"></i> Mark as Not Fixed');
+                    $btn.html('<i class="bi bi-x-circle me-2"></i> Маркирай като не поправено');
                 } else {
                     $btn.removeClass('btn-outline-warning').addClass('btn-outline-success');
-                    $btn.html('<i class="bi bi-check-circle me-2"></i> Mark as Fixed');
+                    $btn.html('<i class="bi bi-check-circle me-2"></i> Маркирай като поправено');
                 }
                 
                 // Show success message
-                showToast('Status updated successfully', 'success');
+                showToast('Статусът беше успешно актуализиран', 'success');
                 
                 // Enable button
                 $btn.prop('disabled', false);
             },
             error: function() {
                 // Show error message
-                showToast('Failed to update status. Please try again.', 'danger');
+                showToast('Неуспешно актуализиране на статуса. Моля, опитайте отново.', 'danger');
                 
                 // Enable button
                 $btn.prop('disabled', false);
@@ -156,7 +156,7 @@ function initializeDeviceFilters() {
             $('.maintenance-device-body').append(
                 '<div id="no-results-devices" class="col-12 text-center py-5">' +
                 '<i class="bi bi-search text-muted mb-2" style="font-size: 2rem;"></i>' +
-                '<p class="mb-0">No maintenance devices match your filters</p>' +
+                '<p class="mb-0">Няма устройства за поддръжка, които отговарят на вашите филтри</p>' +
                 '</div>'
             );
         }

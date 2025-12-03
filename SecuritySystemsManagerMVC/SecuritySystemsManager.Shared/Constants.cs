@@ -8,11 +8,11 @@ namespace SecuritySystemsManager.Shared
 {
     public static class Constants
     {
-        public static readonly string UserNotFound = "User does not exist.\n";
-        public const string InvalidPagination = "Invalid pagination parameters.";
-        public const string InvalidId = "Invalid ID.";
-        public const string InvalidCredentials = "Invalid Credentials.";
-        public const string UserAlreadyExists = "User already exists.";
+        public static readonly string UserNotFound = "Потребителят не съществува.\n";
+        public const string InvalidPagination = "Невалидни параметри за странициране.";
+        public const string InvalidId = "Невалидно ID.";
+        public const string InvalidCredentials = "Невалидни идентификационни данни.";
+        public const string UserAlreadyExists = "Потребителят вече съществува.";
         public const string AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
         
         // Date formats

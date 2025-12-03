@@ -2,7 +2,7 @@
 @using SecuritySystemsManager.Shared.Enums
 
 @{
-    ViewData["Title"] = "Order Details";
+    ViewData["Title"] = "Детайли за поръчка";
     bool isClient = User.IsInRole("Client");
     bool isAdminOrManager = User.IsInRole("Admin") || User.IsInRole("Manager");
     bool isTechnician = User.IsInRole("Technician");

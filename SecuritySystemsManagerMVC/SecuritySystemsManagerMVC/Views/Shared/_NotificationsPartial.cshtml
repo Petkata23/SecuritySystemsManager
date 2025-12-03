@@ -30,10 +30,10 @@
     <ul class="dropdown-menu dropdown-menu-end notification-dropdown-menu" aria-labelledby="notificationDropdown">
         <li>
             <div class="dropdown-header d-flex justify-content-between align-items-center">
-                <span>Notifications</span>
+                <span>Известия</span>
                 @if (notifications.Any())
                 {
-                    <a href="#" class="text-decoration-none small mark-all-read">Mark all as read</a>
+                    <a href="#" class="text-decoration-none small mark-all-read">Маркирай всички като прочетени</a>
                 }
             </div>
         </li>
@@ -65,7 +65,7 @@
                 <li><hr class="dropdown-divider"></li>
                 <li>
                     <a class="dropdown-item text-center view-all" asp-controller="Notification" asp-action="Index">
-                        View all notifications
+                        Виж всички известия
                     </a>
                 </li>
             }
@@ -74,7 +74,7 @@
         {
             <li>
                 <div class="dropdown-item text-center">
-                    <p class="mb-0">No notifications</p>
+                    <p class="mb-0">Няма известия</p>
                 </div>
             </li>
         }
@@ -85,7 +85,7 @@
 <div class="nav-item d-lg-none">
     <a class="nav-link position-relative" asp-controller="Notification" asp-action="Index">
         <i class="bi bi-bell-fill me-2"></i>
-        Notifications
+        Известия
         @if (unreadCount > 0)
         {
             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="margin-left: -15px;">

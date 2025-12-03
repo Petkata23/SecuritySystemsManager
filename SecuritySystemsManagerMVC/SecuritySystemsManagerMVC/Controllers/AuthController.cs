@@ -76,7 +76,7 @@ namespace SecuritySystemsManagerMVC.Controllers
                 }
                 if (result.IsLockedOut)
                 {
-                    ModelState.AddModelError(string.Empty, "Account is locked. Please try again later.");
+                    ModelState.AddModelError(string.Empty, "Акаунтът е заключен. Моля, опитайте отново по-късно.");
                     return View(model);
                 }
                 else
@@ -138,7 +138,7 @@ namespace SecuritySystemsManagerMVC.Controllers
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Invalid authenticator code.");
+                ModelState.AddModelError(string.Empty, "Невалиден код за удостоверяване.");
                 return View(model);
             }
         }

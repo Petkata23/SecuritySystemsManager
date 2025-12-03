@@ -4,7 +4,7 @@
 @model SecuritySystemsManagerMVC.ViewModels.LoginVm
 
 @{
-    ViewData["Title"] = "Login";
+    ViewData["Title"] = "Вход";
 }
 
 <div class="container-fluid animate-fade-in px-4">
@@ -12,7 +12,7 @@
         <div class="col-md-6 col-lg-5 col-xl-4">
             <div class="card shadow-sm border-0 mt-5">
                 <div class="card-header bg-gradient-primary text-white text-center py-4">
-                    <h4 class="mb-0"><i class="bi bi-shield-lock me-2"></i>Login</h4>
+                    <h4 class="mb-0"><i class="bi bi-shield-lock me-2"></i>Вход</h4>
                 </div>
                 <div class="card-body p-4">
                     @if (ViewData["ErrorMessage"] != null)
@@ -49,13 +49,13 @@
                         
                         <div class="d-grid">
                             <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="bi bi-box-arrow-in-right me-2"></i>Login
+                                <i class="bi bi-box-arrow-in-right me-2"></i>Вход
                             </button>
                         </div>
                     </form>
                 </div>
                 <div class="card-footer bg-transparent text-center py-3">
-                    <p class="mb-0">Don't have an account? <a asp-action="Register" class="text-primary">Register</a></p>
+                    <p class="mb-0">Нямате акаунт? <a asp-action="Register" class="text-primary">Регистрирай се</a></p>
                 </div>
             </div>
         </div>
