@@ -104,7 +104,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
-    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
 }
 
@@ -517,8 +516,8 @@
 .breadcrumb {
     background-color: var(--darker-bg);
     border-radius: 4px;
-    padding: 10px 15px;
-    margin-bottom: 20px;
+    /* padding: 10px 15px; */
+    /* margin-bottom: 20px; */
 }
 
 .breadcrumb-item a {

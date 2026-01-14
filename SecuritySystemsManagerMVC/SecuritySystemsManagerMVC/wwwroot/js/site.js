@@ -1,4 +1,4 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
@@ -111,8 +111,8 @@ $(document).ready(function() {
     // Active navigation item
     highlightActiveNavItem();
     
-    // Back to top button
-    initBackToTop();
+    // Back to top button - DISABLED
+    // initBackToTop();
     
     // Animate on scroll
     initAOS();
@@ -207,16 +207,49 @@ function initMobileNavigation() {
     const body = document.body;
     const isSmallScreen = () => window.innerWidth < 992;
     
-    // Handle body scroll lock when menu opens/closes
-    if (navbarCollapse) {
-        navbarCollapse.addEventListener('show.bs.collapse', function() {
-            body.classList.add('menu-open');
-        });
-        
-        navbarCollapse.addEventListener('hide.bs.collapse', function() {
-            body.classList.remove('menu-open');
-        });
+    if (!navbarToggler || !navbarCollapse) {
+        return; // Exit if elements don't exist
     }
+    
+    // Handle body scroll lock when menu opens/closes
+    navbarCollapse.addEventListener('show.bs.collapse', function() {
+        body.classList.add('menu-open');
+        if (navbarToggler) {
+            navbarToggler.setAttribute('aria-expanded', 'true');
+        }
+    });
+    
+    navbarCollapse.addEventListener('shown.bs.collapse', function() {
+        // Ensure menu is properly displayed
+        navbarCollapse.style.display = 'block';
+    });
+    
+    navbarCollapse.addEventListener('hide.bs.collapse', function() {
+        body.classList.remove('menu-open');
+        if (navbarToggler) {
+            navbarToggler.setAttribute('aria-expanded', 'false');
+        }
+    });
+    
+    navbarCollapse.addEventListener('hidden.bs.collapse', function() {
+        // Ensure menu is properly hidden
+        navbarCollapse.style.display = '';
+    });
+    
+    // Prevent multiple toggles
+    let isToggling = false;
+    navbarToggler.addEventListener('click', function(e) {
+        if (isToggling) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
+        
+        isToggling = true;
+        setTimeout(() => {
+            isToggling = false;
+        }, 350); // Match transition duration
+    });
     
     // Close navbar when clicking on a nav item on mobile (except dropdowns)
     document.querySelectorAll('.navbar-nav .nav-link:not(.dropdown-toggle)').forEach(function(link) {
@@ -230,19 +263,38 @@ function initMobileNavigation() {
             }
         });
     });
-
-    // Handle window resize
-    window.addEventListener('resize', function() {
-        if (!isSmallScreen() && navbarCollapse) {
-            // Reset menu state when resizing to desktop
-            if (navbarCollapse.classList.contains('show')) {
+    
+    // Close menu when clicking outside
+    document.addEventListener('click', function(e) {
+        if (isSmallScreen() && navbarCollapse && navbarCollapse.classList.contains('show')) {
+            if (!navbarCollapse.contains(e.target) && !navbarToggler.contains(e.target)) {
                 const bsCollapse = bootstrap.Collapse.getInstance(navbarCollapse);
                 if (bsCollapse) {
                     bsCollapse.hide();
                 }
             }
-            body.classList.remove('menu-open');
         }
+    });
+
+    // Handle window resize
+    let resizeTimer;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function() {
+            if (!isSmallScreen() && navbarCollapse) {
+                // Reset menu state when resizing to desktop
+                if (navbarCollapse.classList.contains('show')) {
+                    const bsCollapse = bootstrap.Collapse.getInstance(navbarCollapse);
+                    if (bsCollapse) {
+                        bsCollapse.hide();
+                    }
+                }
+                body.classList.remove('menu-open');
+                if (navbarToggler) {
+                    navbarToggler.setAttribute('aria-expanded', 'false');
+                }
+            }
+        }, 250);
     });
 }
 

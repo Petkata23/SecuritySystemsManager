@@ -1,27 +1,41 @@
-/* Mobile Table Improvements */
+/* Mobile Table Improvements - Professional Design */
 
 /* General table styling */
 .table {
     width: 100%;
-    margin-bottom: 1rem;
-    /* color: #212529; */
+    margin-bottom: 1.5rem;
     vertical-align: middle;
-    border-color: #dee2e6;
+    border-color: var(--border-color);
+    color: var(--text-color);
 }
 
     .table th {
         font-weight: 600;
-        background-color: rgba(0, 0, 0, 0.03);
+        background-color: rgba(0, 0, 0, 0.15);
+        color: var(--light-color);
+        border-color: var(--border-color);
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
     }
 
     .table td, .table th {
-        padding: 0.75rem;
+        padding: 1rem 0.75rem;
         vertical-align: middle;
-        border-bottom: 1px solid #dee2e6;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .table tbody tr {
+        transition: all 0.2s ease;
     }
 
 .table-hover tbody tr:hover {
-    background-color: rgba(0, 0, 0, 0.03);
+    background-color: rgba(79, 109, 245, 0.1);
+    transform: scale(1.01);
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) > * {
+    background-color: rgba(0, 0, 0, 0.1);
 }
 
 /* Table responsive container */
@@ -30,97 +44,189 @@
     width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+}
+
+.table-responsive::-webkit-scrollbar {
+    height: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: var(--muted-color);
+    border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color);
+}
+
+/* Badges in tables */
+.table .badge {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.6rem;
+    font-weight: 500;
 }
 
 /* Mobile Responsive Improvements */
 @media (max-width: 768px) {
+    /* Table container */
+    .table-responsive {
+        margin: 0 -1rem 1.5rem;
+        padding: 0 1rem;
+    }
+
     /* Adjust table padding */
     .table td, .table th {
-        padding: 0.5rem;
-        font-size: 0.85rem;
+        padding: 0.75rem 0.5rem;
+        font-size: 0.9rem;
     }
 
     /* Adjust table header */
     .table th {
-        font-size: 0.85rem;
+        font-size: 0.8rem;
+        padding: 0.75rem 0.5rem;
         white-space: nowrap;
+    }
+
+    /* Hide less important columns on tablet */
+    .table .d-md-table-cell {
+        display: none !important;
     }
 
     /* Adjust button groups in tables */
     .table .btn-group {
         display: flex;
         flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.25rem;
     }
 
     .table .btn {
-        padding: 0.25rem 0.5rem;
-        font-size: 0.75rem;
+        padding: 0.4rem 0.6rem;
+        font-size: 0.8rem;
+        min-width: 36px;
+        min-height: 36px;
     }
 
-        .table .btn i {
-            font-size: 0.75rem;
-        }
+    .table .btn i {
+        font-size: 0.85rem;
+    }
 
     /* Adjust table caption */
     .table caption {
         font-size: 0.85rem;
-        padding: 0.5rem;
+        padding: 0.75rem;
+        color: var(--muted-color);
     }
 
-    /* Adjust table responsive container */
-    .table-responsive {
-        margin-bottom: 1rem;
+    /* Table actions column */
+    .table td:last-child {
+        position: sticky;
+        right: 0;
+        background-color: var(--card-bg);
+        z-index: 10;
+    }
+
+    /* Empty state */
+    .table tbody tr td[colspan] {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: var(--muted-color);
     }
 }
 
-/* Small mobile devices */
+/* Small mobile devices - Card View */
 @media (max-width: 576px) {
-    /* Card-based table alternative for very small screens */
+    /* Hide table on very small screens, show card view */
+    .table-responsive .table {
+        display: none;
+    }
+
+    /* Card-based table alternative */
+    .table-card-view {
+        display: block;
+    }
+
     .table-card-view .table {
         display: none;
     }
 
     .table-card-view .card {
-        margin-bottom: 0.75rem;
-        border-radius: 0.375rem;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        border: 1px solid var(--border-color);
+        background-color: var(--card-bg);
+        transition: all 0.3s ease;
+    }
+
+    .table-card-view .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
 
     .table-card-view .card-header {
-        padding: 0.5rem 0.75rem;
+        padding: 1rem;
         font-weight: 600;
-        font-size: 0.9rem;
-        background-color: rgba(0, 0, 0, 0.03);
+        font-size: 1rem;
+        background-color: rgba(0, 0, 0, 0.1);
+        border-bottom: 1px solid var(--border-color);
+        color: var(--light-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 
     .table-card-view .card-body {
-        padding: 0.75rem;
+        padding: 1rem;
     }
 
     .table-card-view .card-footer {
-        padding: 0.5rem 0.75rem;
-        background-color: rgba(0, 0, 0, 0.02);
+        padding: 0.75rem 1rem;
+        background-color: rgba(0, 0, 0, 0.05);
+        border-top: 1px solid var(--border-color);
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.5rem;
     }
 
     /* Data row styling */
     .table-card-view .data-row {
         display: flex;
         justify-content: space-between;
-        margin-bottom: 0.5rem;
-        font-size: 0.85rem;
+        align-items: flex-start;
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid var(--border-color);
+        font-size: 0.9rem;
     }
 
-        .table-card-view .data-row:last-child {
-            margin-bottom: 0;
-        }
+    .table-card-view .data-row:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+    }
 
     .table-card-view .data-label {
         font-weight: 600;
-        color: #6c757d;
+        color: var(--muted-color);
+        flex: 0 0 40%;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
 
     .table-card-view .data-value {
         text-align: right;
+        flex: 1;
+        color: var(--text-color);
+        word-break: break-word;
     }
 
     /* Actions row */
@@ -128,19 +234,33 @@
         display: flex;
         justify-content: flex-end;
         gap: 0.5rem;
+        flex-wrap: wrap;
     }
 
-    /* Alternative: Horizontal scrolling tables */
+    .table-card-view .actions .btn {
+        min-width: 40px;
+        min-height: 40px;
+        padding: 0.5rem;
+    }
+
+    /* Alternative: Horizontal scrolling tables for important data */
     .table-horizontal-scroll {
         overflow-x: auto;
         white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+        margin-bottom: 1rem;
     }
 
-        .table-horizontal-scroll .table {
-            min-width: 500px;
-        }
+    .table-horizontal-scroll .table {
+        min-width: 600px;
+    }
 
-    /* Alternative: Stacked tables */
+    .table-horizontal-scroll .table th,
+    .table-horizontal-scroll .table td {
+        white-space: nowrap;
+    }
+
+    /* Stacked tables alternative */
     .table-stacked .table,
     .table-stacked .table thead,
     .table-stacked .table tbody,
@@ -150,39 +270,87 @@
         display: block;
     }
 
-        .table-stacked .table thead tr {
-            position: absolute;
-            top: -9999px;
-            left: -9999px;
-        }
+    .table-stacked .table thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
 
-        .table-stacked .table tr {
-            border: 1px solid #dee2e6;
-            margin-bottom: 0.75rem;
-            border-radius: 0.375rem;
-        }
+    .table-stacked .table tr {
+        border: 1px solid var(--border-color);
+        margin-bottom: 1rem;
+        border-radius: 10px;
+        background-color: var(--card-bg);
+        padding: 1rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
 
-        .table-stacked .table td {
-            border: none;
-            border-bottom: 1px solid #eee;
-            position: relative;
-            padding-left: 50%;
-            text-align: right;
-        }
+    .table-stacked .table td {
+        border: none;
+        border-bottom: 1px solid var(--border-color);
+        position: relative;
+        padding: 0.75rem 0 0.75rem 45%;
+        text-align: right;
+        padding-right: 0;
+    }
 
-            .table-stacked .table td:last-child {
-                border-bottom: none;
-            }
+    .table-stacked .table td:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
 
-            .table-stacked .table td:before {
-                position: absolute;
-                top: 0.5rem;
-                left: 0.5rem;
-                width: 45%;
-                padding-right: 10px;
-                white-space: nowrap;
-                text-align: left;
-                font-weight: 600;
-                content: attr(data-label);
-            }
+    .table-stacked .table td:before {
+        position: absolute;
+        top: 0.75rem;
+        left: 0;
+        width: 40%;
+        padding-right: 10px;
+        white-space: nowrap;
+        text-align: left;
+        font-weight: 600;
+        color: var(--muted-color);
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        content: attr(data-label);
+    }
+
+    /* Table search and filters */
+    .table-filters {
+        margin-bottom: 1rem;
+        padding: 1rem;
+        background-color: var(--card-bg);
+        border-radius: 10px;
+        border: 1px solid var(--border-color);
+    }
+
+    .table-filters .input-group {
+        margin-bottom: 0.75rem;
+    }
+
+    .table-filters .input-group:last-child {
+        margin-bottom: 0;
+    }
+}
+
+/* Extra small devices */
+@media (max-width: 375px) {
+    .table-card-view .card-header {
+        padding: 0.75rem;
+        font-size: 0.9rem;
+    }
+
+    .table-card-view .card-body {
+        padding: 0.75rem;
+    }
+
+    .table-card-view .data-row {
+        font-size: 0.85rem;
+        margin-bottom: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
+
+    .table-card-view .data-label {
+        font-size: 0.8rem;
+    }
 }

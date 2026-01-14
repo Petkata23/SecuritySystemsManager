@@ -43,7 +43,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h1 class="h3 mb-2">@Model.Title</h1>
-                            <p class="mb-0">Order #@Model.Id</p>
+                            <p class="mb-0">Поръчка #@Model.Id</p>
                         </div>
                         <div>
                             <span class="badge bg-@GetStatusBadgeClass(Model.Status) fs-6 p-2">
@@ -66,9 +66,9 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <h5 class="mb-1">
-                                    <i class="bi bi-file-earmark-text me-2"></i>Order Overview
+                                    <i class="bi bi-file-earmark-text me-2"></i>Преглед на поръчката
                                 </h5>
-                                <small>Complete order details and specifications</small>
+                                <small>Пълни детайли и спецификации на поръчката</small>
                             </div>
                             <div class="order-status-badge">
                                 <span class="badge bg-@GetStatusBadgeClass(Model.Status) fs-6 px-3 py-2">
@@ -84,18 +84,18 @@
                             <div class="col-lg-8 p-5">
                                 <div class="order-details-section">
                                     <h6 class="section-title">
-                                        <i class="bi bi-info-circle me-2"></i>Order Details
+                                        <i class="bi bi-info-circle me-2"></i>Детайли на поръчката
                                     </h6>
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="info-item">
-                                                <label class="info-label">Title</label>
+                                                <label class="info-label">Заглавие</label>
                                                 <div class="info-value">@Model.Title</div>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="info-item">
-                                                <label class="info-label">Phone Number</label>
+                                                <label class="info-label">Телефонен номер</label>
                                                 <div class="info-value">
                                                     <i class="bi bi-telephone me-1"></i>@Model.PhoneNumber
                                                 </div>
@@ -105,7 +105,7 @@
                                     <div class="row mt-3">
                                         <div class="col-12">
                                             <div class="info-item">
-                                                <label class="info-label">Description</label>
+                                                <label class="info-label">Описание</label>
                                                 <div class="info-value description-text">@Model.Description</div>
                                             </div>
                                         </div>
@@ -113,7 +113,7 @@
                                     <div class="row mt-3">
                                         <div class="col-md-6">
                                             <div class="info-item">
-                                                <label class="info-label">Requested Date</label>
+                                                <label class="info-label">Заявена дата</label>
                                                 <div class="info-value">
                                                     <i class="bi bi-calendar-event me-1"></i>@Model.RequestedDate.ToString("dd/MM/yyyy HH:mm")
                                                 </div>
@@ -121,7 +121,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="info-item">
-                                                <label class="info-label">Order ID</label>
+                                                <label class="info-label">ID на поръчката</label>
                                                 <div class="info-value">
                                                     <span class="badge bg-secondary">#@Model.Id</span>
                                                 </div>
@@ -135,7 +135,7 @@
                             <div class="col-lg-4 p-5 client-section">
                                 <div class="client-info-card">
                                     <h6 class="section-title">
-                                        <i class="bi bi-person-circle me-2"></i>Client Information
+                                        <i class="bi bi-person-circle me-2"></i>Информация за клиента
                                     </h6>
                                     @if (Model.Client != null)
                                     {
@@ -172,7 +172,7 @@
                                     {
                                         <div class="no-client-info">
                                             <i class="bi bi-person-x text-muted"></i>
-                                            <p class="text-muted mb-0">No client information available</p>
+                                            <p class="text-muted mb-0">Няма налична информация за клиента</p>
                                         </div>
                                     }
                                 </div>
@@ -187,9 +187,9 @@
                     <div class="card shadow-sm mb-4 location-card">
                         <div class="card-header bg-gradient-info text-white">
                             <h5 class="mb-1">
-                                <i class="bi bi-geo-alt me-2"></i>Installation Location
+                                <i class="bi bi-geo-alt me-2"></i>Местоположение за инсталация
                             </h5>
-                            <small>Site details and geographic information</small>
+                            <small>Детайли за обекта и географска информация</small>
                         </div>
                         <div class="card-body p-0">
                             <div class="row g-0">
@@ -209,7 +209,7 @@
                                                     <i class="bi bi-geo-alt"></i>
                                                 </div>
                                                 <div class="info-content">
-                                                    <label class="info-label">Address</label>
+                                                    <label class="info-label">Адрес</label>
                                                     <div class="info-value">@Model.Location.Address</div>
                                                 </div>
                                             </div>
@@ -219,7 +219,7 @@
                                                     <i class="bi bi-pin-map"></i>
                                                 </div>
                                                 <div class="info-content">
-                                                    <label class="info-label">Coordinates</label>
+                                                    <label class="info-label">Координати</label>
                                                     <div class="info-value coordinates-display">
                                                         @Model.Location.Latitude, @Model.Location.Longitude
                                                     </div>
@@ -232,19 +232,19 @@
                                                 <a href="https://maps.google.com/?q=@Model.Location.Latitude,@Model.Location.Longitude" 
                                                    target="_blank" 
                                                    class="btn btn-primary btn-sm">
-                                                    <i class="bi bi-map me-1"></i>Open in Google Maps
+                                                    <i class="bi bi-map me-1"></i>Отвори в Google Maps
                                                 </a>
                                                 <button type="button" 
                                                         class="btn btn-outline-secondary btn-sm" 
                                                         onclick="copyToClipboard('@Model.Location.Address')"
                                                         title="Copy address to clipboard">
-                                                    <i class="bi bi-clipboard me-1"></i>Copy Address
+                                                    <i class="bi bi-clipboard me-1"></i>Копирай адрес
                                                 </button>
                                                 <button type="button" 
                                                         class="btn btn-outline-info btn-sm" 
                                                         onclick="copyToClipboard('@Model.Location.Latitude, @Model.Location.Longitude')"
                                                         title="Copy coordinates to clipboard">
-                                                    <i class="bi bi-geo-alt me-1"></i>Copy Coordinates
+                                                    <i class="bi bi-geo-alt me-1"></i>Копирай координати
                                                 </button>
                                             </div>
                                         </div>
@@ -256,9 +256,9 @@
                                     <div class="map-container">
                                         <div class="map-header">
                                             <h6 class="map-title">
-                                                <i class="bi bi-map me-2"></i>Interactive Location Map
+                                                <i class="bi bi-map me-2"></i>Интерактивна карта на местоположението
                                             </h6>
-                                            <p class="map-description">Real-time map showing the installation site</p>
+                                            <p class="map-description">Карта в реално време показваща обекта за инсталация</p>
                                         </div>
                                         <div id="locationDetailsMap" 
                                              data-latitude="@Model.Location.Latitude" 
@@ -279,8 +279,8 @@
                     <div class="card shadow-sm mb-4">
                         <div class="card-body text-center py-5">
                             <i class="bi bi-geo-alt text-muted icon-large"></i>
-                            <h6 class="text-muted mt-3">No Location Information</h6>
-                            <p class="text-muted mb-0">Location details are not available for this order</p>
+                            <h6 class="text-muted mt-3">Няма информация за местоположение</h6>
+                            <p class="text-muted mb-0">Детайлите за местоположението не са налични за тази поръчка</p>
                         </div>
                     </div>
                 }
@@ -290,16 +290,16 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
                             <a asp-action="List" class="btn btn-outline-secondary">
-                                <i class="bi bi-arrow-left me-2"></i>Back to Orders List
+                                <i class="bi bi-arrow-left me-2"></i>Назад към списъка с поръчки
                             </a>
                             <div class="action-buttons">
                                 @if (isAdminOrManager)
                                 {
                                     <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary me-2">
-                                        <i class="bi bi-pencil me-2"></i>Edit Order
+                                        <i class="bi bi-pencil me-2"></i>Редактирай поръчка
                                     </a>
                                     <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger">
-                                        <i class="bi bi-trash me-2"></i>Delete Order
+                                        <i class="bi bi-trash me-2"></i>Изтрий поръчка
                                     </a>
                                 }
                             </div>
@@ -311,11 +311,11 @@
             <!-- Installed Devices -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Installed Devices</h5>
+                    <h5 class="mb-0">Инсталирани устройства</h5>
                     @if (isAdminOrManager)
                     {
                         <a asp-controller="InstalledDevice" asp-action="AddToOrder" asp-route-orderId="@Model.Id" class="btn btn-sm btn-primary">
-                            <i class="bi bi-plus-lg me-2"></i>Add Device
+                            <i class="bi bi-plus-lg me-2"></i>Добави устройство
                         </a>
                     }
                 </div>
@@ -326,11 +326,11 @@
                             <table class="table table-hover mb-0">
                                 <thead>
                                     <tr>
-                                        <th>Device Type</th>
-                                        <th>Brand</th>
-                                        <th>Model</th>
-                                        <th>Quantity</th>
-                                        <th>Actions</th>
+                                        <th>Тип устройство</th>
+                                        <th>Марка</th>
+                                        <th>Модел</th>
+                                        <th>Количество</th>
+                                        <th>Действия</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -372,7 +372,7 @@
                             <div class="mb-3">
                                 <i class="bi bi-device-hdd text-muted icon-large"></i>
                             </div>
-                            <p class="text-muted mb-0">No devices have been installed yet</p>
+                            <p class="text-muted mb-0">Все още няма инсталирани устройства</p>
                         </div>
                     }
                 </div>
@@ -381,11 +381,11 @@
             <!-- Maintenance Logs -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Maintenance Logs</h5>
+                    <h5 class="mb-0">Дневници за поддръжка</h5>
                     @if (canManageMaintenance)
                     {
                         <a asp-controller="MaintenanceLog" asp-action="CreateForOrder" asp-route-orderId="@Model.Id" class="btn btn-sm btn-primary">
-                            <i class="bi bi-plus-lg me-2"></i>Add Log
+                            <i class="bi bi-plus-lg me-2"></i>Добави дневник
                         </a>
                     }
                 </div>
@@ -396,10 +396,10 @@
                             <table class="table table-hover mb-0">
                                 <thead>
                                     <tr>
-                                        <th>Date</th>
-                                        <th>Technician</th>
-                                        <th>Description</th>
-                                        <th>Actions</th>
+                                        <th>Дата</th>
+                                        <th>Техник</th>
+                                        <th>Описание</th>
+                                        <th>Действия</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -440,7 +440,7 @@
                             <div class="mb-3">
                                 <i class="bi bi-journal-text text-muted icon-large"></i>
                             </div>
-                            <p class="text-muted mb-0">No maintenance logs have been added yet</p>
+                            <p class="text-muted mb-0">Все още няма добавени дневници за поддръжка</p>
                         </div>
                     }
                 </div>
@@ -451,47 +451,47 @@
             <!-- Invoice Information -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-transparent">
-                    <h5 class="mb-0">Invoice Information</h5>
+                    <h5 class="mb-0">Информация за фактура</h5>
                 </div>
                 <div class="card-body">
                     @if (Model.Invoice != null)
                     {
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <h6 class="mb-0">
-                                <i class="bi bi-receipt me-2"></i>Invoice Details
+                                <i class="bi bi-receipt me-2"></i>Детайли на фактурата
                             </h6>
                         </div>
                         
                         <dl class="row">
-                            <dt class="col-sm-5">Invoice ID</dt>
+                            <dt class="col-sm-5">ID на фактура</dt>
                             <dd class="col-sm-7">#@Model.Invoice.Id</dd>
                             
-                            <dt class="col-sm-5">Issue Date</dt>
+                            <dt class="col-sm-5">Дата на издаване</dt>
                             <dd class="col-sm-7">@Model.Invoice.IssuedOn.ToString("dd/MM/yyyy HH:mm")</dd>
                             
-                            <dt class="col-sm-5">Amount</dt>
+                            <dt class="col-sm-5">Сума</dt>
                             <dd class="col-sm-7">
                                 <span class="fw-bold fs-5 text-success">$@Model.Invoice.TotalAmount.ToString("F2")</span>
                             </dd>
                             
-                            <dt class="col-sm-5">Status</dt>
+                            <dt class="col-sm-5">Статус</dt>
                             <dd class="col-sm-7">
                                 <span class="badge bg-@(Model.Invoice.IsPaid ? "success" : "warning") fs-6">
                                     <i class="bi bi-@(Model.Invoice.IsPaid ? "check-circle" : "clock") me-1"></i>
-                                    @(Model.Invoice.IsPaid ? "Paid" : "Unpaid")
+                                    @(Model.Invoice.IsPaid ? "Платена" : "Неплатена")
                                 </span>
                             </dd>
                             
                             @if (Model.Invoice.UpdatedAt != Model.Invoice.CreatedAt)
                             {
-                                <dt class="col-sm-5">Last Updated</dt>
+                                <dt class="col-sm-5">Последна актуализация</dt>
                                 <dd class="col-sm-7">@Model.Invoice.UpdatedAt?.ToString("dd/MM/yyyy HH:mm")</dd>
                             }
                         </dl>
                         
                         <div class="d-grid gap-2 mt-3">
                             <a asp-controller="Invoice" asp-action="Details" asp-route-id="@Model.Invoice.Id" class="btn btn-outline-primary">
-                                <i class="bi bi-file-earmark-pdf me-2"></i>View Invoice
+                                <i class="bi bi-file-earmark-pdf me-2"></i>Преглед на фактура
                             </a>
                             @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
                             {
@@ -499,8 +499,8 @@
                                 {
                                     <form asp-controller="Invoice" asp-action="MarkAsPaid" method="post" class="d-grid">
                                         <input type="hidden" name="id" value="@Model.Invoice.Id" />
-                                        <button type="submit" class="btn btn-success" onclick="return confirm('Are you sure you want to mark this invoice as paid?');">
-                                            <i class="bi bi-credit-card me-2"></i>Mark as Paid
+                                        <button type="submit" class="btn btn-success" onclick="return confirm('Сигурни ли сте, че искате да маркирате тази фактура като платена?');">
+                                            <i class="bi bi-credit-card me-2"></i>Маркирай като платена
                                         </button>
                                     </form>
                                 }
@@ -508,8 +508,8 @@
                                 {
                                     <form asp-controller="Invoice" asp-action="MarkAsUnpaid" method="post" class="d-grid">
                                         <input type="hidden" name="id" value="@Model.Invoice.Id" />
-                                        <button type="submit" class="btn btn-warning" onclick="return confirm('Are you sure you want to mark this invoice as unpaid?');">
-                                            <i class="bi bi-arrow-counterclockwise me-2"></i>Mark as Unpaid
+                                        <button type="submit" class="btn btn-warning" onclick="return confirm('Сигурни ли сте, че искате да маркирате тази фактура като неплатена?');">
+                                            <i class="bi bi-arrow-counterclockwise me-2"></i>Маркирай като неплатена
                                         </button>
                                     </form>
                                 }
@@ -522,12 +522,12 @@
                             <div class="mb-3">
                                 <i class="bi bi-receipt text-muted icon-large"></i>
                             </div>
-                            <h6 class="text-muted mb-2">No Invoice Generated</h6>
-                            <p class="text-muted mb-3 small">An invoice will be created when you generate one for this order.</p>
+                            <h6 class="text-muted mb-2">Няма генерирана фактура</h6>
+                            <p class="text-muted mb-3 small">Фактура ще бъде създадена когато генерирате една за тази поръчка.</p>
                             @if (isAdminOrManager)
                             {
                                 <button type="button" class="btn btn-primary" id="openInvoiceModal">
-                                    <i class="bi bi-plus-lg me-2"></i>Generate Invoice
+                                    <i class="bi bi-plus-lg me-2"></i>Генерирай фактура
                                 </button>
                             }
                         </div>
@@ -538,11 +538,11 @@
             <!-- Technicians -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Assigned Technicians</h5>
+                    <h5 class="mb-0">Назначени техници</h5>
                     @if (ViewBag.CanManageTechnicians == true)
                     {
                         <button type="button" class="btn btn-sm btn-primary" id="openCustomModal">
-                            <i class="bi bi-plus-lg me-2"></i>Assign
+                            <i class="bi bi-plus-lg me-2"></i>Назначи
                         </button>
                     }
                 </div>
@@ -573,7 +573,7 @@
                                     </div>
                                     @if (ViewBag.CanManageTechnicians == true)
                                     {
-                                        <form asp-action="RemoveTechnician" method="post" onsubmit="return confirm('Are you sure you want to remove this technician from the order?');">
+                                        <form asp-action="RemoveTechnician" method="post" onsubmit="return confirm('Сигурни ли сте, че искате да премахнете този техник от поръчката?');">
                                             <input type="hidden" name="orderId" value="@Model.Id" />
                                             <input type="hidden" name="technicianId" value="@tech.Id" />
                                             <button type="submit" class="btn btn-sm btn-danger">
@@ -591,7 +591,7 @@
                             <div class="mb-3">
                                 <i class="bi bi-people text-muted icon-large"></i>
                             </div>
-                            <p class="text-muted mb-0">No technicians assigned yet</p>
+                            <p class="text-muted mb-0">Все още няма назначени техници</p>
                         </div>
                     }
                 </div>
@@ -606,7 +606,7 @@
                         <div class="custom-modal-content">
                             <div class="custom-modal-header bg-primary text-white py-3">
                                 <h5 class="mb-0">
-                                    <i class="bi bi-person-plus-fill me-2"></i>Assign Technician
+                                    <i class="bi bi-person-plus-fill me-2"></i>Назначи техник
                                 </h5>
                                 <button type="button" class="btn-close btn-close-white" id="closeCustomModal"></button>
                             </div>
@@ -616,7 +616,7 @@
                                     <div class="mb-4">
                                         <div class="form-group">
                                             <label for="technicianId" class="form-label text-dark fw-bold mb-2">
-                                                <i class="bi bi-tools me-1"></i>Select Technician
+                                                <i class="bi bi-tools me-1"></i>Избери техник
                                             </label>
                                             @{
                                                 var availableTechnicians = ViewBag.AvailableTechnicians as IEnumerable<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>;
@@ -624,7 +624,7 @@
                                             @if (availableTechnicians != null && availableTechnicians.Any())
                                             {
                                                 <select name="technicianId" id="technicianId" class="form-select form-select-lg border-1 border-primary shadow-sm" required>
-                                                    <option value="" disabled selected>-- Select Technician --</option>
+                                                    <option value="" disabled selected>-- Избери техник --</option>
                                                     @foreach (var tech in availableTechnicians)
                                                     {
                                                         <option value="@tech.Value">@tech.Text</option>
@@ -632,7 +632,7 @@
                                                 </select>
                                                 <div class="form-text mt-2">
                                                     <i class="bi bi-info-circle me-1"></i>
-                                                    Select a technician to assign to this order
+                                                    Избери техник за назначаване на тази поръчка
                                                 </div>
                                             }
                                             else
@@ -640,7 +640,7 @@
                                                 <div class="alert alert-info d-flex align-items-center">
                                                     <i class="bi bi-info-circle-fill fs-4 me-3"></i>
                                                     <div>
-                                                        No available technicians found. All technicians are already assigned to this order or there are no technicians in the system.
+                                                        Няма налични техници. Всички техници вече са назначени на тази поръчка или няма техници в системата.
                                                     </div>
                                                 </div>
                                             }
@@ -654,7 +654,7 @@
                                     @if (availableTechnicians != null && availableTechnicians.Any())
                                     {
                                         <button type="submit" class="btn btn-primary">
-                                            <i class="bi bi-check-lg me-2"></i>Assign
+                                            <i class="bi bi-check-lg me-2"></i>Назначи
                                         </button>
                                     }
                                     else
@@ -662,7 +662,7 @@
                                         @if (User.IsInRole("Admin"))
                                         {
                                             <a asp-controller="User" asp-action="Create" class="btn btn-success">
-                                                <i class="bi bi-plus-lg me-2"></i>Create Technician
+                                                <i class="bi bi-plus-lg me-2"></i>Създай техник
                                             </a>
                                         }
                                         else
@@ -670,7 +670,7 @@
                                             <div class="alert alert-info d-flex align-items-center">
                                                 <i class="bi bi-info-circle-fill fs-4 me-3"></i>
                                                 <div>
-                                                    Contact an administrator to create a new technician account.
+                                                    Свържете се с администратор за създаване на нов акаунт на техник.
                                                 </div>
                                             </div>
                                         }
@@ -691,7 +691,7 @@
                         <div class="custom-modal-content">
                             <div class="custom-modal-header bg-success text-white py-3">
                                 <h5 class="mb-0">
-                                    <i class="bi bi-receipt me-2"></i>Generate Invoice
+                                    <i class="bi bi-receipt me-2"></i>Генерирай фактура
                                 </h5>
                                 <button type="button" class="btn-close btn-close-white" id="closeInvoiceModal"></button>
                             </div>
@@ -701,7 +701,7 @@
                                     <div class="mb-4">
                                         <div class="form-group">
                                             <label for="laborCost" class="form-label text-dark fw-bold mb-2">
-                                                <i class="bi bi-currency-dollar me-1"></i>Labor Cost
+                                                <i class="bi bi-currency-dollar me-1"></i>Трудова цена
                                             </label>
                                             <div class="input-group">
                                                 <span class="input-group-text">$</span>
@@ -716,7 +716,7 @@
                                             </div>
                                             <div class="form-text mt-2">
                                                 <i class="bi bi-info-circle me-1"></i>
-                                                Enter the total labor cost for this order
+                                                Въведете общата трудова цена за тази поръчка
                                             </div>
                                         </div>
                                     </div>
@@ -725,16 +725,16 @@
                                     {
                                         <div class="mb-4">
                                             <h6 class="text-dark fw-bold mb-3">
-                                                <i class="bi bi-device-hdd me-1"></i>Device Costs
+                                                <i class="bi bi-device-hdd me-1"></i>Цени на устройствата
                                             </h6>
                                             <div class="table-responsive">
                                                 <table class="table table-sm">
                                                     <thead>
                                                         <tr>
-                                                            <th>Device</th>
-                                                            <th>Quantity</th>
-                                                            <th>Unit Price</th>
-                                                            <th>Total</th>
+                                                            <th>Устройство</th>
+                                                            <th>Количество</th>
+                                                            <th>Единична цена</th>
+                                                            <th>Общо</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -762,7 +762,7 @@
                                     
                                     <div class="alert alert-info">
                                         <div class="d-flex justify-content-between align-items-center">
-                                            <span class="fw-bold">Total Amount:</span>
+                                            <span class="fw-bold">Обща сума:</span>
                                             <span class="fw-bold fs-5" id="totalAmount">$0.00</span>
                                         </div>
                                     </div>
@@ -772,7 +772,7 @@
                                         <i class="bi bi-x-lg me-2"></i>Cancel
                                     </button>
                                     <button type="submit" class="btn btn-success">
-                                        <i class="bi bi-check-lg me-2"></i>Generate Invoice
+                                        <i class="bi bi-check-lg me-2"></i>Генерирай фактура
                                     </button>
                                 </div>
                             </form>
@@ -784,7 +784,7 @@
             <!-- Activity Timeline -->
             <div class="card shadow-sm">
                 <div class="card-header bg-transparent">
-                    <h5 class="mb-0">Activity Timeline</h5>
+                    <h5 class="mb-0">Хронология на дейностите</h5>
                 </div>
                 <div class="card-body">
                     <div class="timeline">
@@ -792,10 +792,10 @@
                             <div class="timeline-marker bg-success"></div>
                             <div class="timeline-content">
                                 <div class="d-flex justify-content-between">
-                                    <h6 class="mb-1">Order Created</h6>
+                                    <h6 class="mb-1">Поръчката е създадена</h6>
                                     <small class="text-muted">@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</small>
                                 </div>
-                                <p class="text-muted small mb-0">Order was created by @Model.Client?.FirstName @Model.Client?.LastName</p>
+                                <p class="text-muted small mb-0">Поръчката е създадена от @Model.Client?.FirstName @Model.Client?.LastName</p>
                             </div>
                         </div>
                         
@@ -805,10 +805,10 @@
                                 <div class="timeline-marker bg-primary"></div>
                                 <div class="timeline-content">
                                                                     <div class="d-flex justify-content-between">
-                                    <h6 class="mb-1">Order In Progress</h6>
+                                    <h6 class="mb-1">Поръчката е в процес</h6>
                                     <small class="text-muted">@Model.UpdatedAt?.ToString("dd/MM/yyyy HH:mm")</small>
                                 </div>
-                                    <p class="text-muted small mb-0">Technicians started working on the order</p>
+                                    <p class="text-muted small mb-0">Техниците започнаха работа по поръчката</p>
                                 </div>
                             </div>
                         }
@@ -819,10 +819,10 @@
                                 <div class="timeline-marker bg-success"></div>
                                 <div class="timeline-content">
                                                                     <div class="d-flex justify-content-between">
-                                    <h6 class="mb-1">Order Completed</h6>
+                                    <h6 class="mb-1">Поръчката е завършена</h6>
                                     <small class="text-muted">@Model.UpdatedAt?.ToString("dd/MM/yyyy HH:mm")</small>
                                 </div>
-                                    <p class="text-muted small mb-0">All work has been completed</p>
+                                    <p class="text-muted small mb-0">Цялата работа е завършена</p>
                                 </div>
                             </div>
                         }
@@ -833,10 +833,10 @@
                                 <div class="timeline-marker bg-danger"></div>
                                 <div class="timeline-content">
                                                                     <div class="d-flex justify-content-between">
-                                    <h6 class="mb-1">Order Cancelled</h6>
+                                    <h6 class="mb-1">Поръчката е отменена</h6>
                                     <small class="text-muted">@Model.UpdatedAt?.ToString("dd/MM/yyyy HH:mm")</small>
                                 </div>
-                                    <p class="text-muted small mb-0">The order was cancelled</p>
+                                    <p class="text-muted small mb-0">Поръчката беше отменена</p>
                                 </div>
                             </div>
                         }
@@ -847,10 +847,10 @@
                                 <div class="timeline-marker bg-info"></div>
                                 <div class="timeline-content">
                                     <div class="d-flex justify-content-between">
-                                        <h6 class="mb-1">Invoice Generated</h6>
+                                        <h6 class="mb-1">Фактурата е генерирана</h6>
                                         <small class="text-muted">@Model.Invoice.IssuedOn.ToString("dd/MM/yyyy HH:mm")</small>
                                     </div>
-                                    <p class="text-muted small mb-0">Invoice #@Model.Invoice.Id was generated for $@Model.Invoice.TotalAmount.ToString("F2")</p>
+                                    <p class="text-muted small mb-0">Фактура #@Model.Invoice.Id беше генерирана за $@Model.Invoice.TotalAmount.ToString("F2")</p>
                                 </div>
                             </div>
                         }
@@ -874,10 +874,10 @@
     {
         return status switch
         {
-            OrderStatus.Pending => "warning",
-            OrderStatus.InProgress => "primary",
-            OrderStatus.Completed => "success",
-            OrderStatus.Cancelled => "danger",
+            OrderStatus.Pending => "warning", // "Изчакваща"
+            OrderStatus.InProgress => "primary", // "В процес"
+            OrderStatus.Completed => "success", // "Завършена"
+            OrderStatus.Cancelled => "danger", // "Отменена"
             _ => "secondary"
         };
     }
@@ -886,7 +886,10 @@
     {
         return status switch
         {
-            OrderStatus.InProgress => "In Progress",
+            OrderStatus.Pending => "Изчакваща",
+            OrderStatus.InProgress => "В процес",
+            OrderStatus.Completed => "Завършена",
+            OrderStatus.Cancelled => "Отменена",
             _ => status.ToString()
         };
     }

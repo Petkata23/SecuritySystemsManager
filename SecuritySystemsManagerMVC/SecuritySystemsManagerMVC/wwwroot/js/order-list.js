@@ -5,19 +5,52 @@ $(document).ready(function() {
         return new bootstrap.Tooltip(tooltipTriggerEl);
     });
     
-    // View toggle functionality
+    // Check if mobile device and auto-switch to card view
+    function checkMobileView() {
+        if (window.innerWidth <= 768) {
+            // Mobile: show card view, hide table view
+            $("#cardViewBtn").addClass('active');
+            $("#tableViewBtn").removeClass('active');
+            $("#tableView").addClass('d-none');
+            $("#cardView").removeClass('d-none');
+            // Hide view toggle buttons on mobile
+            $(".view-toggle").addClass('d-none');
+        } else {
+            // Desktop: show table view by default
+            $("#tableViewBtn").addClass('active');
+            $("#cardViewBtn").removeClass('active');
+            $("#tableView").removeClass('d-none');
+            $("#cardView").addClass('d-none');
+            // Show view toggle buttons on desktop
+            $(".view-toggle").removeClass('d-none');
+        }
+    }
+    
+    // Check on page load
+    checkMobileView();
+    
+    // Check on window resize
+    $(window).on('resize', function() {
+        checkMobileView();
+    });
+    
+    // View toggle functionality (only works on desktop)
     $("#tableViewBtn").click(function() {
-        $(this).addClass('active');
-        $("#cardViewBtn").removeClass('active');
-        $("#tableView").removeClass('d-none');
-        $("#cardView").addClass('d-none');
+        if (window.innerWidth > 768) {
+            $(this).addClass('active');
+            $("#cardViewBtn").removeClass('active');
+            $("#tableView").removeClass('d-none');
+            $("#cardView").addClass('d-none');
+        }
     });
     
     $("#cardViewBtn").click(function() {
-        $(this).addClass('active');
-        $("#tableViewBtn").removeClass('active');
-        $("#tableView").addClass('d-none');
-        $("#cardView").removeClass('d-none');
+        if (window.innerWidth > 768) {
+            $(this).addClass('active');
+            $("#tableViewBtn").removeClass('active');
+            $("#tableView").addClass('d-none');
+            $("#cardView").removeClass('d-none');
+        }
     });
     
     // AJAX filter functionality
@@ -72,20 +105,8 @@ $(document).ready(function() {
                     return new bootstrap.Tooltip(tooltipTriggerEl);
                 });
                 
-                // Re-initialize view toggle functionality
-                $("#tableViewBtn").click(function() {
-                    $(this).addClass('active');
-                    $("#cardViewBtn").removeClass('active');
-                    $("#tableView").removeClass('d-none');
-                    $("#cardView").addClass('d-none');
-                });
-                
-                $("#cardViewBtn").click(function() {
-                    $(this).addClass('active');
-                    $("#tableViewBtn").removeClass('active');
-                    $("#tableView").addClass('d-none');
-                    $("#cardView").removeClass('d-none');
-                });
+                // Re-check mobile view after AJAX load
+                checkMobileView();
             },
             error: function() {
                 $("#ordersTableContainer").html('<div class="text-center py-5"><i class="bi bi-exclamation-triangle text-danger" style="font-size: 2rem;"></i><p class="mt-2 text-danger">Error loading orders. Please try again.</p></div>');
@@ -136,20 +157,8 @@ $(document).ready(function() {
                         return new bootstrap.Tooltip(tooltipTriggerEl);
                     });
                     
-                    // Re-initialize view toggle functionality
-                    $("#tableViewBtn").click(function() {
-                        $(this).addClass('active');
-                        $("#cardViewBtn").removeClass('active');
-                        $("#tableView").removeClass('d-none');
-                        $("#cardView").addClass('d-none');
-                    });
-                    
-                    $("#cardViewBtn").click(function() {
-                        $(this).addClass('active');
-                        $("#tableViewBtn").removeClass('active');
-                        $("#tableView").addClass('d-none');
-                        $("#cardView").removeClass('d-none');
-                    });
+                    // Re-check mobile view after AJAX load
+                    checkMobileView();
                 },
                 error: function() {
                     $("#ordersTableContainer").html('<div class="text-center py-5"><i class="bi bi-exclamation-triangle text-danger" style="font-size: 2rem;"></i><p class="mt-2 text-danger">Error loading orders. Please try again.</p></div>');
