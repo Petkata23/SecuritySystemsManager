@@ -1,7 +1,8 @@
-﻿@model IEnumerable<SecuritySystemsManagerMVC.ViewModels.LocationDetailsVm>
+@model IEnumerable<SecuritySystemsManagerMVC.ViewModels.LocationDetailsVm>
 @using SecuritySystemsManager.Shared.Enums
 
 @{
+    bool isClient = User.IsInRole("Client");
     ViewData["Title"] = "Локации";
 }
 
@@ -15,27 +16,54 @@
     <link rel="stylesheet" href="~/css/locations.css" />
 }
 
-<div class="container-fluid animate-fade-in px-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0">Локации</h1>
-        @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
-        {
-            <a asp-action="Create" class="btn btn-primary">
-                <i class="bi bi-plus-lg me-2"></i>Добави нова локация
-            </a>
-        }
-    </div>
+<div class="container-fluid locations-list-container animate-fade-in px-4">
+    @if (Model.Any())
+    {
+        <!-- Modern Banner -->
+        <div class="locations-banner">
+            <div class="locations-banner-content">
+                <div class="locations-banner-text">
+                    <h1 class="locations-banner-title">@(isClient ? "Моите локации" : "Локации")</h1>
+                    <p class="locations-banner-description">Управлявайте всички ваши локации и проследявайте поръчките им на едно място</p>
+                </div>
+                @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                {
+                    <div class="locations-banner-actions">
+                        <a asp-action="Create" class="btn btn-create-location-banner">
+                            <i class="bi bi-plus-lg"></i>
+                            <span>Добави нова локация</span>
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 mb-0">@(isClient ? "Моите локации" : "Локации")</h1>
+            @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+            {
+                <a asp-action="Create" class="btn btn-primary">
+                    <i class="bi bi-plus-lg me-2"></i>Добави нова локация
+                </a>
+            }
+        </div>
+    }
 
     @if (Model.Any())
     {
         <!-- Map Card -->
         <div class="row mb-4">
             <div class="col-12">
-                <div class="card shadow-sm">
+                <div class="card map-card shadow-sm">
                     <div class="card-header bg-transparent">
                         <div class="d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0">Карта на локациите</h5>
-                            <div class="map-controls-toggle">
+                            <h5 class="mb-0">
+                                <i class="bi bi-map"></i>
+                                Карта на обектите ми
+                            </h5>
+                            <div class="map-controls-toggle d-none d-md-block">
                                 <button class="btn btn-sm btn-outline-primary" id="toggleMapSize">
                                     <i class="bi bi-arrows-angle-expand"></i> Разшири
                                 </button>
@@ -74,17 +102,17 @@
 
     <div class="row">
         <div class="col-12">
-            <div class="card shadow-sm">
+            <div class="card locations-card shadow-sm">
                 <div class="card-header bg-transparent">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">Всички локации</h5>
+                        <h5 class="mb-0">
+                            <i class="bi bi-list-ul"></i>
+                            @(isClient ? "Моите локации" : "Всички локации")
+                        </h5>
                         @if (Model.Any())
                         {
-                            <div class="input-group" style="width: 300px;">
+                            <div class="location-search-container">
                                 <input type="text" id="locationSearch" class="form-control" placeholder="Търси локации...">
-                                <button class="btn btn-outline-secondary" type="button">
-                                    <i class="bi bi-search"></i>
-                                </button>
                             </div>
                         }
                     </div>
@@ -92,7 +120,8 @@
                 <div class="card-body p-0">
                     @if (Model.Any())
                     {
-                        <div class="table-responsive">
+                        <!-- Table View (Desktop) -->
+                        <div class="table-responsive" id="locationsTableView">
                             <table class="table table-hover align-middle mb-0" id="locationsTable">
                                 <thead>
                                     <tr>
@@ -130,17 +159,17 @@
                                                                 var completedCount = location.Orders.Count(o => o.Status == OrderStatus.Completed);
                                                             }
                                                             
-                                                            @if (pendingCount > 0)
+                                                            if (pendingCount > 0)
                                                             {
                                                                 <span class="badge bg-warning me-1" title="@pendingCount Pending">@pendingCount</span>
                                                             }
                                                             
-                                                            @if (inProgressCount > 0)
+                                                            if (inProgressCount > 0)
                                                             {
                                                                 <span class="badge bg-primary me-1" title="@inProgressCount In Progress">@inProgressCount</span>
                                                             }
                                                             
-                                                            @if (completedCount > 0)
+                                                            if (completedCount > 0)
                                                             {
                                                                 <span class="badge bg-success" title="@completedCount Completed">@completedCount</span>
                                                             }
@@ -173,15 +202,83 @@
                                 </tbody>
                             </table>
                         </div>
+
+                        <!-- Card View (Mobile) -->
+                        <div class="locations-card-view d-none" id="locationsCardView">
+                            <div class="row">
+                                @foreach (var location in Model)
+                                {
+                                    <div class="col-12 mb-3">
+                                        <div class="location-card-item" data-location-id="@location.Id">
+                                            <div class="location-card-header">
+                                                <div class="location-card-icon">
+                                                    <i class="bi bi-geo-alt-fill"></i>
+                                                </div>
+                                                <div class="location-card-title">
+                                                    <h6>@location.Name</h6>
+                                                    <small>ID: @location.Id</small>
+                                                </div>
+                                            </div>
+                                            <div class="location-card-body">
+                                                <div class="location-card-address">
+                                                    <i class="bi bi-geo-alt"></i>
+                                                    <span>@location.Address</span>
+                                                </div>
+                                                <div class="location-card-orders">
+                                                    @if (location.Orders != null && location.Orders.Any())
+                                                    {
+                                                        <span class="badge bg-primary rounded-pill">@location.Orders.Count поръчки</span>
+                                                        var pendingCount = location.Orders.Count(o => o.Status == OrderStatus.Pending);
+                                                        var inProgressCount = location.Orders.Count(o => o.Status == OrderStatus.InProgress);
+                                                        var completedCount = location.Orders.Count(o => o.Status == OrderStatus.Completed);
+                                                        
+                                                        if (pendingCount > 0)
+                                                        {
+                                                            <span class="badge bg-warning" title="@pendingCount Pending">@pendingCount</span>
+                                                        }
+                                                        
+                                                        if (inProgressCount > 0)
+                                                        {
+                                                            <span class="badge bg-primary" title="@inProgressCount In Progress">@inProgressCount</span>
+                                                        }
+                                                        
+                                                        if (completedCount > 0)
+                                                        {
+                                                            <span class="badge bg-success" title="@completedCount Completed">@completedCount</span>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge bg-secondary">Няма поръчки</span>
+                                                    }
+                                                </div>
+                                            </div>
+                                            <div class="location-card-footer">
+                                                <a asp-action="Details" asp-route-id="@location.Id" class="btn btn-sm btn-info">
+                                                    <i class="bi bi-info-circle"></i>
+                                                </a>
+                                                @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                                                {
+                                                    <a asp-action="Edit" asp-route-id="@location.Id" class="btn btn-sm btn-primary">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </a>
+                                                    <a asp-action="Delete" asp-route-id="@location.Id" class="btn btn-sm btn-danger">
+                                                        <i class="bi bi-trash"></i>
+                                                    </a>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
                     }
                     else
                     {
-                        <div class="text-center py-5">
-                            <div class="mb-3">
-                                <i class="bi bi-geo-alt text-muted" style="font-size: 3rem;"></i>
-                            </div>
+                        <div class="locations-empty-state">
+                            <i class="bi bi-geo-alt"></i>
                             <h5>Няма намерени локации</h5>
-                            <p class="text-muted">Започнете като добавите първата си локация</p>
+                            <p>Започнете като добавите първата си локация</p>
                             @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
                             {
                                 <a asp-action="Create" class="btn btn-primary">
@@ -227,6 +324,7 @@
         <script src="~/js/locations.js"></script>
         <script src="~/js/locations-list.js"></script>
         <script src="~/js/location-list-ui.js" asp-append-version="true"></script>
+        <script src="~/js/location-list-mobile.js" asp-append-version="true"></script>
     }
     
 

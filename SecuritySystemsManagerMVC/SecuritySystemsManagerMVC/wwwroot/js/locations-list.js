@@ -19,6 +19,9 @@ document.addEventListener("DOMContentLoaded", function () {
         attributionControl: false,
         fullscreenControl: true
     }).setView([42.6977, 23.3242], 7); // Default center in Bulgaria
+    
+    // Store map in window for access from other scripts
+    window.map = map;
 
     // Define available map styles/layers
     var streets = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -539,6 +542,17 @@ document.addEventListener("DOMContentLoaded", function () {
                         }
                     }
 
+                    // Function to translate status to Bulgarian
+                    function getStatusDisplayName(status) {
+                        switch(status.toLowerCase()) {
+                            case 'pending': return 'Изчакваща';
+                            case 'in progress': return 'В процес';
+                            case 'completed': return 'Завършена';
+                            case 'cancelled': return 'Отменена';
+                            default: return status;
+                        }
+                    }
+
                     // Generate orders HTML
                     let ordersHtml = '';
                     if (location.orders && location.orders.length > 0) {
@@ -546,22 +560,31 @@ document.addEventListener("DOMContentLoaded", function () {
                         location.orders.forEach(order => {
                             // Format date
                             const orderDate = new Date(order.requestedDate);
-                            const formattedDate = orderDate.toLocaleDateString('en-GB');
+                            const formattedDate = orderDate.toLocaleDateString('bg-BG');
                             
                             ordersHtml += `
                                 <div class="order-item">
                                     <span class="order-title">${order.title}</span>
                                     <div class="order-date">${formattedDate}</div>
-                                    <span class="order-status ${getStatusBadgeClass(order.status)}">${order.status}</span>
+                                    <span class="order-status ${getStatusBadgeClass(order.status)}">${getStatusDisplayName(order.status)}</span>
                                 </div>
                             `;
                         });
                         ordersHtml += '</div>';
                     } else {
-                        ordersHtml = '<div class="no-orders">No orders at this location</div>';
+                        ordersHtml = '<div class="no-orders">Няма поръчки на тази локация</div>';
                     }
 
-                    // Create enhanced popup content
+                    // Check if mobile device
+                    var isMobile = window.innerWidth <= 768;
+                    
+                    // Truncate address for mobile devices
+                    var displayAddress = location.address;
+                    if (isMobile && displayAddress && displayAddress.length > 45) {
+                        displayAddress = displayAddress.substring(0, 42) + '...';
+                    }
+                    
+                    // Create enhanced popup content - simplified for mobile
                     var popupContent = `
                         <div class="popup-header">
                             <i class="bi bi-geo-alt-fill"></i>
@@ -569,30 +592,31 @@ document.addEventListener("DOMContentLoaded", function () {
                         </div>
                         <div class="popup-body">
                             <div class="popup-info">
-                                <p><i class="bi bi-geo-alt"></i> <strong>Address:</strong> ${location.address}</p>
-                                <p><i class="bi bi-clipboard-check"></i> <strong>Orders at this location:</strong></p>
+                                <p><i class="bi bi-geo-alt"></i> ${isMobile ? '' : '<strong>Адрес:</strong> '}${displayAddress}</p>
+                                ${!isMobile ? `<p><i class="bi bi-clipboard-check"></i> <strong>Поръчки на тази локация:</strong></p>` : ''}
                                 ${ordersHtml}
                             </div>
                             <div class="popup-actions">
                                 <a href="/Location/Details/${location.id}" class="btn btn-sm btn-primary">
-                                    <i class="bi bi-eye"></i> Details
+                                    <i class="bi bi-eye"></i> Детайли
                                 </a>
-                                <a href="/Location/Edit/${location.id}" class="btn btn-sm btn-warning">
-                                    <i class="bi bi-pencil"></i> Edit
-                                </a>
+                                ${!isMobile ? `<a href="/Location/Edit/${location.id}" class="btn btn-sm btn-warning">
+                                    <i class="bi bi-pencil"></i> Редактирай
+                                </a>` : ''}
                             </div>
                         </div>
                     `;
                     
-                    // Create popup with custom class
+                    // Create popup with custom class - smaller width for mobile
+                    var popupWidth = isMobile ? 260 : 320;
                     var popup = L.popup({
                         className: 'custom-popup',
                         closeButton: true,
                         autoClose: true,
                         closeOnEscapeKey: true,
                         closeOnClick: true,
-                        minWidth: 320,
-                        maxWidth: 320
+                        minWidth: popupWidth,
+                        maxWidth: popupWidth
                     }).setContent(popupContent);
                     
                     marker.bindPopup(popup);

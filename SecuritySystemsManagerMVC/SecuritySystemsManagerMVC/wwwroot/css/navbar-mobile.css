@@ -1,5 +1,8 @@
 /* Mobile Navigation Improvements - Professional Design */
 
+/* IMPORTANT: All styles below are ONLY for mobile devices (max-width: 991.98px) */
+/* Desktop styles should remain in site.css */
+
 /* Adjust navbar for mobile */
 @media (max-width: 991.98px) {
     /* Main header improvements */
@@ -157,19 +160,29 @@
         width: 100%;
     }
 
+    /* Ensure all nav items have consistent height */
+    .navbar-nav .nav-item .nav-link {
+        padding: 1rem 1.25rem !important;
+        min-height: 50px !important;
+        height: auto !important;
+        box-sizing: border-box;
+    }
+
     .navbar-nav .nav-link {
-        padding: 1rem 1.25rem;
+        padding: 1rem 1.25rem !important;
         font-size: 1rem;
         font-weight: 500;
         transition: all 0.2s ease;
         border-radius: 10px;
         display: flex;
         align-items: center;
-        min-height: 50px;
+        min-height: 50px !important;
+        height: auto !important;
         width: 100%;
         color: var(--text-color);
         background-color: transparent;
         border: 1px solid transparent;
+        box-sizing: border-box;
     }
 
     .navbar-nav .nav-link:hover {
@@ -281,6 +294,91 @@
         display: flex;
         flex-direction: column;
         gap: 0.75rem;
+    }
+
+    /* Mobile account and logout items - integrate properly */
+    .navbar-nav .nav-item.d-lg-none {
+        margin: 0;
+        width: 100%;
+        order: 999; /* Place at the end */
+        display: list-item !important;
+    }
+
+    .navbar-nav .nav-item.d-lg-none .nav-link {
+        padding: 1rem 1.25rem !important;
+        font-size: 1rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        min-height: 50px !important;
+        height: auto !important;
+        width: 100%;
+        color: var(--text-color);
+        background-color: transparent;
+        border: 1px solid transparent;
+        box-sizing: border-box;
+    }
+
+    .navbar-nav .nav-item.d-lg-none .nav-link:hover {
+        background-color: rgba(79, 109, 245, 0.15);
+        color: var(--primary-color);
+        border-color: rgba(79, 109, 245, 0.2);
+        transform: translateX(4px);
+    }
+
+    .navbar-nav .nav-item.d-lg-none .nav-link.text-danger {
+        color: #dc3545 !important;
+    }
+
+    .navbar-nav .nav-item.d-lg-none .nav-link.text-danger:hover {
+        background-color: rgba(220, 53, 69, 0.15);
+        color: #dc3545 !important;
+        border-color: rgba(220, 53, 69, 0.3);
+    }
+
+    .navbar-nav .nav-item.d-lg-none .nav-link i {
+        font-size: 1.2rem;
+        width: 1.75rem;
+        text-align: center;
+        margin-right: 0.875rem;
+        color: var(--primary-color);
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .navbar-nav .nav-item.d-lg-none .nav-link.text-danger i {
+        color: #dc3545;
+    }
+
+    /* Hide desktop profile dropdown on mobile */
+    .profile-dropdown.d-none.d-lg-block {
+        display: none !important;
+    }
+
+    /* Hide notifications dropdown on mobile if needed */
+    .notification-dropdown.d-none.d-lg-block {
+        display: none !important;
+    }
+
+    /* Ensure mobile items are properly displayed */
+    .navbar-nav .nav-item.d-lg-none {
+        display: list-item !important;
+    }
+
+    /* Ensure mobile items are properly spaced */
+    .navbar-nav .nav-item.d-lg-none + .nav-item.d-lg-none {
+        margin-top: 0.5rem;
+    }
+
+    /* Add separator before first mobile-only item (notifications, account, logout) */
+    .navbar-nav .nav-item.d-lg-none:first-of-type {
+        margin-top: 0.75rem;
+        padding-top: 0.75rem;
+        border-top: 1px solid var(--border-color);
     }
 
     /* Notifications */

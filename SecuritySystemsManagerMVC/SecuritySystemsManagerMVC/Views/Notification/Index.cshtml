@@ -1,17 +1,67 @@
 @model IEnumerable<SecuritySystemsManager.Shared.Dtos.NotificationDto>
 @{
     ViewData["Title"] = "Известия";
+    var unreadCount = Model.Count(n => !n.IsRead);
 }
 
-<div class="container animate-fade-in py-4">
+@section Styles {
+    <link rel="stylesheet" href="~/css/notifications.css" asp-append-version="true" />
+}
+
+<div class="container notifications-container animate-fade-in py-4">
+    @if (Model.Any())
+    {
+        <!-- Modern Banner -->
+        <div class="notifications-banner">
+            <div class="notifications-banner-content">
+                <div class="notifications-banner-text">
+                    <h1 class="notifications-banner-title">
+                        <i class="bi bi-bell-fill"></i>
+                        Известия
+                    </h1>
+                    <p class="notifications-banner-description">
+                        @if (unreadCount > 0)
+                        {
+                            <text>Имате @unreadCount @(unreadCount == 1 ? "непрочетено известие" : "непрочетени известия")</text>
+                        }
+                        else
+                        {
+                            <text>Всички известия са прочетени</text>
+                        }
+                    </p>
+                </div>
+                @if (unreadCount > 0)
+                {
+                    <div class="notifications-banner-actions">
+                        <button id="markAllAsRead" class="btn btn-mark-all-read-banner">
+                            <i class="bi bi-check-all"></i>
+                            <span>Маркирай всички като прочетени</span>
+                        </button>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 mb-0">
+                <i class="bi bi-bell-fill me-2"></i>Известия
+            </h1>
+        </div>
+    }
+
     <div class="row">
         <div class="col-12">
-            <div class="card">
+            <div class="card notifications-card shadow-sm">
                 <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Всички известия</h5>
+                    <h5 class="mb-0">
+                        <i class="bi bi-list-ul"></i>
+                        Всички известия
+                    </h5>
                     @if (Model.Any(n => !n.IsRead))
                     {
-                        <button id="markAllAsRead" class="btn btn-sm btn-primary">
+                        <button id="markAllAsRead" class="btn btn-sm btn-primary d-none d-md-inline-flex">
                             <i class="bi bi-check-all me-2"></i>Маркирай всички като прочетени
                         </button>
                     }
@@ -22,22 +72,20 @@
                         <div class="list-group list-group-flush">
                             @foreach (var notification in Model)
                             {
-                                <div class="list-group-item notification-item @(notification.IsRead ? "" : "unread")" data-id="@notification.Id">
-                                    <div class="d-flex">
-                                        <div class="notification-icon me-3">
+                                <div class="notification-item @(notification.IsRead ? "" : "unread")" data-id="@notification.Id">
+                                    <div class="d-flex align-items-start">
+                                        <div class="notification-icon">
                                             <i class="bi bi-info-circle-fill"></i>
                                         </div>
                                         <div class="notification-content">
-                                            <p class="mb-1">@notification.Message</p>
-                                            <small class="text-muted">@notification.DateSent.ToString("MMM dd, yyyy HH:mm")</small>
+                                            <p>@notification.Message</p>
+                                            <small>@notification.DateSent.ToString("dd MMM yyyy, HH:mm")</small>
                                         </div>
                                         @if (!notification.IsRead)
                                         {
-                                            <div class="ms-auto">
-                                                <button class="btn btn-sm btn-outline-primary mark-read" data-id="@notification.Id">
-                                                    <i class="bi bi-check"></i>
-                                                </button>
-                                            </div>
+                                            <button class="btn btn-sm btn-outline-primary mark-read ms-auto" data-id="@notification.Id">
+                                                <i class="bi bi-check"></i>
+                                            </button>
                                         }
                                     </div>
                                 </div>
@@ -46,12 +94,10 @@
                     }
                     else
                     {
-                        <div class="text-center py-5">
-                            <div class="mb-3">
-                                <i class="bi bi-bell-slash text-muted" style="font-size: 3rem;"></i>
-                            </div>
-                            <h5 class="text-muted">No notifications</h5>
-                            <p class="text-muted mb-0">You don't have any notifications at the moment.</p>
+                        <div class="notifications-empty-state">
+                            <i class="bi bi-bell-slash"></i>
+                            <h5>Няма известия</h5>
+                            <p>В момента нямате известия</p>
                         </div>
                     }
                 </div>

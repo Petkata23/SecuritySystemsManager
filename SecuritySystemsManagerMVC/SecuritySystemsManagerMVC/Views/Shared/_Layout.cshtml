@@ -140,7 +140,7 @@
                         }
                         
                         <!-- Right side navigation items -->
-                        <li class="nav-item d-flex align-items-center">
+                        <li class="nav-item d-flex align-items-center d-none d-lg-flex">
                             @if (User.Identity.IsAuthenticated)
                             {
                                 <!-- Notifications -->
@@ -175,12 +175,12 @@
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index"><i class="bi bi-house-door me-1"></i>Начало</a></li>
                                 @{
-                                    var controller = ViewContext.RouteData.Values["controller"]?.ToString();
-                                    var action = ViewContext.RouteData.Values["action"]?.ToString();
+                                    var breadcrumbController = ViewContext.RouteData.Values["controller"]?.ToString();
+                                    var breadcrumbAction = ViewContext.RouteData.Values["action"]?.ToString();
                                     
-                                    if (!string.IsNullOrEmpty(controller) && controller != "Home")
+                                    if (!string.IsNullOrEmpty(breadcrumbController) && breadcrumbController != "Home")
                                     {
-                                        var controllerName = controller.Replace("Controller", "");
+                                        var controllerName = breadcrumbController.Replace("Controller", "");
                                         var controllerDisplayName = controllerName switch
                                         {
                                             "SecuritySystemOrder" => "Поръчки",
@@ -199,14 +199,14 @@
                                             _ => controllerName
                                         };
                                         
-                                        if (action == "Index" || action == "List")
+                                        if (breadcrumbAction == "Index" || breadcrumbAction == "List")
                                         {
                                             <li class="breadcrumb-item active" aria-current="page">@controllerDisplayName</li>
                                         }
                                         else
                                         {
                                             <li class="breadcrumb-item">
-                                                <a asp-controller="@controller" asp-action="@(action == "Details" || action == "Edit" || action == "Delete" || action == "Create" ? "List" : "Index")">@controllerDisplayName</a>
+                                                <a asp-controller="@breadcrumbController" asp-action="@(breadcrumbAction == "Details" || breadcrumbAction == "Edit" || breadcrumbAction == "Delete" || breadcrumbAction == "Create" ? "List" : "Index")">@controllerDisplayName</a>
                                             </li>
                                             <li class="breadcrumb-item active" aria-current="page">@ViewData["Title"]</li>
                                         }

@@ -31,7 +31,7 @@
 
 .table-hover tbody tr:hover {
     background-color: rgba(79, 109, 245, 0.1);
-    transform: scale(1.01);
+    transform: none;
 }
 
 .table-striped > tbody > tr:nth-of-type(odd) > * {

@@ -925,10 +925,12 @@
 .table tbody tr {
     background: var(--order-bg-card);
     transition: background-color 0.15s ease;
+    transform: none !important;
 }
 
 .table tbody tr:hover {
     background-color: rgba(99, 102, 241, 0.06) !important;
+    transform: none !important;
 }
 
 .table tbody tr:last-child td {
@@ -954,8 +956,8 @@
 }
 
 .table .btn-group .btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    transform: none;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .table .btn-group .btn:active {
@@ -1639,11 +1641,13 @@
     }
 
     .table tbody tr {
-        transition: all 0.2s ease;
+        transition: background-color 0.15s ease;
+        transform: none !important;
     }
 
     .table tbody tr:hover {
         background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(139, 92, 246, 0.08) 100%);
+        transform: none !important;
     }
 
     .table .btn-group {
@@ -1665,8 +1669,8 @@
     }
 
     .table .btn-group .btn:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--order-shadow-md);
+        transform: none;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
 
     .table .btn-group .btn-info {
