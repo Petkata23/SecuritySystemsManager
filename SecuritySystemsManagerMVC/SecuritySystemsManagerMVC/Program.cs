@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using SecuritySystemsManager.Data;
 using SecuritySystemsManager.Data.Entities;
 using SecuritySystemsManager.Data.Repos;
@@ -14,6 +16,7 @@ using SecuritySystemsManager.Shared.Services.Contracts;
 using SecuritySystemsManagerMVC;
 using SecuritySystemsManagerMVC.Hubs;
 using System;
+using System.Text;
 using System.Text.Encodings.Web;
 using Microsoft.VisualBasic;
 using Constants = SecuritySystemsManager.Shared.Constants;
@@ -27,6 +30,7 @@ builder.Logging.SetMinimumLevel(LogLevel.Information);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddControllers(); // For API controllers
 
 // Add SignalR
 builder.Services.AddSignalR();
@@ -45,6 +49,15 @@ builder.Services.AddCors(options =>
         policy.WithOrigins("https://dl.dropboxusercontent.com", "https://www.dropbox.com")
               .AllowAnyMethod()
               .AllowAnyHeader();
+    });
+    
+    // Add CORS policy for React app
+    options.AddPolicy("AllowReactApp", policy =>
+    {
+        policy.WithOrigins("http://localhost:3000", "http://localhost:5173") // React dev servers
+              .AllowAnyMethod()
+              .AllowAnyHeader()
+              .AllowCredentials();
     });
 });
 
@@ -108,6 +121,34 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.ExpireTimeSpan = TimeSpan.FromDays(7);
 });
 
+// Configure JWT Authentication
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+var secretKey = jwtSettings["SecretKey"] ?? "YourSuperSecretKeyForJWTTokenGenerationThatShouldBeAtLeast32CharactersLong!";
+var issuer = jwtSettings["Issuer"] ?? "SecuritySystemsManager";
+var audience = jwtSettings["Audience"] ?? "SecuritySystemsManagerUsers";
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = issuer,
+        ValidAudience = audience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
+        ClockSkew = TimeSpan.Zero
+    };
+})
+.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme); // Keep cookie auth for MVC views
+
 // Add Identity UI
 builder.Services.AddRazorPages();
 
@@ -139,10 +180,15 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseCors("AllowDropbox");
+app.UseCors("AllowReactApp");
 
 app.UseAuthentication();
 app.UseAuthorization();
 
+// API routes
+app.MapControllers();
+
+// MVC routes (for backward compatibility or admin panel)
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

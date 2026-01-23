@@ -1,0 +1,8 @@
+/* Base reset - will be overridden by site.css */
+* {
+  box-sizing: border-box;
+}
+
+#root {
+  min-height: 100vh;
+}

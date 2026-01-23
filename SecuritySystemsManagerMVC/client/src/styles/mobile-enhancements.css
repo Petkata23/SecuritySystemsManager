@@ -1,0 +1,472 @@
+/* Mobile Enhancements - Professional Mobile Design */
+
+/* General Mobile Improvements */
+@media (max-width: 768px) {
+    /* Container adjustments */
+    .container-fluid {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    /* Card improvements */
+    .card {
+        border-radius: 12px;
+        margin-bottom: 1.25rem;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .card-header {
+        padding: 1rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+
+    .card-body {
+        padding: 1.25rem;
+    }
+
+    .card-footer {
+        padding: 1rem;
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    /* Page title improvements */
+    .page-title-section {
+        padding: 1rem 0;
+        background: linear-gradient(135deg, rgba(79, 109, 245, 0.1), rgba(244, 88, 102, 0.1));
+    }
+
+    .page-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .breadcrumb {
+        font-size: 0.85rem;
+    }
+
+    /* Alert improvements */
+    .alert {
+        border-radius: 10px;
+        padding: 1rem 1.25rem;
+        margin-bottom: 1.25rem;
+        font-size: 0.95rem;
+        border-left: 4px solid;
+    }
+
+    .alert-success {
+        border-left-color: var(--success-color);
+    }
+
+    .alert-danger {
+        border-left-color: var(--danger-color);
+    }
+
+    .alert-warning {
+        border-left-color: var(--warning-color);
+    }
+
+    .alert-info {
+        border-left-color: var(--info-color);
+    }
+
+    /* Badge improvements */
+    .badge {
+        padding: 0.4rem 0.7rem;
+        font-size: 0.8rem;
+        font-weight: 500;
+        border-radius: 6px;
+    }
+
+    /* Modal improvements */
+    .modal-dialog {
+        margin: 0.5rem;
+        max-width: calc(100% - 1rem);
+    }
+
+    .modal-content {
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+    }
+
+    .modal-header {
+        padding: 1.25rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .modal-body {
+        padding: 1.25rem;
+        max-height: calc(100vh - 200px);
+        overflow-y: auto;
+    }
+
+    .modal-footer {
+        padding: 1rem 1.25rem;
+        border-top: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .modal-footer .btn {
+        width: 100%;
+        margin: 0;
+    }
+
+    /* Dropdown improvements */
+    .dropdown-menu {
+        border-radius: 10px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        border: 1px solid var(--border-color);
+        padding: 0.5rem 0;
+        margin-top: 0.5rem;
+    }
+
+    .dropdown-item {
+        padding: 0.75rem 1.25rem;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+
+    .dropdown-item:hover,
+    .dropdown-item:focus {
+        background-color: rgba(79, 109, 245, 0.15);
+        color: var(--primary-color);
+    }
+
+    /* Pagination improvements */
+    .pagination {
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+    }
+
+    .page-link {
+        padding: 0.5rem 0.75rem;
+        min-width: 44px;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        margin: 0 0.125rem;
+    }
+
+    /* Search and filter improvements */
+    .input-group {
+        margin-bottom: 1rem;
+    }
+
+    .input-group .form-control {
+        border-radius: 10px 0 0 10px;
+    }
+
+    .input-group .btn {
+        border-radius: 0 10px 10px 0;
+    }
+
+    /* Empty states */
+    .empty-state {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: var(--muted-color);
+    }
+
+    .empty-state i {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+
+    .empty-state h5 {
+        font-size: 1.25rem;
+        margin-bottom: 0.5rem;
+        color: var(--text-color);
+    }
+
+    /* Loading states */
+    .spinner-border {
+        width: 2rem;
+        height: 2rem;
+    }
+
+    /* Tooltips and popovers */
+    .tooltip {
+        font-size: 0.85rem;
+    }
+
+    /* Back to top button */
+    .back-to-top {
+        width: 48px;
+        height: 48px;
+        bottom: 80px;
+        right: 1rem;
+        font-size: 1.25rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Footer improvements */
+    .footer {
+        padding: 2rem 0 1rem;
+        font-size: 0.85rem;
+    }
+
+    /* Section spacing */
+    section {
+        padding: 2.5rem 0;
+    }
+
+    /* Hero section mobile */
+    .hero-section {
+        padding: 3rem 0 2rem;
+    }
+
+    .hero-title {
+        font-size: 2rem;
+        line-height: 1.3;
+        margin-bottom: 1rem;
+    }
+
+    .hero-text {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .hero-buttons .btn {
+        width: 100%;
+        margin: 0;
+    }
+
+    /* Feature cards mobile */
+    .feature-card {
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .feature-icon {
+        width: 70px;
+        height: 70px;
+        font-size: 1.75rem;
+    }
+
+    /* Service cards mobile */
+    .service-card {
+        margin-bottom: 1.5rem;
+    }
+
+    .service-content {
+        padding: 1.25rem;
+    }
+
+    /* Process steps mobile */
+    .process-step {
+        margin-bottom: 2rem;
+        padding: 1.5rem 1rem;
+    }
+
+    /* Testimonial cards mobile */
+    .testimonial-card {
+        margin-bottom: 1.5rem;
+        padding: 1.5rem;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 576px) {
+    /* Container */
+    .container-fluid {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+
+    /* Cards */
+    .card {
+        margin-bottom: 1rem;
+        border-radius: 10px;
+    }
+
+    .card-header {
+        padding: 0.875rem;
+        font-size: 1rem;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    /* Page title */
+    .page-title {
+        font-size: 1.35rem;
+    }
+
+    /* Alerts */
+    .alert {
+        padding: 0.875rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    /* Modals */
+    .modal-dialog {
+        margin: 0.25rem;
+        max-width: calc(100% - 0.5rem);
+    }
+
+    .modal-header {
+        padding: 1rem;
+    }
+
+    .modal-body {
+        padding: 1rem;
+    }
+
+    .modal-footer {
+        padding: 0.875rem 1rem;
+    }
+
+    /* Hero section */
+    .hero-section {
+        padding: 2rem 0 1.5rem;
+    }
+
+    .hero-title {
+        font-size: 1.75rem;
+    }
+
+    .hero-text {
+        font-size: 0.95rem;
+    }
+
+    /* Section header */
+    .section-header h2 {
+        font-size: 1.75rem;
+    }
+
+    .section-header p {
+        font-size: 0.95rem;
+    }
+
+    /* Feature cards */
+    .feature-card {
+        padding: 1.25rem;
+    }
+
+    .feature-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+    }
+
+    /* Service cards */
+    .service-content {
+        padding: 1rem;
+    }
+
+    /* Process steps */
+    .process-step {
+        padding: 1.25rem 0.875rem;
+    }
+
+    /* Testimonials */
+    .testimonial-card {
+        padding: 1.25rem;
+    }
+
+    /* CTA section */
+    .cta-title {
+        font-size: 1.75rem;
+    }
+
+    .cta-text {
+        font-size: 1rem;
+    }
+
+    /* Back to top */
+    .back-to-top {
+        width: 44px;
+        height: 44px;
+        bottom: 70px;
+        right: 0.75rem;
+        font-size: 1.1rem;
+    }
+}
+
+/* Extra small devices */
+@media (max-width: 375px) {
+    .container-fluid {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+
+    .card-header {
+        padding: 0.75rem;
+        font-size: 0.95rem;
+    }
+
+    .card-body {
+        padding: 0.875rem;
+    }
+
+    .page-title {
+        font-size: 1.25rem;
+    }
+
+    .hero-title {
+        font-size: 1.5rem;
+    }
+
+    .section-header h2 {
+        font-size: 1.5rem;
+    }
+}
+
+/* Touch improvements */
+@media (hover: none) and (pointer: coarse) {
+    /* Better touch targets */
+    a, button, .btn, .nav-link, .dropdown-item {
+        min-height: 44px;
+        min-width: 44px;
+    }
+
+    /* Remove hover effects on touch devices */
+    .card:hover {
+        transform: none;
+    }
+
+    .btn:hover {
+        transform: none;
+    }
+
+    /* Active states for touch */
+    .btn:active {
+        transform: scale(0.97);
+        opacity: 0.9;
+    }
+
+    .card:active {
+        transform: scale(0.99);
+    }
+}
+
+/* Landscape orientation */
+@media (max-width: 768px) and (orientation: landscape) {
+    .hero-section {
+        padding: 2rem 0;
+    }
+
+    .navbar-collapse.show {
+        max-height: 70vh;
+    }
+
+    .modal-body {
+        max-height: calc(100vh - 150px);
+    }
+}
